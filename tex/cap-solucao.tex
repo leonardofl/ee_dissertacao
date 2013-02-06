@@ -44,20 +44,32 @@ O Choreography Deployer expõe uma API REST de operações que automatizam a implan
 
 \end{description}
 
-%{fig:chef_arquitetura} 
-FIGURA: Arquitetura do Chef.
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=.80\textwidth]{chef.pdf} 
+  \caption{Arquitetura do Chef}
+  \label{fig:chef_arquitetura} 
+\end{figure}
 
 A execução do Chef Client é demorada, tipicamente alguns minutos, dependendo do que está sendo instalado. Considerando que vários serviços podem ser implantados em um mesmo nó, a implantação da coreografia seria muito mais demorada caso cada invocação ao Deployment Manager resultasse em um pedido de atualização do nó onde o serviço deve ser implantado. Por isso, cabe ao Choreography Deployer a decisão de quando os nós são atualizados. Com isso, para cada nó, pode-se executar o Chef Client apenas uma vez para cada coreografia encenada. Essa otimização torna o sistema mais escalável. 
 
 O diagrama de implantação da Figura~\ref{fig:ee_distribuicao} mostra como se distribuem os componentes do arcabouço Enactment Engine. Cada organização do diagrama está relacionada a uma instância de um sistema de nuvem privada (Open Stack, por exemplo), ou a uma conta de um provedor de nuvem pública (Amazon, por exemplo). A infraestrutura de cada organização deve possuir os seguintes componentes: um Cloud Gateway, um Chef Server e um Deployment Manager. 
 
-%{fig:ee_distribuicao}
-FIGURA: Distribuição da implantação dos componentes do Enactment Engine.
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=1\textwidth]{ee_deployment.pdf} 
+  \caption{Distribuição da implantação dos componentes do Enactment Engine}
+  \label{fig:ee_distribuicao} 
+\end{figure}
 
 Um exemplo de ambiente distribuído com várias organizações é mostrado no diagrama da Figura~\ref{fig:ee_exemplo_distribuicao}. Nesse diagrama, existem três organizações: Linagora, Thales e USP. Cada organização corresponde ao nó ``organization'' do diagrama genérico de implantação (Figura~\ref{fig:ee_distribuicao}). Esse último diagrama também destaca o fato de que organizações podem tanto usar suas próprias nuvens privadas, quanto alguma nuvem pública, como a da Amazon. Caso uma organização deseje utilizar mais de um sistema de nuvem, ela deverá ser modelada em nosso arcabouço como várias organizações diferentes. Por exemplo, se a organização USP deseja utilizar uma nuvem privada com o OpenStack e o serviços da Amazon, pode-se modelar as seguintes organizações: USP\_OpenStack e USP\_AWS.
 
-%{fig:ee_exemplo_distribuicao}
-Exemplo de uso do Enactment Engine em diferentes organizações.
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=.80\textwidth]{ee_exemplo_distribuicao.pdf} 
+  \caption{Exemplo de uso do Enactment Engine em diferentes organizações}
+  \label{fig:ee_exemplo_distribuicao} 
+\end{figure}
 
 Terminamos esta seção com um diagrama de sequência (Figura~\ref{fig:ee_sequencia}) que evidencia detalhes da interação entre os componentes do arcabouço. Esse diagrama ilustra o processo de encenação de uma pequena coreografia de dois serviços, na qual o serviço A é consumidor do serviço B.
 
