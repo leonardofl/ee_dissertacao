@@ -1,65 +1,65 @@
 	%% ------------------------------------------------------------------------- %%
-\chapter{Introdução}
+\chapter{IntroduÃ§Ã£o}
 \label{cap:introducao}
 
-Processos totalmente automatizados são importantes na implantação de sistemas \cite{Humble2011Continuous}. No entanto, muitas organizações ainda realizam a implantação de seus sistemas conforme descrita por Dolstra et al. \cite{Dolstra2005Configuration}: um processo manual, moroso, propenso a erros e não reprodutível. Ainda segundo esses autores, o problema se agrava na implantação de sistemas distribuídos, pois o esforço de implantação cresce com a quantidade de nós do sistema. Em cenários de grande escala um processo de implantação manual se torna inviável. Esses cenários vem sendo discutidos academicamente e ainda não há soluções consolidadas \cite{Valerie2011FutureInternet}.
+Processos totalmente automatizados sÃ£o importantes na implantaÃ§Ã£o de sistemas \cite{Humble2011Continuous}. No entanto, muitas organizaÃ§Ãµes ainda realizam a implantaÃ§Ã£o de seus sistemas conforme descrita por Dolstra et al. \cite{Dolstra2005Configuration}: um processo manual, moroso, propenso a erros e nÃ£o reprodutÃ­vel. Ainda segundo esses autores, o problema se agrava na implantaÃ§Ã£o de sistemas distribuÃ­dos, pois o esforÃ§o de implantaÃ§Ã£o cresce com a quantidade de nÃ³s do sistema. Em cenÃ¡rios de grande escala um processo de implantaÃ§Ã£o manual se torna inviÃ¡vel. Esses cenÃ¡rios vem sendo discutidos academicamente e ainda nÃ£o hÃ¡ soluÃ§Ãµes consolidadas \cite{Valerie2011FutureInternet}.
 
-Pesquisadores acreditam que a arquitetura da Internet atual não comportaria todos os requisitos dos serviços do futuro, o que leva a criação de uma nova arquitetura, denominada Internet do Futuro \cite{Zahariadis2011FutureInternet}. Na Internet do Futuro, espera-se a existência de complexas composições de bilhões de serviços web, formando coreografias de milhões de recursos, pessoas e coisas \cite{Valerie2011FutureInternet}. No entanto, o desenvolvimento de colaborações entre serviços trazem desafios para a formulação de mecanismos que funcionem, escalem e que sejam eficientemente implementados em um ambiente distribuído de grande escala \cite{Steen2011VeryLarge}.
+Pesquisadores acreditam que a arquitetura da Internet atual nÃ£o comportaria todos os requisitos dos serviÃ§os do futuro, o que leva a criaÃ§Ã£o de uma nova arquitetura, denominada Internet do Futuro \cite{Zahariadis2011FutureInternet}. Na Internet do Futuro, espera-se a existÃªncia de complexas composiÃ§Ãµes de bilhÃµes de serviÃ§os web, formando coreografias de milhÃµes de recursos, pessoas e coisas \cite{Valerie2011FutureInternet}. No entanto, o desenvolvimento de colaboraÃ§Ãµes entre serviÃ§os trazem desafios para a formulaÃ§Ã£o de mecanismos que funcionem, escalem e que sejam eficientemente implementados em um ambiente distribuÃ­do de grande escala \cite{Steen2011VeryLarge}.
 
-Sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos de modo descentralizado por várias organizações \cite{Steen2011VeryLarge}. A computação em nuvem possibilita o acesso a um conjunto compartilhado de recursos computacionais que podem ser providos rapidamente \cite{Nist2011Cloud}. A gerência programática desses recursos virtualizados favorece a criação de processos totalmente automatizado para a implantação de sistemas \cite{Humble2011Continuous}.   
+Sistemas distribuÃ­dos estÃ£o migrando para ambientes de nuvem, onde sÃ£o compostos e mantidos de modo descentralizado por vÃ¡rias organizaÃ§Ãµes \cite{Steen2011VeryLarge}. A computaÃ§Ã£o em nuvem possibilita o acesso a um conjunto compartilhado de recursos computacionais que podem ser providos rapidamente \cite{Nist2011Cloud}. A gerÃªncia programÃ¡tica desses recursos virtualizados favorece a criaÃ§Ã£o de processos totalmente automatizado para a implantaÃ§Ã£o de sistemas \cite{Humble2011Continuous}.   
 
-Steen~\cite{Steen2011VeryLarge} destaca que um sistema distribuído de grande escala normalmente não é fornecido por uma única organização e que, portanto, ninguém é responsável por ``todo o sistema''. Essa necessidade de distribuição dificulta a execução de atividades que precisam ser coordenadas entre as organizações, pois nenhuma das partes detém o controle sobre toda a infraestrutura. O aspecto interorganizacional normalmente implica também na heterogeneidade tecnológica, pois partes da aplicação mantidas por organizações diferentes costumam ser construídas com tecnologias diferentes, como por exemplo Java ou .NET. Quando essas partes do sistema precisam se comunicar diretamente surge a necessidade de uma comunicação interoperável, o que é possibilitado por serviços web. 
+Steen~\cite{Steen2011VeryLarge} destaca que um sistema distribuÃ­do de grande escala normalmente nÃ£o Ã© fornecido por uma Ãºnica organizaÃ§Ã£o e que, portanto, ninguÃ©m Ã© responsÃ¡vel por ``todo o sistema''. Essa necessidade de distribuiÃ§Ã£o dificulta a execuÃ§Ã£o de atividades que precisam ser coordenadas entre as organizaÃ§Ãµes, pois nenhuma das partes detÃ©m o controle sobre toda a infraestrutura. O aspecto interorganizacional normalmente implica tambÃ©m na heterogeneidade tecnolÃ³gica, pois partes da aplicaÃ§Ã£o mantidas por organizaÃ§Ãµes diferentes costumam ser construÃ­das com tecnologias diferentes, como por exemplo Java ou .NET. Quando essas partes do sistema precisam se comunicar diretamente surge a necessidade de uma comunicaÃ§Ã£o interoperÃ¡vel, o que Ã© possibilitado por serviÃ§os web. 
 
-Serviços web possibilitam a comunicação interoperável entre máquinas pela rede \cite{W3C-WS}. Um exemplo é a consulta a um serviço do correio para verificação de preços e prazos de diferentes opções de entrega. A existência de um serviço web que forneça essa funcionalidade possibilita que uma loja, por exemplo, selecione dinamicamente a opção de entrega mais vantajosa de acordo com os requisitos de seus clientes. 
+ServiÃ§os web possibilitam a comunicaÃ§Ã£o interoperÃ¡vel entre mÃ¡quinas pela rede \cite{W3C-WS}. Um exemplo Ã© a consulta a um serviÃ§o do correio para verificaÃ§Ã£o de preÃ§os e prazos de diferentes opÃ§Ãµes de entrega. A existÃªncia de um serviÃ§o web que forneÃ§a essa funcionalidade possibilita que uma loja, por exemplo, selecione dinamicamente a opÃ§Ã£o de entrega mais vantajosa de acordo com os requisitos de seus clientes. 
 
-Serviços também são compostos para implementar processos de negócios sofisticados \cite{Papazoglou2007State}. Nessa situação, serviços web são diretamente ligados uns aos outros. Se existem supermercados que oferecem serviços web para consulta de preço e compra de produtos, pode-se elaborar um processo de negócio em que um consumidor faça uma busca automatizada em diferentes supermercados procurando o menor preço para a sua compra. 
+ServiÃ§os tambÃ©m sÃ£o compostos para implementar processos de negÃ³cios sofisticados \cite{Papazoglou2007State}. Nessa situaÃ§Ã£o, serviÃ§os web sÃ£o diretamente ligados uns aos outros. Se existem supermercados que oferecem serviÃ§os web para consulta de preÃ§o e compra de produtos, pode-se elaborar um processo de negÃ³cio em que um consumidor faÃ§a uma busca automatizada em diferentes supermercados procurando o menor preÃ§o para a sua compra. 
 
-A coordenação de um processo de negócio ocorre de forma centralizada ou distribuída. No caso centralizado, denominado orquestração \cite{Nanda2004Decentralizing}, há um orquestrador que determina como os outros serviços web envolvidos no processo de negócio devem se relacionar. No caso distribuído, denominado coreografia \cite{Barker2009Choreographing}, cada serviço sabe como e com quais parceiros deve interagir. 
+A coordenaÃ§Ã£o de um processo de negÃ³cio ocorre de forma centralizada ou distribuÃ­da. No caso centralizado, denominado orquestraÃ§Ã£o \cite{Nanda2004Decentralizing}, hÃ¡ um orquestrador que determina como os outros serviÃ§os web envolvidos no processo de negÃ³cio devem se relacionar. No caso distribuÃ­do, denominado coreografia \cite{Barker2009Choreographing}, cada serviÃ§o sabe como e com quais parceiros deve interagir. 
 
-Para compor uma orquestração ou coreografia, é preciso que os serviços identifiquem a localização (URIs) de suas dependências. Em um processo de implantação na nuvem, não se pode fazer suposições sobre os endereços IPs dos serviços antes da implantação, o que requer um modelo de configuração flexível, considerando a natureza dinâmica da nuvem \cite{Amazon2012Practices}. Dessa forma, o processo de implantação de coreografias requer algum mecanismo dinâmico de troca de endereços entre os serviços participantes. 
+Para compor uma orquestraÃ§Ã£o ou coreografia, Ã© preciso que os serviÃ§os identifiquem a localizaÃ§Ã£o (URIs) de suas dependÃªncias. Em um processo de implantaÃ§Ã£o na nuvem, nÃ£o se pode fazer suposiÃ§Ãµes sobre os endereÃ§os IPs dos serviÃ§os antes da implantaÃ§Ã£o, o que requer um modelo de configuraÃ§Ã£o flexÃ­vel, considerando a natureza dinÃ¢mica da nuvem \cite{Amazon2012Practices}. Dessa forma, o processo de implantaÃ§Ã£o de coreografias requer algum mecanismo dinÃ¢mico de troca de endereÃ§os entre os serviÃ§os participantes. 
 
-Embora exista uma diversidade de técnicas para aumentar a disponibilidade de aplicações e serviços, quando um sistema interage com outro independente, normalmente pertencente a outra organização, é preciso sempre considerar uma possível indisponibilidade do sistema invocado na outra organização. Em sistemas de grande escala, tais falhas ocorrem com maior frequência. Por isso, esses sistemas precisam ser projetados para que continuem a funcionar na presença de falhas de seus componentes, mesmo que para isso tenham que continuar operando com funcionalidades reduzidas \cite{Hamilton2007InternetScale,  Helland2009Quicksand}.
+Embora exista uma diversidade de tÃ©cnicas para aumentar a disponibilidade de aplicaÃ§Ãµes e serviÃ§os, quando um sistema interage com outro independente, normalmente pertencente a outra organizaÃ§Ã£o, Ã© preciso sempre considerar uma possÃ­vel indisponibilidade do sistema invocado na outra organizaÃ§Ã£o. Em sistemas de grande escala, tais falhas ocorrem com maior frequÃªncia. Por isso, esses sistemas precisam ser projetados para que continuem a funcionar na presenÃ§a de falhas de seus componentes, mesmo que para isso tenham que continuar operando com funcionalidades reduzidas \cite{Hamilton2007InternetScale,  Helland2009Quicksand}.
 
-Considerando os desafios já colocados, a questão que guia esta pesquisa é ?como realizar a implantação automatizada de coreografias de serviços web em grande escala em ambientes distribuídos de computação em nuvem?? O objetivo desta dissertação é solucionar a questão colocada por meio da arquitetura de um arcabouço que dê suporte à implantação automatizada de coreografias de serviços web em ambientes de computação em nuvem. 
+Considerando os desafios jÃ¡ colocados, a questÃ£o que guia esta pesquisa Ã© ?como realizar a implantaÃ§Ã£o automatizada de coreografias de serviÃ§os web em grande escala em ambientes distribuÃ­dos de computaÃ§Ã£o em nuvem?? O objetivo desta dissertaÃ§Ã£o Ã© solucionar a questÃ£o colocada por meio da arquitetura de um arcabouÃ§o que dÃª suporte Ã  implantaÃ§Ã£o automatizada de coreografias de serviÃ§os web em ambientes de computaÃ§Ã£o em nuvem. 
 
-Em nosso trabalho, as coreografias de serviços web se enquadram no seguinte contexto:
+Em nosso trabalho, as coreografias de serviÃ§os web se enquadram no seguinte contexto:
 
-Uma coreografia possui serviços web de diferentes organizações.
-Os serviços web de uma mesma coreografia podem ser implantados em diferentes infraestruturas, pertencentes a diferentes organizações.
-As organizações utilizarão infraestruturas de computação em nuvem.
-Diferentes organizações podem utilizar diferentes tecnologias de nuvem.
+Uma coreografia possui serviÃ§os web de diferentes organizaÃ§Ãµes.
+Os serviÃ§os web de uma mesma coreografia podem ser implantados em diferentes infraestruturas, pertencentes a diferentes organizaÃ§Ãµes.
+As organizaÃ§Ãµes utilizarÃ£o infraestruturas de computaÃ§Ã£o em nuvem.
+Diferentes organizaÃ§Ãµes podem utilizar diferentes tecnologias de nuvem.
 
-O arcabouço proposto deve ainda contemplar os seguintes requisitos:
+O arcabouÃ§o proposto deve ainda contemplar os seguintes requisitos:
 
-Com a ajuda do arcabouço, o processo de implantação das coreografias deve ser totalmente automatizado.
-Deve-se privilegiar construções tolerantes a falha, ou seja, se um componente do sistema falha, o sistema inteiro continua a responder, mesmo que com funcionalidade reduzida.
-Considerando magnitudes de milhares de serviços em centenas de nós, o tempo de implantação deve ser escalável, ou seja, conforme se aumente a quantidade de serviços a serem implantados e a quantidade de nós disponíveis, o tempo de implantação deve permanecer idealmente constante. 
-A implantação de uma coreografia com centenas de serviços deve ocorrer com tempo na ordem de poucos minutos.
+Com a ajuda do arcabouÃ§o, o processo de implantaÃ§Ã£o das coreografias deve ser totalmente automatizado.
+Deve-se privilegiar construÃ§Ãµes tolerantes a falha, ou seja, se um componente do sistema falha, o sistema inteiro continua a responder, mesmo que com funcionalidade reduzida.
+Considerando magnitudes de milhares de serviÃ§os em centenas de nÃ³s, o tempo de implantaÃ§Ã£o deve ser escalÃ¡vel, ou seja, conforme se aumente a quantidade de serviÃ§os a serem implantados e a quantidade de nÃ³s disponÃ­veis, o tempo de implantaÃ§Ã£o deve permanecer idealmente constante. 
+A implantaÃ§Ã£o de uma coreografia com centenas de serviÃ§os deve ocorrer com tempo na ordem de poucos minutos.
 
-Nossa solução consiste no desenvolvimento do CHOReOS Enactment Engine, um arcabouço que fornece uma Plataforma como Serviço (PaaS) para a execução de processos automatizados de implantação de coreografias de serviços web. Para realizar a implantação das coreografias em um ambiente de nuvem, o Enactment Engine utiliza Infraestrutura como um Serviço (IaaS) de outros provedores de computação de nuvem. A arquitetura de nossa solução em termos das camadas da computação em nuvem pode ser observada na Figura~\ref{img:camadas_nuvem}.
+Nossa soluÃ§Ã£o consiste no desenvolvimento do CHOReOS Enactment Engine, um arcabouÃ§o que fornece uma Plataforma como ServiÃ§o (PaaS) para a execuÃ§Ã£o de processos automatizados de implantaÃ§Ã£o de coreografias de serviÃ§os web. Para realizar a implantaÃ§Ã£o das coreografias em um ambiente de nuvem, o Enactment Engine utiliza Infraestrutura como um ServiÃ§o (IaaS) de outros provedores de computaÃ§Ã£o de nuvem. A arquitetura de nossa soluÃ§Ã£o em termos das camadas da computaÃ§Ã£o em nuvem pode ser observada na Figura~\ref{img:camadas_nuvem}.
 
 FIGURA camadas\_nuvem
 
-Os aspectos de grande escala considerados pelo arcabouço são a 1) automatização do processo de implantação, 2) consideração da natureza dinâmica do ambiente de computação em nuvem, 3) o tratamento adequado de erros de componentes de terceiros, 4) um projeto de API assíncrona e idempotente, e 5) pontos de extensão para lidar com a heterogeneidade tecnológica.
+Os aspectos de grande escala considerados pelo arcabouÃ§o sÃ£o a 1) automatizaÃ§Ã£o do processo de implantaÃ§Ã£o, 2) consideraÃ§Ã£o da natureza dinÃ¢mica do ambiente de computaÃ§Ã£o em nuvem, 3) o tratamento adequado de erros de componentes de terceiros, 4) um projeto de API assÃ­ncrona e idempotente, e 5) pontos de extensÃ£o para lidar com a heterogeneidade tecnolÃ³gica.
 
-Ainda como validação da aplicação do arcabouço em um cenário de grande escala, o mesmo será avaliado pela escalabilidade do tempo de implantação, variando-se a quantidade de serviços a serem implantados e a quantidade de nós disponíveis no ambiente computação em nuvem. O objetivo é que um aumento proporcional na carga ? serviços a serem implantados ? e nos recursos disponíveis ? máquinas virtuais ? não altere significativamente o tempo de implantação.
+Ainda como validaÃ§Ã£o da aplicaÃ§Ã£o do arcabouÃ§o em um cenÃ¡rio de grande escala, o mesmo serÃ¡ avaliado pela escalabilidade do tempo de implantaÃ§Ã£o, variando-se a quantidade de serviÃ§os a serem implantados e a quantidade de nÃ³s disponÃ­veis no ambiente computaÃ§Ã£o em nuvem. O objetivo Ã© que um aumento proporcional na carga ? serviÃ§os a serem implantados ? e nos recursos disponÃ­veis ? mÃ¡quinas virtuais ? nÃ£o altere significativamente o tempo de implantaÃ§Ã£o.
 
-Esta pesquisa é feita no contexto e com financiamento dos projetos CHOReOS e Baile, que estudam a aplicação de coreografias de serviços em ambientes de grande escala. O projeto CHOReOS\footnote{http://www.choreos.eu}, financiado pela Comissão Europeia e composto por diversas instituições acadêmicas e industriais da Europa conjuntamente com o IME-USP, introduz um processo dinâmico e centrado no usuário para o desenvolvimento de coreografias em um ambiente de escala ultra grande, no qual milhares de serviços são compostos e coordenados por um middleware distribuído. O projeto Baile\footnote{http://ccsl.ime.usp.br/baile/}, uma parceria entre IME-USP e HP Labs, estuda a solução de problemas para o desenvolvimento de coreografias, como a adoção de Desenvolvimento Guiado por Testes (TDD) no contexto de coreografias e o suporte da Computação em Nuvem à implantação de coreografias.
+Esta pesquisa Ã© feita no contexto e com financiamento dos projetos CHOReOS e Baile, que estudam a aplicaÃ§Ã£o de coreografias de serviÃ§os em ambientes de grande escala. O projeto CHOReOS\footnote{http://www.choreos.eu}, financiado pela ComissÃ£o Europeia e composto por diversas instituiÃ§Ãµes acadÃªmicas e industriais da Europa conjuntamente com o IME-USP, introduz um processo dinÃ¢mico e centrado no usuÃ¡rio para o desenvolvimento de coreografias em um ambiente de escala ultra grande, no qual milhares de serviÃ§os sÃ£o compostos e coordenados por um middleware distribuÃ­do. O projeto Baile\footnote{http://ccsl.ime.usp.br/baile/}, uma parceria entre IME-USP e HP Labs, estuda a soluÃ§Ã£o de problemas para o desenvolvimento de coreografias, como a adoÃ§Ã£o de Desenvolvimento Guiado por Testes (TDD) no contexto de coreografias e o suporte da ComputaÃ§Ã£o em Nuvem Ã  implantaÃ§Ã£o de coreografias.
 
-\todo{Organização do Trabalho...}
+\todo{OrganizaÃ§Ã£o do Trabalho...}
 
 
 
 %% ------------------------------------------------------------------------- %%
-%\section{Considerações Preliminares}
+%\section{ConsideraÃ§Ãµes Preliminares}
 %\label{sec:consideracoes_preliminares}
 %
 %\section{Objetivos}
 %\label{sec:objetivo}
 %
-%\section{Contribuições}
+%\section{ContribuiÃ§Ãµes}
 %\label{sec:contribucoes}
 %
-%\section{Organização do Trabalho}
+%\section{OrganizaÃ§Ã£o do Trabalho}
 %\label{sec:organizacao_trabalho}
 %
