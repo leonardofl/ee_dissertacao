@@ -1,5 +1,5 @@
 %% ------------------------------------------------------------------------- %%
-\chapter{Coreografias de Serviços Web}
+\chapter{Coreografias de serviços web}
 \label{cap:servicos}
 
 Neste capítulo descreveremos os conceitos básicos sobre a utilização e composição de serviços web, com foco nas coreografias.
@@ -41,13 +41,26 @@ O modelo de composição de serviços web no qual temos um coordenador central q
 
 Outro modelo de composição de serviços web é o de \emph{coreografia}, no qual o conhecimento sobre o fluxo de controle é distribuído entre os participantes, ou seja, cada serviço envolvido na composição sabe quando executar suas operações e com quais outros serviços interagir, sem que seja preciso um controle centralizado~\cite{Barker2009Choreographing}. 
 
-Exemplos de linguagens de descrição de coreografias são WSCI~\cite{WSCI2002}, WS-CDL~\cite{WSCDL2005} e BPMN2~\cite{BPMN2011}. Essas linguagens descrevem sequências e restrições nas trocas de mensagens efetuadas pelos participantes da coreografia sob uma perspectiva global. Essa descrição é vista como um contrato de negócios entre duas ou mais organizações~\cite{BPMN2011}. Apesar da perspectiva global, como ressalta a especificação do BPMN2, uma coreografia não possui um controle de execução centralizado e participantes não compartilham um espaço de dados global. Dessa forma, um participante conhece o estado de outro participante apenas pela observação de seu comportamento externo, que consiste nas trocas de mensagens efetuadas~\cite{BPMN2011}.
+Exemplos de linguagens e notações de descrição de coreografias são WSCI~\cite{WSCI2002}, WS-CDL~\cite{WSCDL2005} e BPMN2~\cite{BPMN2011}. Essas linguagens e notações descrevem sequências e restrições nas trocas de mensagens efetuadas pelos participantes da coreografia sob uma perspectiva global. Essa descrição é vista como um contrato de negócios entre duas ou mais organizações~\cite{BPMN2011}. Apesar da perspectiva global, como ressalta a especificação do BPMN2, uma coreografia não possui um controle de execução centralizado e participantes não compartilham um espaço de dados global. Dessa forma, um participante conhece o estado de outro participante apenas pela observação de seu comportamento externo, que consiste nas trocas de mensagens efetuadas~\cite{BPMN2011}.
 
 Cada participante da coreografia pode ter o seu comportamento modelado por uma linguagem de orquestração, que no caso do BPMN2 corresponde a um diagrama de processo. Dessa forma, uma coreografia pode também ser modelada como um conjunto de orquestrações distribuídas que interagem entre si, de forma que apenas os orquestradores precisam estar cientes de condições impostas pela coreografia~\cite{Poulin2011Collaboration}.
+% parece que Rinderle também corrobora com isso
 
-Um diagrama BPMN2 de coreografia especifica passos na execução da coreografia, que são denominados \emph{atividades}, e que consistem na troca de mensagens entre \emph{participantes}~\cite{BPMN2011}. Uma atividade pode ocorrer entre entidades participantes (ex: Supermercado WillMart requisita pedido de entrega ao MaisRapido Delivery) ou entre \emph{papéis} de participantes (ex: um Supermercado requisita pedido de entrega a um Entregador). Dizemos que dois serviços desempenham o mesmo papel se fornecem funcionalidades equivalentes. O BPMN2 distingue um dos participantes de uma atividade como o participante iniciador, que é aquele que envia a mensagem ao outro participante. O participante iniciador é também denominado cliente ou consumidor, enquanto que o outro participante é também denominado provedor.
+Um diagrama BPMN2 de coreografia especifica passos na execução da coreografia, que são denominados \emph{atividades}, e que consistem na troca de mensagens entre \emph{participantes}~\cite{BPMN2011}. Uma atividade pode ocorrer entre entidades participantes (ex: Magalhães Viagens realiza compra de passagem aérea da Nimbus Airline) ou entre \emph{papéis} de participantes (ex: uma Agência de Viagem requisita pedido de entrega a uma Companhia Aérea). Dizemos que dois serviços desempenham o mesmo papel se fornecem funcionalidades equivalentes. O BPMN2 distingue um dos participantes de uma atividade como o participante iniciador, que é aquele que envia a mensagem ao outro participante. O participante iniciador é também denominado cliente ou consumidor, enquanto que o outro participante é também denominado provedor. O diagrama BPMN da Figura~\ref{fig:bpmn1} ilustra os elementos explicados em um exemplo de uma pequena coreografia com apenas dois serviços.
 
-DIAGRAMA BPMN2 DO EXEMPLO VAI AQUI
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=.60\textwidth]{bpmn1.pdf} 
+  \caption{Exemplo de uma pequena coreografia de serviços em notação BPMN2.}
+  \label{fig:bpmn1} 
+\end{figure}
+
+%\begin{figure}[!h]
+%  \centering
+%  \includegraphics[width=.60\textwidth]{bpmn2.pdf} 
+%  \caption{Outro exemplo de diagrama BPMN2, ligeiramente mais sofisticado.}
+%  \label{fig:bpmn2} 
+%\end{figure}
 
 Serviços podem ser projetados para participarem de uma determinada composição, mas também é possível que uma composição seja projetada para utilizar serviços já existentes. No segundo caso, é necessária a criação de serviços de coordenação que fazem com que serviços já existentes, não-cientes da composição, se comuniquem adequadamente~\cite{Autili2013Synthesis}. 
 

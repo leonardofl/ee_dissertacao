@@ -84,7 +84,7 @@ O processo de implantação se inicia com duas requisições ao Choreography Dep
 
 Uma observação sobre o diagrama da Figura~\ref{fig:ee_sequencia} é que todas as operação foram dispostas de forma sequencial para facilitar a leitura do diagrama, mas o Choreography Deployer realiza as chamadas de criação dos serviços em paralelo, assim como as chamadas de atualização dos nós e as invocações às operações \emph{setInvocationAddress}.
 
-\section{Descrição Arquitetura da Coreografia}
+\section{Descrição arquitetural da coreografia}
 \label{sec:adl}
 
 O Enactment Engine recebe de seus clientes a especificação da coreografia na forma de uma descrição arquitetural com as informações necessárias e suficientes para que se possa realizar a implantação da coreografia. O Enactment Engine também devolve ao seu cliente informações sobre a implantação da coreografia, em especial as localizações de acesso aos serviços. Essa descrição da coreografia se assemelha às propostas de Linguagens de Descrição Arquiteturais vistas no capítulo de trabalhos relacionados. A nossa ADL consiste na descrição de objetos relacionados entre si seguindo a estrutura de classes apresentada na Figura~\ref{fig:ee_adl}. Em nossa implementação, essa descrição é realizada com representações em XML, que são trocadas entre o Enactment Engine e seu cliente. O Anexo~\cite{anexo:adl_xml} lista exemplos de entrada e de saída em XML do Enactment Engine, bem como o \emph{schema} que define a formatação dos dados em XML.  
@@ -156,7 +156,7 @@ Uma abordagem simples para realizar a ligação entre clientes e seus provedores
 
 A solução por nós adotada para possibilitar a ligação dinâmica entre serviços envolve a criação de uma operação padronizada nos serviços clientes e na descrição arquitetural das dependências. Cada cliente implementa uma operação denominada \emph{setInvocationAddress}, que recebe como argumentos o papel do provedor e o endereço de um serviço que implemente esse papel. Isso quer dizer que tudo o que o cliente precisa saber em tempo de projeto são os papéis de seus provedores, como, por exemplo, um serviço de supermercado que precisa de um provedor para um serviço de entrega. A descrição arquitetural da coreografia deve definir quais serviços na coreografia podem desempenhar os papeis requisitados pelos serviços clientes. Por exemplo, em uma coreografia, o serviço MaisRapido pode ser o serviço de entrega do serviço de supermercado WillMart. Nesse exemplo, o Enactment Engine irá invocar a operação setInvocationAddress(entrega, http://192.168.56.107:8080/maisrapido.com/ws/) do serviço WillMart. Na solução apresentada, a ``inteligência'' em determinar quais serviços satisfazem as necessidades de outros serviços está em uma camada acima do Enactment Engine.
 
-\section{Interface do \ee}
+\section{Interface}
 \label{sec:interface}
 
 Os sistemas externos ao Enactment Engine utilizam suas funcionalidades por meio da API REST exposta pelo componente Choreography Deployer, que é descrita nesta subseção. Por se tratar de uma API REST, o cliente pode ser implementado em qualquer linguagem e ambiente que possua alguma biblioteca HTTP. Também disponibilizamos um cliente na forma de uma biblioteca na linguagem Java, tornando o uso do Enactment Engine ainda mais simples para os usuários da linguagem Java, atualmente uma das mais utilizadas do mercado. Seguimos agora listando as operações disponíveis. 
