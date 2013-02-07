@@ -12,13 +12,23 @@ A abordagem procedimental permite ao usuário especificar a implantação de pra
 
 Um exemplo de abordagem declarativa é uso de Linguagens de Descrição Arquitetural (ADLs), como a Darwin~\cite{Magee1996Dynamic}. ADLs são uma evolução do conceito de Linguagens de Interconexão de Módulo (MILs), conforme proposto por De Remmer e Kron~\cite{DeRemer1976Programming}. A motivação dos autores da MIL era contribuir com novas formas de se produzir software de grande porte, diferenciando essa atividade da programação de pequenos algoritmos. Para isso, propuseram uma Linguagem de Interconexão de Módulos, que objetiva incentivar a estruturação do sistema antes de sua implementação, além de incentivar a descrição da interconexão entre módulos sem que fosse preciso a descrição interna dos módulos. 
 
-A linguagem Darwin se foca nos aspectos estruturais de sistemas distribuídos, descrevendo a conexão entre os módulos do sistema, mas sem descrever implementações ou sequências de interações entre os módulos. Em nosso trabalho, também descrevemos o sistema a ser implantado através de sua descrição estrutural, uma vez que é esse o aspecto necessário para que se possa automatizar o processo de implantação. 
-
-Magee e Kramer demonstraram a utilidade prática da linguagem Darwin ao utilizá-la de forma integrada a componentes CORBA~\cite{Magee1997Corba}, padrão de componente dominante no mercado à época. Darwin possui também um ambiente de execução, Regis~\cite{Magee1994Regis}, que realiza a implantação dos sistemas descritos em Darwin. Regis possui duas políticas de distribuição de programas por estações de trabalho. A primeira é o mapeamento definido pelo usuário de forma estática, abordagem não apropriada para ambientes de computação em nuvem. A segunda opção de política é a alocação automática em função da carga na CPU das estações de trabalho, não havendo flexibilidade para a consideração de outros recursos, como espaço em disco ou memória, por exemplo. Uma similaridade entre Regis e o \ee\ é o uso do middleware para o envio de mensagens contendo referências remotas dos componentes implantados para que eles possam estabelecer ligações dinâmicas entre si.
+A linguagem Darwin se foca nos aspectos estruturais de sistemas distribuídos, descrevendo a conexão entre os módulos do sistema, mas sem descrever implementações ou sequências de interações entre os módulos. Em nosso trabalho, também descrevemos o sistema a ser implantado através de sua descrição estrutural, uma vez que é esse o aspecto necessário para que se possa automatizar o processo de implantação. Magee e Kramer demonstraram a utilidade prática da linguagem Darwin ao utilizá-la de forma integrada a componentes CORBA~\cite{Magee1997Corba}, padrão de componente dominante no mercado à época. Darwin possui também um ambiente de execução, Regis~\cite{Magee1994Regis}, que realiza a implantação dos sistemas descritos em Darwin. Regis possui duas políticas de distribuição de programas por estações de trabalho. A primeira é o mapeamento definido pelo usuário de forma estática, abordagem não apropriada para ambientes de computação em nuvem. A segunda opção de política é a alocação automática em função da carga na CPU das estações de trabalho, não havendo flexibilidade para a consideração de outros recursos, como espaço em disco ou memória, por exemplo. Uma similaridade entre Regis e o \ee\ é o uso do middleware para o envio de mensagens contendo referências remotas dos componentes implantados para que eles possam estabelecer ligações dinâmicas entre si.
 
 Olan~\cite{Balter1998Olan} é um ambiente para a descrição, configuração e implantação de aplicações distribuídas em ambientes heterogêneos, e que também utiliza uma ADL própria. Baseando-se na entrada descrita na ADL, Olan gera scripts de Configuração de Máquina, que definem a execução do processo de implantação dos componentes no ambiente distribuído e do ajuste dos canais de comunicação entre esses componentes. A abordagem de gerar um script de configuração a partir de uma especificação declarativa é também implementada pelo \ee. A ADL de Olan também possibilita a especificação de restrições sobre a localização da implantação do componente, porém sem flexibilidade para a adoção de estratégias dinâmicas de alocação de nós.
 
+Outro trabalho que utiliza uma ADL é o de Akkerman et al.~\cite{akkerman2005j2ee}, que se concentra na implantação distribuída de componentes da plataforma J2EE, oferecendo ligações entre os componentes e suas dependências. No entanto, a solução apresentada para o gerenciamento do processo de implantação se baseia numa aplicação de interface gráfica, o que dificulta o automação do processo. Outros trabalhos, como o de Lan~\cite{lan2005architecture}, também tratam o processo de implantação como realizado manualmente por um operador humano.
+
 Apesar de os trabalhos sobre Darwin e Olan já falarem sobre software de ``grande porte'', o que entendia-se por grande porte já se alterou significativamente desde a época em que esses trabalhos foram feitos. Uma evidência dessa diferente percepção de escala são os exemplos de aplicações fornecidos no artigo sobre Olan, em que se fala sobre componentes muito granulares, como pedaços de interfaces gráficas, e que não consideram possíveis falhas de comunicação que são comuns na Internet. Além disso, os próprios autores do artigo sobre Olan admitem que não se preocuparam com questões de desempenho. Conforme visto no capítulo sobre Computação em Grande Escala, hoje há novos desafios e requisitos que precisam ser considerados na construção de qualquer software de grande escala.
+
+O estudo de Quéma et al.~\cite{quema2004hierarchical} é o único encontrado a realizar avaliações empíricas sobre desempenho e escalabilidadese do processo de implantação de componentes, além de oferecer tolerância a falhas no processo de implantação.
+Os autores apresentam uma solução na qual agentes executam de forma distribuída o processo de implantação, se comunicando de forma assíncrona e hierárquica conforme a estrutura da composição de componentes sendo implantada, que é descrita por uma ADL. 
+Essa estrutura hierárquica, no entanto, é apenas um caso particular das possibilidades na topologia de uma coreografia de serviços, o que impossibilita que essa solução seja diretamente adotada em nosso contexto.
+Os agentes também possuem propriedades transacionais que garantem a tolerância a falhas do processo de implantação, mas isso não é avaliado no texto. 
+Os autores avaliam o desempenho e escalabilidade do processo de implantação variando a quantidade de componentes, a topologia da composição de componentes e a quantidade de máquinas.
+Embora o objetivo do método proposto seja a escalabilidade, os autores se contentam com um crescimento linear no tempo de implantação mesmo quando se aumenta na mesma proporção o número de máquinas disponíveis.
+Os autores explicam que há uma sobrecarga na manutenção das sessões de comunicação entre os agentes, o que impede que o número de agentes seja muito grande. 
+Esses resultados evidenciam a necessidade de novos processos de implantação que sejam escaláveis e ao mesmo tempo tolerantes a falhas.
+Além disso, as avaliações feitas utilizam no máximo 111 máquinas de um aglomerado, o que atualmente fica aquém de cenários de grande escala. 
 
 Os trabalhos anteriores apresentam abordagens simples para o problema da distribuição dos componentes implantados pelas máquinas disponíveis. Já o trabalho de Watson et al., apresenta uma abordagem mais completa para esse problema com o uso de grades computacionais~\cite{Watson2006Dynasoar}. O foco da solução apresentada está em escolher dinamicamente o provedor de infraestrutura e a máquina em que um serviço web deve ser implantado considerando os requisitos não-funcionais do serviço web. Isso é realizado não somente para a primeira implantação do serviço web, mas também para as replicações que ocorrem quando as instâncias existentes não conseguem mais atender aos requisitos não-funcionais. Uma desvantagem dessa abordagem é a carga adicional gerada pela análise dos requisitos não-funcionais a cada troca de mensagens efetuada pelos serviços implantados.
 
@@ -27,5 +37,40 @@ Embora o trabalho de Watson et al. avance na problemática da distribuição dos
 Uma tendência atual para se atingir os objetivos de uma implantação simples, rápida e automatizada é a utilização de serviços de computação em nuvem que oferecem Plataforma como um Serviço (PaaS), que se encarregam não só da implantação da aplicação, como também do processo de criação e configuração do ambiente. O Cloud Foundry\footnote{\url{http://www.cloudfoundry.com/}} é um PaaS de código aberto, podendo ser instalado na infraestrutura de uma organização para a oferta de serviços a clientes internos ou externos. O Cloud Foundry suporta uma grande diversidade de linguagens, arcabouços e bancos de dados a serem utilizados pela aplicação. Operadores do Cloud Foundry podem configurá-lo para utilizar diferentes provedores de Infraestrutura como um Serviço (IaaS), o que gera um desacoplamento nas escolhas de IaaS e PaaS, o que será também adotado no \ee.
 
 O Cloud Foundry se foca na implantação de aplicativos web, e não na implantação de composições de serviços. Durante a implantação de uma aplicação pelo Cloud Foundry, o operador pode realizar ligações entre a aplicação e serviços tipicamente utilizados por aplicativos web, como bancos de dados, que serão criados e configurados pela própria plataforma. Essa escolha deve ser feita dentro de um conjunto fechado de serviços suportados pela plataforma (ex: MySQL, MongoDB, etc.). No entanto, ao se implantar composições de serviços é preciso estabelecer também ligações entre os próprios serviços sendo implantados, cenário não considerado pelos atuais provedores de PaaS.
+
+A Tabela~\ref{tab:relacionados} resume as principais deficiências de cada um dos estudos e ferramentas apresentados. Na tabela destacamos ainda, em negrito, o que consideramos como a principal desvantagem do trabalho analisado. As letras na tabela possuem os seguintes significados: ``S'' para ``sim'', ``N'' para ``não'', ``n'' para ``não de forma totalmente satisfatória'' e ``X'' para ``não se aplica''.
+Nossa solução se propões a considerar cada um desses problemas, que listamos agora:
+
+\begin{description}
+\item [Automatizado:] o processo de implantação deve ser passível de automação;
+\item [ADL:] a especificação da implantação deve ser feita de forma simples e declarativa;
+\item [Escala:] o sistema de implantação deve ser escalável e ser capaz de lidar com os problemas típicos de sistemas de grande escala, principalmente a falha de componentes de terceiros;
+\item [Composições:] a implantação de composições de serviços, ou componentes, requer algumas peculiaridades, como a ligação dinâmica entre os serviços implantados;
+\item [Nuvem:] o sistema deve considerar as potencialidades e dificuldades trazidas por ambientes de computação em nuvem.
+\end{description}
+
+\begin{table}[!t]
+\begin{center}
+    \begin{tabular}{l c c c c c c}
+	 \hline
+	 \itshape{Trabalho} & \itshape{Automatizado} & \itshape{ADL} & \itshape{Escala} & \itshape{Composições} & \itshape{Nuvem}  \\ \hline
+%     \texttt{A} & Ala & Alanina \\
+    \cite{Magee1994Regis, Magee1996Dynamic} & X & S & N & S & N \\
+    \cite{Balter1998Olan}   & X & S & N & S & N \\
+    \cite{quema2004hierarchical}  & S & S & n & S & N \\
+    \cite{akkerman2005j2ee}   & N & S & X & S & X \\
+    \cite{Dolstra2005Configuration}   & S & N & X & X & N \\
+    \cite{Watson2006Dynasoar}   & S & X & n & S & N \\
+    Chef   & S & N & X & X & X \\
+    Capistrano   & S & N & X & X & X \\
+    Cloud Foundry   & S & X & X & N & S \\
+
+    \end{tabular}
+  \caption{Tabela comparativa entre trabalhos relacionados.}
+  \label{tab:relacionados}
+\end{center}
+\end{table}
+
+
 
 
