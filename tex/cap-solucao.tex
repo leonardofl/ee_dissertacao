@@ -138,7 +138,7 @@ Para o artefato COMMAND\_LINE, o atributo codeUri pode apontar para um arquivo j
 
 \item [ServiceSpec.endpointName:] o sufixo do endpoint do serviço após sua implantação. Por exemplo, se o serviço é implantado e acessível pela URI http://<IP>:<PORTA>/choreos/service, o endpointName é a string ``choreos/service''. Se o tipo é LEGACY, então endpointName é vazio.
 
-\item [ServiceSpec.version:] a versão do serviço. \leo{explicar mais}
+\item [ServiceSpec.version:] a versão do serviço, que será usada pela operação de atualização da coreografia para determinar os serviços que precisam ser re-implantados.
 
 \item [ServiceSpec.resourceImpact:] conjunto de pares chave-valor que especificam os requisitos não-funcionais do serviço. Esses requisitos não-funcionais são utilizados pelo Node Pool Manager para a escolha, se possível, de um nó nuvem que satisfaça esses requisitos.
 

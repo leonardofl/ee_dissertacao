@@ -36,9 +36,14 @@ Deve-se privilegiar construções tolerantes a falha, ou seja, se um componente 
 Considerando magnitudes de milhares de serviços em centenas de nós, o tempo de implantação deve ser escalável, ou seja, conforme se aumente a quantidade de serviços a serem implantados e a quantidade de nós disponíveis, o tempo de implantação deve permanecer idealmente constante. 
 A implantação de uma coreografia com centenas de serviços deve ocorrer com tempo na ordem de poucos minutos.
 
-Nossa solução consiste no desenvolvimento do CHOReOS Enactment Engine, um arcabouço que fornece uma Plataforma como Serviço (PaaS) para a execução de processos automatizados de implantação de coreografias de serviços web. Para realizar a implantação das coreografias em um ambiente de nuvem, o Enactment Engine utiliza Infraestrutura como um Serviço (IaaS) de outros provedores de computação de nuvem. A arquitetura de nossa solução em termos das camadas da computação em nuvem pode ser observada na Figura~\ref{img:camadas_nuvem}.
+Nossa solução consiste no desenvolvimento do CHOReOS Enactment Engine, um arcabouço que fornece uma Plataforma como Serviço (PaaS) para a execução de processos automatizados de implantação de coreografias de serviços web. Para realizar a implantação das coreografias em um ambiente de nuvem, o Enactment Engine utiliza Infraestrutura como um Serviço (IaaS) de outros provedores de computação de nuvem. A arquitetura de nossa solução em termos das camadas da computação em nuvem pode ser observada na Figura~\ref{fig:camadas_nuvem}.
 
-FIGURA camadas\_nuvem
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=.50\textwidth]{camadas.pdf} 
+  \caption{Camadas da computação em nuvem associadas à nossa solução.}
+  \label{fig:camadas_nuvem} 
+\end{figure}
 
 Os aspectos de grande escala considerados pelo arcabouço são a 1) automatização do processo de implantação, 2) consideração da natureza dinâmica do ambiente de computação em nuvem, 3) o tratamento adequado de erros de componentes de terceiros, 4) um projeto de API assíncrona e idempotente, e 5) pontos de extensão para lidar com a heterogeneidade tecnológica.
 

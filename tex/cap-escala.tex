@@ -50,16 +50,18 @@ Helland~\cite{Helland2009Quicksand} explica como sistemas de grande escala não 
 
 O compromisso entre disponibilidade e consistência é tema do Teorema CAP~\cite{Brewer2012Cap}, que prevê que um sistema não mantém os níveis de consistência e de disponibilidade na presença de particionamentos de rede. Considerando que particionamentos de rede são intrínsecos ao ambiente da Internet, o aumento no tamanho dos sistemas inviabilizou uma consistência total com tempo de resposta satisfatório.  Na área de banco de dados em particular, essa mudança representou uma quebra de paradigma, pois até então bancos de dados eram projetados para fornecer as propriedades ACID, que garantem consistência total. Atualmente se tornam cada vez mais populares os chamados bancos de dados não-relacionais (NoSQL), que diminuem a consistência dos dados fornecidos quando a replicação dos dados é necessária~\cite{REF_NEEDED}. 
 
-Um exemplo clássico de redução de consistência para se conseguir aumento de disponibilidade é o carrinho de compras da Amazon, no qual um item excluído nem sempre é efetivamente excluído. Algumas inconsistências como essa podem levar a um ``erro'' do ponto de vista do negócio. Isso leva Hellend ao conceito de ``desculpas''. Mesmo sem saber se o sistema poderá honrar seus compromissos, ele se engaja em uma transação e caso a transação não possa ser completada mais tarde, um pedido de desculpa deve ser oferecido ao cliente, eventualmente com alguma compensação \gerosa{explicar melhor}.
+Um exemplo clássico de redução de consistência para se conseguir aumento de disponibilidade é o carrinho de compras da Amazon, no qual um item excluído nem sempre é efetivamente excluído. Algumas inconsistências como essa podem levar a um ``erro'' do ponto de vista do negócio. Isso leva Hellend ao conceito de ``desculpas''. Mesmo sem saber se o sistema poderá honrar seus compromissos, ele se engaja em uma transação e caso a transação não possa ser completada mais tarde, um pedido de desculpa deve ser oferecido ao cliente, eventualmente com alguma compensação. Do ponto de vista da modelagem de um processo de negócio, isso implica na necessidade da modelagem de atividades de compensação~\cite{Garcia1991Saga} em detrimento da utilização de protocolos síncronos que tentam garantir o sucesso da transação, como o protocolo de \textit{Two Phase Commit} (2PC) \cite{Bernstein20092PC}.
 
-Outra consequência da replicação assíncrona de dados é que usuários acessando cópias diferentes dos dados enxergam o sistema de formas diferentes. Hellend ressalta que é importante que o sistemas forneça consistência em tempo indeterminado, ou seja, essa diferente visão do sistema tem que ser conciliada em tempo finito. Hellend também afirma que a forma como o sistema trabalha com a informação durante o período inconsistente deve estar a cargo da camada de aplicação. 
+Outra consequência da replicação assíncrona de dados é que usuários acessando cópias diferentes dos dados enxergam o sistema de formas diferentes. Hellend ressalta que é importante que o sistemas forneça consistência em tempo indeterminado, ou seja, essa diferente visão do sistema tem que ser conciliada em tempo finito. Hellend também afirma que a forma como o sistema trabalha com a informação durante o período inconsistente deve estar a cargo da camada de aplicação. Um cuidado que a aplicação deve tomar é para que o resultado da sincronização de dados de múltiplas cópias não dependa da ordem de chegada dos pedidos de sincronização, sendo assim desejável que as operações sejam idempotentes e comutativas. 
 
-Segundo Hellend, quando aplicações toleram um tempo de inconsistência entre réplicas de dados, a aplicação deve garantir que a ordem das chegadas das requisições não altere o estado final do sistema. Isso se deve ao fato de que cópias de um mesmo componente podem mandar ao mesmo tempo pedidos de sincronização, mas como esses pedidos são enviados assincronamente, a ordem de chegada não é garantida. Dessa forma, propriedades desejáveis para as operações a serem replicadas são: idempotência \gerosa{é isso mesmo? Explique o que é}, comutatividade e associatividade.
+A idempotência deve ser usada sempre que possível também por outro motivo. Quando um sistema faz uma requisição a outro serviço, não é possível distinguir um \emph{timeout} de uma resposta eventualmente mais lenta. Dessa forma, só é seguro, do ponto de vista funcional, o sistema cliente enviar uma nova requisição devido a \emph{timeout} caso a operação considerada seja idempotente. Em sistemas REST, por exemplo, todas as operações que não sejam POST devem ser idempotentes~\cite{Allamaraju2010REST}.
 
-A idempotência deve ser usada sempre que possível também por outro motivo. Quando um sistema faz uma requisição a outro serviço, não é possível distinguir um \emph{timeout} de uma resposta eventualmente mais lenta. Dessa forma, só é seguro, do ponto de vista funcional, o sistema cliente enviar uma nova requisição devido a \emph{timeout} caso a operação considerada seja idempotente. Na arquitetura REST, por exemplo, todas as operações que não sejam POST devem ser idempotentes.
+A Tabela~\ref{tab:escala} apresenta uma lista que resume as principais práticas e princípios adotados para o suporte de sistemas de grande escala. Tais práticas e princípios foram retiradas dos estudos já apresentados nesta subseção.
 
-A tabela X apresenta uma lista que resume as principais práticas e princípios adotados para o suporte de sistemas de grande escala. Tais práticas e princípios foram retiradas dos estudos já apresentados nesta subseção.
-
+\begin{table}[!t]
+\begin{center}
+    \begin{tabular}{l}
+	 \hline
 Manter a simplicidade nas escolhas \\
 Automatizar o que puder \\
 Ausência de ponto único de falha \\
@@ -79,6 +81,12 @@ Melhor usar operações idempotentes e comutativas \\
 Atualização dinâmica \\
 Compatibilidade com versão anterior \\
 Suporte a \emph{roll-back} de versão \\
+	 \hline
+    \end{tabular}
+  \caption{Práticas adotadas em sistemas de grande escala}
+  \label{tab:escala}
+\end{center}
+\end{table}
 
 O ``uso de aglomerados'' foi sugerido por Brewer~\cite{Brewer2001GiantScale} em um contexto em que esses aglomerados residiam em um mesmo centro de dados, não sendo geograficamente distribuídos. No entanto, as práticas de utilização de aglomeradas evoluíram consideravelmente com o uso da chamada computação em nuvem, apresentada a seguir.
 
