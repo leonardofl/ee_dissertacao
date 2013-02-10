@@ -2,7 +2,7 @@
 \chapter{Solução Proposta}
 \label{cap:solucao}
 
-Considerando os requisitos de coreografias de serviços web, de uso da computação em nuvem e de sistemas em grande escala, definimos um arcabouço para a implantação de coreografias de serviços web denominado \ee. Os serviços oferecidos pelo nosso arcabouço se integram ao Ambiente Integrado de Desenvolvimento e Execução CHOReOS, que visa fornecer todo o processo de desenvolvimento, implantação e governança de coreografias de serviços web. Para a implementação do arcabouço Enactment Engine contribuíram diretamente os seguintes colegas do grupo de pesquisa: Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago e Paulo Moura. \gerosa{Será que precisa dizer? Não poderia estar nos agradecimentos?}
+Considerando os requisitos de coreografias de serviços web, de uso da computação em nuvem e de sistemas em grande escala, definimos um arcabouço para a implantação de coreografias de serviços web denominado \ee. Os serviços oferecidos pelo nosso arcabouço se integram ao Ambiente Integrado de Desenvolvimento e Execução CHOReOS, que visa fornecer todo o processo de desenvolvimento, implantação e governança de coreografias de serviços web. Para a implementação do arcabouço Enactment Engine contribuíram diretamente os seguintes colegas do grupo de pesquisa: Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago e Paulo Moura. \gerosa{Será que precisa dizer? Não poderia estar nos agradecimentos?}. O código-fonte do \ee, que é software livre sob a licença LGPL\footnote{\Leo{por o link pra LGPL}}, está disponível em \url{http://www.github.com/choreos/enactment\_engine}.
 
 Neste capítulo descrevemos a arquitetura do arcabouço proposto, incluindo os pontos de extensão previstos. Destacamos os aspectos cobertos e não cobertos dos requisitos de sistemas de grande escala. Apresentamos também o estado atual da implementação do arcabouço, assim como os resultados experimentais sobre sua escalabilidade obtidos até o momento.
 
@@ -499,5 +499,124 @@ Neste trabalho não abordaremos a problemática da evolução do nosso próprio 
 \section{Avaliação preliminar de escalabilidade}
 \label{sec:avaliacao}
 
+Nesta seção apresentaremos uma avaliação experimental da escalabilidade de nossa solução em seu atual estágio de implementação. Além de oferecer um tempo de implantação razoável para sistemas de grande escala, um processo de implantação escalável também contribui para a implantação contínua de novas versões em um ambiente de homologação. A implantação contínua reduz o tempo de \textit{feedback} sobre eventuais problemas no sistema após alterações feitas pelos desenvolvedores~\cite{Humble2011Continuous}. Quanto mais demorado for o processo de implantação, mais demorado será esse \textit{feedback} aos desenvolvedores e, em alguns casos, a demora nesse processo desmotiva sua execução frequente, o que prejudica a qualidade do sistema sendo desenvolvido.
 
+Um aumento significativo na carga de um sistema normalmente tem grande impacto no seu tempo de execução; consideramos um sistema escalável se é possível amenizar esse efeito através de um aumento proporcional nos recursos utilizados pelo sistema, ou seja, se um aumento nos recursos do sistema implica em um aumento diretamente proporcional na sua capacidade de processamento~\cite{Law1998Scalable}. Assim, em nosso caso, medimos o tempo de implantação de coreografias variando a carga -- quantidade de serviços -- e os recursos disponíveis -- quantidade de nós (máquinas virtuais) disponíveis. A quantidade de serviços se caracteriza como carga do sistema uma vez que o tempo de implantação se eleva com o aumento na quantidade de serviços a serem implantados. A quantidade de nós disponíveis, associada a uma distribuição igualitária de serviços pelos nós, se caracteriza como recurso do sistema, pois quanto mais nós no sistema, maior será a paralelização do processo. Essas características se devem ao modelo de implantação adotado no Chef, que faz com que dois serviços implantados no mesmo nó tenham que ser implantados sequencialmente.
+
+Definimos uma \emph{execução} do experimento como o processo de \emph{encenações} simultâneas de $N$ coreografias, sendo os valores utilizados para $N$: 1, 5, 10, 15, 20, 25. Cada execução é composta por três \emph{fases}: 1) a criação de $2*N$ nós no ambiente de computação em nuvem (um nó por serviço), 2) a implantação das $N$ coreografias nos nós criados na fase anterior e 3) a invocação das coreografias para verificação do funcionamento adequado do processo de negócio. Para cada fase em cada execução, registramos três valores: o \emph{tempo total} ($t$) de duração da fase, o \emph{tempo médio} ($m$) gasto por cada coreografia naquela fase e o \emph{desvio padrão} ($s$) dos valores usados no cálculo do tempo médio. Tomando como exemplo a fase de implantação de uma execução com $N=5$, o tempo médio é a média aritmética dos tempos de implantação das 5 coreografias, o desvio padrão é o desvio padrão dos tempos de implantação e o tempo total é o tempo gasto para que as coreografias sejam implantadas. Para cada valor de $N$, coletamos uma amostra de 10 execuções\footnote{Os dados brutos coletados durante as execuções se encontram em \\ \url{http://ccsl.ime.usp.br/baile/files/ee_scalability_sbrc2013.zip}}, não havendo nessas amostras execuções com falhas. 
+
+Cada coreografia implantada consiste em dois serviços: o \texttt{TravelAgency} e o \texttt{Airline}, sendo que a coreografia contém uma chamada do serviço \texttt{TravelAgecny} ao \texttt{Airline}. O Cloud Gateway utilizado foi o serviço EC2 da Amazon e a política de alocação de nós foi a de alocar um nó por serviço. As execuções foram realizadas com os componentes \eecomp\ e \dm\ instanciados em um Mac Book Pro 8 (8GB de RAM, processador Intel Core i7 com 2,7GHz) utilizando o sistema operacional GNU/Linux (kernel 3.6.7) e a JVM OpenJDK~6. O Chef Server utilizado estava instalado em um servidor localizado em nossa universidade, de onde as requisições para as execuções foram originadas. 
+
+Os resultados experimentais da fase de criação de nós são apresentados na Tabela~\ref{tab:vm}, os resultados da fase de implantação na Tabela~\ref{tab:enact}, os resultados da fase de invocações na Tabela~\ref{tab:check} e os tempos totais das execuções na Tabela~\ref{tab:total}. As tabelas com dados de fases (Tabelas \ref{tab:vm}, \ref{tab:enact} e \ref{tab:check}) mostram os seguintes valores para cada valor de $N$: média aritmética dos tempos médios ($\overline{m}$); mediana dos tempos médios ($m_{1/2}$); média aritmética dos desvios padrões (${\overline{s}}$); média aritmética dos tempos totais ($\overline{t}$); mediana dos tempos totais ($t_{1/2}$); e desvio padrão dos tempos totais ($s_t$). 
+
+\begin{table}[ht]
+\centering
+{\small
+\begin {tabular} { l | l l l | l l l }
+     & \multicolumn{3}{ | c | }{\tcell{\footnotesize $m:$ tempo médio da \\ \footnotesize criação de um nó}} & \multicolumn{3}{ | c }{\tcell{\footnotesize $t: $ tempo total da \\ \footnotesize fase de criação de nós}} \\
+     & \multicolumn{3}{ | c | }{\tcell{\footnotesize $s:$ desvio padrão do tempo \\ \footnotesize de criação de nó}} & \\
+    \N & \mbar  & \mhalf  & \sbar  & \tbar  & \thalf  & \sted \\
+	\hline
+1 & 103.5 & 114.0 & 6.5 & 120.1 & 116.5 & 11.9 \\
+5 & 108.1 & 107.9 & 8.0 & 127.9 & 125.0 & 11.4 \\
+10 & 128.0 & 126.1 & 18.3 & 185.3 & 154.9 & 95.0 \\
+15 & 141.6 & 140.5 & 16.2 & 180.2 & 175.7 & 11.7 \\
+20 & 146.4 & 142.6 & 24.3 & 239.8 & 208.4 & 69.7 \\
+25 & 170.0 & 173.1 & 26.3 & 238.0 & 234.7 & 16.2 \\
+\end {tabular}
+}
+\caption{Tempos para criação dos nós (s)}
+\label{tab:vm}
+\end{table}
+
+\begin{table}[ht]
+\centering
+{\small
+\begin {tabular} { l | l l l | l l l }
+     & \multicolumn{3}{ | c | }{\tcell{\footnotesize $m:$ tempo médio da \\ \footnotesize implantação de uma coreografia}} & \multicolumn{3}{ | c }{\tcell{\footnotesize $t: $ tempo total da \\ \footnotesize fase de implantações}} \\
+     & \multicolumn{3}{ | c | }{\tcell{\footnotesize $s:$ desvio padrão do tempo \\ \footnotesize de implantação}} & \\     
+    \N & \mbar  & \mhalf  & \sbar  & \tbar  & \thalf  & \sted \\
+	\hline
+1 & 155.6 & 154.2 & 0.0 & 155.6 & 154.3 & 11.4 \\
+5 & 157.2 & 159.5 & 9.2 & 170.0 & 169.0 & 13.7 \\
+10 & 189.1 & 187.4 & 12.1 & 211.1 & 208.1 & 10.4 \\
+15 & 217.3 & 217.8 & 11.9 & 242.9 & 239.3 & 12.5 \\
+20 & 243.0 & 243.1 & 15.6 & 275.7 & 274.9 & 11.7 \\
+25 & 271.3 & 270.6 & 18.6 & 313.7 & 308.6 & 21.8 \\
+\end {tabular}
+}
+\caption{Tempos para implantação das coreografias (s)}
+\label{tab:enact}
+\end{table}
+
+
+
+	\begin{table}[ht]
+		\centering		
+		\begin{minipage}[t]{0.58\linewidth}
+			{\small
+				\begin {tabular} { l | p{5mm} p{5mm} p{5mm} | l l l }
+					   & \bigcell{p{24mm}|}{$m:$ tempo médio de uma invocação}        & \bigcell{p{28mm}}{$t:$ tempo total da fase de invocações} \\
+					   & \bigcell{p{24mm}|}{$s:$ desvio padrão do tempo de invocação} &                                                  \\
+					\N & \mbar  & \mhalf  & \sbar  & \tbar  & \thalf  & \sted \\
+					\hline
+					1  & 0.80   & 0.80    & 0.00   & 0.80   & 0.80    & 0.05  \\
+					5  & 0.82   & 0.81    & 0.04   & 0.88   & 0.88    & 0.05  \\
+					10 & 0.88   & 0.88    & 0.06   & 1.01   & 0.98    & 0.06  \\
+					15 & 0.87   & 0.87    & 0.06   & 1.02   & 0.98    & 0.13  \\
+					20 & 0.89   & 0.88    & 0.07   & 1.08   & 1.01    & 0.13  \\
+					25 & 0.92   & 0.92    & 0.14   & 1.49   & 1.42    & 0.48  \\
+				\end {tabular}
+			}
+			\caption{Tempos para invocação das coreografias (s)}
+			\label{tab:check}
+		\end{minipage}
+		\hfill
+		\begin{minipage}[t]{0.38\linewidth}
+			{\small
+				\begin {tabular} { l | l l l }
+					& \bigcell{p{24mm}}{$t:$ tempo total de execução} \\
+					\N & \tbar & \thalf & \sted \\
+					\hline
+					1  & 276.5 & 281.3  & 17.2  \\
+					5  & 298.7 & 296.4  & 20.1  \\
+					10 & 397.4 & 365.9  & 92.9  \\
+					15 & 424.1 & 419.0  & 22.5  \\
+					20 & 516.6 & 486.7  & 75.0  \\
+					25 & 553.1 & 540.1  & 34.8  \\
+				\end {tabular}
+			}
+			\caption{Tempos totais para execução completa (s)}
+			\label{tab:total}
+		\end{minipage}
+	\end{table}
+
+
+
+O principal resultado observado é que um aumento de 25 vezes no número de coreografias implantadas apenas dobrou o tempo total das execuções, subindo o tempo de encenação de 4,6 minutos em média para apenas 9,2 minutos em média, o que consideramos um resultado muito satisfatório. Podemos também observar o crescimento dos tempos de execuções e de cada uma de suas fases nas Figuras \ref{fig:tempos_medios} e \ref{fig:tempos_totais}. A fase de invocação consome aproximadamente apenas 1 segundo, com uma variância muito pequena. Esse comportamento para a fase de invocação era esperado, considerando que os serviços utilizados são bem leves, que as máquinas virtuais criadas são equivalentes em suas capacidades computacionais e que cada nó recebeu apenas um serviço.
+
+\begin{figure}[ht]
+
+\begin{minipage}[b]{0.50\linewidth}
+\centering
+\includegraphics[width=\textwidth]{tempos_medios.pdf}
+\caption{Média dos tempos de \\encenação das coreografias}
+\label{fig:tempos_medios}
+\end{minipage}
+\begin{minipage}[b]{0.50\linewidth}
+\centering
+\includegraphics[width=\textwidth]{tempos_totais.pdf}
+\caption{Média dos tempos totais de \\encenação das coreografias}
+\label{fig:tempos_totais}
+\end{minipage}
+
+\end{figure} 
+
+Em nosso experimento observamos que há uma variação no tempo de criação de nós que depende do provedor de IaaS, no nosso caso a Amazon. Esse comportamento consiste na presença de alguns nós que demoram muito mais do que os outros para ficarem prontos. Em alguns casos, o nó requisitado pode não ficar pronto para uso, situação na qual nosso middleware requisita a alocação de um novo nó. A presença desses provisionamentos mais demorados implicam em um aumento considerável nos tempos totais de criação de nós, pois quanto mais nós, maior é a chance da ocorrência de um desses eventos. Em nosso caso, esse aumento foi de 98\% considerando as implantações de 1 e 25 coreografias. No entanto, como se tratam de eventos esporádicos, os tempos médios de criação de nós acabam sendo menos impactado. Em nosso caso, o aumento na média do tempo de criação de nós foi de 64\%
+
+A ocorrência esporádica dos provisionamentos mais demorados de nós explica também o fato de que as medianas para os tempos totais de fases sejam menores do que as médias correspondentes. Portanto, a mediana representa melhor do que a média o valor esperado de um evento como a criação de um nó. Por outro lado, o fato de a mediana dos tempos médios ser bem próxima à média correspondente sugere que os eventos que ``distorcem'' a média dos tempos totais são de fato raros. Outra conclusão que podemos tirar sobre a presença desses eventos esporádicos é a de que não podemos assumir uma distribuição normal para eventos aleatórios de criação de nós. Esses eventos esporádicos também fazem com que os valores representando os desvios dos tempos totais das fases sejam maiores do que os desvios dos tempos médios. 
+
+Outra observação relevante é que os desvios padrões da criação de nós são maiores do que os desvios padrões da implantação de coreografias. Pode-se chegar à mesma conclusão com o coeficiente de variação (razão entre desvio padrão e a média) no lugar do desvio padrão, já que os desvios na criação de nós são maiores do que os desvios das implantações, mesmo sendo os tempos de criação de nós menores do que os tempos de implantação. Essa análise evidencia que a variabilidade do tempo de alocação de um nó pela Amazon é o principal fator na variabilidade do tempo de execução. Em especial, observamos na Tabela~\ref{tab:vm} que os desvios padrões das fases de criação de nós foi muito maior para $N=10$ e $N=20$, o que se deve principalmente aos já mencionados eventos esporádicos. Na Figura~\ref{fig:tempos_totais}, pode-se notar como a presença mais forte dos eventos esporádicos na criação de nós faz com que não haja um crescimento contínuo no tempo total da fase de criação de nós. Outra evidência de como esse comportamento se deve aos eventos esporádicos é a pouca influência no padrão de crescimento dos tempos médios visto na Figura~\ref{fig:tempos_medios}.
+
+O crescimento e a variação observados nos tempos referentes à fase de implantação foram de 75\% para a média do tempo de implantação e 102\%  para a média do tempo da fase de implantação. Esse aumento é de responsabilidade do \ee, e é nosso objetivo diminuir esse aumento o máximo possível. No momento, nossa principal suspeita para o aumento verificado na fase de implantação é a capacidade do Chef Server, uma vez que o servidor em questão manteve-se com 100\% de uso de CPU durante longos períodos, sugerindo que o desempenho pode ser significativamente melhorado através da distribuição e replicação do Chef Server. No entanto, como mencionado, o componente responsável pelo maior impacto negativo na escalabilidade é o serviço da Amazon. É provável que diferentes provedores ofereçam resultados diferentes. Dessa forma, neste trabalho pretendemos ainda realizar a mesma avaliação com pelo menos uma instância do OpenStack.
 
