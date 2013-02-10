@@ -2,7 +2,7 @@
 \chapter{Solução Proposta}
 \label{cap:solucao}
 
-Considerando os requisitos de coreografias de serviços web, de uso da computação em nuvem e de sistemas em grande escala, definimos um arcabouço para a implantação de coreografias de serviços web denominado \ee. Os serviços oferecidos pelo nosso arcabouço se integram ao Ambiente Integrado de Desenvolvimento e Execução CHOReOS, que visa fornecer todo o processo de desenvolvimento, implantação e governança de coreografias de serviços web. Para a implementação do arcabouço Enactment Engine contribuíram diretamente os seguintes colegas do grupo de pesquisa: Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago e Paulo Moura. \gerosa{Será que precisa dizer? Não poderia estar nos agradecimentos?}. O código-fonte do \ee, que é software livre sob a licença LGPL\footnote{\Leo{por o link pra LGPL}}, está disponível em \url{http://www.github.com/choreos/enactment\_engine}.
+Considerando os requisitos de coreografias de serviços web, de uso da computação em nuvem e de sistemas em grande escala, definimos um arcabouço para a implantação de coreografias de serviços web denominado \ee. Os serviços oferecidos pelo nosso arcabouço se integram ao Ambiente Integrado de Desenvolvimento e Execução CHOReOS, que visa fornecer todo o processo de desenvolvimento, implantação e governança de coreografias de serviços web. Para a implementação do arcabouço Enactment Engine contribuíram diretamente os seguintes colegas do grupo de pesquisa: Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura e Thiago Furtado. \gerosa{Será que precisa dizer? Não poderia estar nos agradecimentos?}. O código-fonte do \ee, que é software livre sob a licença LGPL\footnote{\Leo{por o link pra LGPL}}, está disponível em \url{http://www.github.com/choreos/enactment\_engine}.
 
 Neste capítulo descrevemos a arquitetura do arcabouço proposto, incluindo os pontos de extensão previstos. Destacamos os aspectos cobertos e não cobertos dos requisitos de sistemas de grande escala. Apresentamos também o estado atual da implementação do arcabouço, assim como os resultados experimentais sobre sua escalabilidade obtidos até o momento.
 
@@ -473,25 +473,55 @@ public interface ContextSender {
 \section{Aspectos de grande escala}
 \label{sec:solucao_grande_escala}
 
-\fabio{Fazer uma tabela de características, mostrando quais suportamos e quais não. Se der, comparar com outros trabalhos}
-
-Na seção ``Computação em Grande Escala'' abordamos alguns desafios, práticas e princípios necessários para a construção de sistemas de grande escala. Dado que nossa arquitetura deve possibilitar a implantação de sistemas de grande escala, relatamos nesta seção quais práticas levamos em consideração na definição de nossa arquitetura, assim como limitações de nossa arquitetura devido a outras práticas não adotadas.
+No capítulo sobre ``Computação em Grande Escala'' (Capítulo~\ref{cap:escala}) abordamos desafios, práticas e princípios necessários para a construção de sistemas de grande escala. Dado que nossa arquitetura deve possibilitar a implantação de sistemas de grande escala, relatamos nesta seção quais práticas levamos em consideração na definição de nossa arquitetura, assim como limitações de nossa arquitetura devido a outras práticas não adotadas.
 
 O princípio adotado mais importante é o de fornecer uma ferramenta que possibilite um processo totalmente automatizado para a implantação de coreografias. Contudo, cabe ressaltar que um processo totalmente automatizado não depende apenas do Enactment Engine. Por exemplo, o Enactment Engine deve receber como entrada um XML que descreva a coreografia. Espera-se que esse XML seja gerado automaticamente de alguma forma, mas essa é uma responsabilidade além do escopo de nossa proposta, de forma que na prática nosso sistema também funcionaria com um XML gerado manualmente. No contexto do projeto CHOReOS, essa especificação é gerada por um processo automático de síntese que recebe como entrada a especificação da coreografia na notação BPMN2~\cite{Autili2013Synthesis}.
 
-Buscando a simplicidade, adotamos REST como o estilo de serviços oferecidos pela nossa arquitetura. Isso evita algum overhead que seria gerado pelo SOAP, possibilita a utilização de caches gerados pelos servidores web e possibilita que testes simples sejam realizados com ferramentas integradas ao navegador, como o Poster, um plugin do Firefox para requisições HTTP.
+Buscando a simplicidade, adotamos REST como o estilo de serviços oferecidos pela nossa arquitetura. Isso evita alguma sobrecarga que seria gerado pelo SOAP, possibilita a utilização de caches gerados pelos servidores web e possibilita que testes simples sejam realizados com ferramentas integradas ao navegador, como o Poster, um plugin do Firefox para requisições HTTP.
 
-Quando possível, privilegiamos o projeto de serviços sem estado, que oferecessem APIs com operações idempotentes e assíncronas. Um exemplo é a operação de encenação de uma coreografia. Pela API, caso o Enactment Engine receba duas vezes a instrução de encenar uma mesma coreografia, referenciada por um ID, o Enactment Engine pode continuar a encenação em andamento, em vez de começar toda a operação novamente. Além disso, a encenação é uma operação muito longa, de modo que seria muito difícil para um cliente distinguir um timeout de uma falha. Por isso pretendemos projetar uma API em que a encenação de uma coreografia seja uma operação assíncrona.
+Quando possível, privilegiamos o projeto de serviços sem estado, que oferecessem APIs com operações idempotentes e assíncronas. Um exemplo é a operação de encenação de uma coreografia. Pela API, caso o Enactment Engine receba duas vezes a instrução de encenar uma mesma coreografia, referenciada por um ID, o Enactment Engine pode continuar a encenação em andamento, em vez de começar toda a operação novamente. Além disso, a encenação é uma operação muito longa, de modo que seria muito difícil para um cliente distinguir um timeout de uma falha. Por isso pretendemos ainda modificar nossa API para que a encenação de uma coreografia seja uma operação assíncrona.
 
-A tolerância a falhas se dá principalmente por considerar que os seguintes eventos são passíveis de erros: comunicação com sistemas externos, por exemplo, Chef e AWS EC2, assim como a implantação de serviços da coreografia. No entanto, simplificaremos o projeto e a implementação ao supor que a comunicação entre os componentes de nossa plataforma (Enactment Engine, Service Deployer e Node Pool Manager) seja confiável. 
+A tolerância a falhas se dá principalmente ao considerar que a comunicação com sistemas externos seja passível de falhas, como o Chef, o provedor de IaaS e o serviço implantado. Também consideramos que as interações externas ao nó durante a execução do Chef Client seja passível de falhas. No entanto, simplificaremos o projeto e a implementação ao supor que a comunicação entre os componentes de nossa plataforma (\eecomp\ e \dm) seja confiável. 
 
-O conceito de degradação suave é preciso ser compartilhado com os serviços da coreografia, pois um serviço tem que saber fornecer uma resposta adequada caso uma de suas dependências esteja indisponível. Do ponto de vista do Enactment Engine, tudo o que é preciso fazer é ter ciência de quais serviços estão indisponíveis e informar isso para os clientes. A degradação suave cabe ao Enactment Engine quando os serviços dos quais ele depende, Chef e cloud gateway, estão indisponíveis.
+A responsabilidade pela aplicação de degradação suave precisa ser compartilhada com os serviços da coreografia, pois um serviço tem que saber fornecer uma resposta adequada caso uma de suas dependências esteja indisponível. Do ponto de vista do Enactment Engine, tudo o que é preciso fazer é ter ciência de quais serviços estão indisponíveis e informar isso para os clientes. A degradação suave cabe também ao Enactment Engine quando os serviços dos quais ele depende, Chef e cloud gateway, estão indisponíveis.
 
-O problema de haver um ponto único de falha é reduzido quando estamos em um cenário com várias organizações. Dessa forma, caso um Service Deployer esteja indisponível, é possível para um Enactment Engine utilizar um Service Deployer de outra organização. Claro que essa possibilidade fica condicionada às políticas das organizações de aceitarem que seus serviços sejam implantados na infraestrutura de outras organizações, assim como em permitir que serviços de outras organizações sejam implantados em suas próprias infraestruturas. Caso um Enactment Engine falhe, há a opção de se utilizar outro Enactment Engine. Mas para que o segundo continue a operação no ponto deixado pelo primeiro, é preciso um compartilhamento prévio de dados que não será abordado neste trabalho. 
+O problema de haver um ponto único de falha é reduzido quando estamos em um cenário com várias organizações, uma vez que a gerência da implantação da coreografia é particionada entre diferentes \dm{s}. Dessa forma, caso um \dm\ esteja indisponível, é possível para um \eecomp\ utilizar um \dm\ de outra organização. Claro que essa possibilidade fica condicionada às políticas das organizações de aceitarem que seus serviços sejam implantados na infraestrutura de outras organizações, assim como em permitir que serviços de outras organizações sejam implantados em suas próprias infraestruturas. Caso um \eecomp\ falhe, há a opção de se utilizar outro \eecomp. Mas para que o segundo continue a operação no ponto deixado pelo primeiro, é preciso um compartilhamento prévio de dados que não será abordado neste trabalho. 
 
 A duplicação de dados ou de componentes não será abordada neste trabalho. Dessa forma, cuidados que a camada de aplicação deve ter com a inconsistência dos dados não serão necessários. Por não haver duplicação de componentes, também não será possível o balanceamento de carga. Acreditamos que esses sejam importantes aspectos para uma expansão futura do sistema.
 
 Neste trabalho não abordaremos a problemática da evolução do nosso próprio sistema. No entanto, esperamos que nossa arquitetura possa dar suporte à evolução das coreografias implantadas, mesmo que de forma simples, ou seja, sem garantia da correta terminação das operações em andamento no momento da atualização. Consideramos esse ponto importante, mas fugindo do nosso escopo por merecer um trabalho dedicado somente a essa questão.
+
+A Tabela~\ref{tab:escala_ee} repete as boas práticas no desenvolvimento de sistemas de grande escala já resumidas pela Tabela~\ref{tab:escala}, evidenciando quais aspectos foram adotados na arquitetura e implementação do \ee, conforme descrevemos nesta seção. Os aspectos de alguma forma considerados são marcados com o sinal ``+'', enquanto que os aspectos fora do escopo do nosso trabalho são marcado com o sinal ``-''. Além dos aspectos levantados pela Tabela~\ref{tab:escala_ee}, vale ressaltar que a utilização dos serviços de nuvem na camada de IaaS é um salto tecnológico em relação ao item ``uso de aglomerados'', o que contribui para uma completa automação das operações implementadas.
+
+\begin{table}[!t]
+\begin{center}
+    \begin{tabular}{l c}
+	 \hline
+Manter a simplicidade nas escolhas & +\\
+Automatizar o que puder & + \\
+Ausência de ponto único de falha & + \\
+Replicação de componentes & - \\
+Uso de aglomerados & + \\
+Balanceamento de carga & - \\
+Particionamento de dados & + \\
+Replicação de dados & - \\
+Ausência de estado global & +  \\% ainda não foi abordado no texto
+Esperar falhas e latências & +  \\
+Lidar com falhas usando degradação suave & + \\
+Permitir períodos de inconsistências & - \\
+Inconsistências temporárias são tratadas na camada da aplicação & - \\
+Não utilizar transações distribuídas síncronas & + \\
+Melhor usar componentes sem estado  & + \\% ainda não foi abordado no texto
+Melhor usar operações idempotentes e comutativas  & +\\
+Atualização dinâmica  & -\\
+Compatibilidade com versão anterior  & -\\
+Suporte a \emph{roll-back} de versão & - \\
+	 \hline
+    \end{tabular}
+  \caption{Implementação das práticas para sistemas de grande escala no \ee}
+  \label{tab:escala_ee}
+\end{center}
+\end{table}
 
 \section{Implementação atual}
 \label{sec:impl_atual}
@@ -508,7 +538,7 @@ A implementação atual do \ee\ se encontra em estado bem adiantado. Dentre as f
 \item a implantação co-localizada de um conjunto de serviços em um mesmo nó.
 \end{itemize}
 
-Além desses pontos, sobre os quais já havíamos falado no texto, pretendemos também efetuar uma alteração na API dos componentes que realizam operações demoradas, como a criação de um nó, a implantação de um serviço ou a encenação de uma coreografia. Atualmente o cliente dessas operações tem que esperar um longo tempo até receber uma resposta, o que dificulta o ajuste de \textit{timeouts} adequados pelo cliente. Pretendemos alterar essas operações para um modelo assíncrono, em que o cliente recebe uma resposta imediata à requisição e depois deve verificar periodicamente o estado da operação até que seus efeitos tenham se efetivado.
+Além dos pontos listados, pretendemos também efetuar uma alteração na API dos componentes que realizam operações demoradas, como a criação de um nó, a implantação de um serviço ou a encenação de uma coreografia. Atualmente o cliente dessas operações tem que esperar um longo tempo até receber uma resposta, o que dificulta o ajuste de \textit{timeouts} adequados pelo cliente. Pretendemos alterar essas operações para um modelo assíncrono, em que o cliente recebe uma resposta imediata à requisição e depois deve verificar periodicamente o estado da operação até que seus efeitos tenham se efetivado.
 
 Há ainda duas funcionalidades sendo implementadas, mas que não são diretamente relacionadas aos objetivos desta dissertação: 1) a integração entre serviços heterogêneos através da intermediação de um Enterprise  Service Bus distribuído, que nosso caso é o EasyESB\footnote{\Leo{link para o EasyESB}}; e 2) replicação dos serviços em tempo de execução para aumento na escalabilidade da coreografia em execução.
 
