@@ -12,22 +12,22 @@ Neste apêndice nós fornecemos um exemplo de especificação de coreografia (Li
 <chorSpec>
 
   <serviceSpecs>
-    <codeUri>http://valinhos.ime.usp.br:54080/enact_test/airline-service.jar</codeUri>
-     <endpointName>airline</endpointName>
-     <name>airline</name>
+    <codeUri>http://nimbusairline.com/jars/nimbusws.jar</codeUri>
+     <endpointName>nimbus/ws</endpointName>
+     <name>Nimbus Airline</name>
      <port>1234</port>
      <type>COMMAND_LINE</type>
      <roles>airline</roles>
   </serviceSpecs>
   
   <serviceSpecs>
-    <codeUri>http://valinhos.ime.usp.br:54080/enact_test/travel-agency-service.jar</codeUri>
-    <endpointName>travelagency</endpointName>
-    <name>travelagency</name>
+    <codeUri>http://magalhaes.com/jars/magalhaesws.jar</codeUri>
+    <endpointName>magalhaes/ws</endpointName>
+    <name>Magalhaes Viagens</name>
     <port>1235</port>
     <type>COMMAND_LINE</type>
     <dependences>
-      <serviceName>airline</serviceName>
+      <serviceName>Nimbus Airline</serviceName>
       <serviceRole>airline</serviceRole>
     </dependences>
     <roles>travelagency</roles>
@@ -45,61 +45,61 @@ Neste apêndice nós fornecemos um exemplo de especificação de coreografia (Li
 
   <chorSpec>
     <serviceSpecs>
-      <codeUri>http://valinhos.ime.usp.br:54080/enact_test/airline-service.jar</codeUri>
-      <endpointName>airline</endpointName>
-      <name>airline</name>
-      <port>1234</port>
-      <type>COMMAND_LINE</type>
-      <roles>airline</roles>
-    </serviceSpecs>
+      <codeUri>http://nimbusairline.com/jars/nimbusws.jar</codeUri>
+       <endpointName>nimbus/ws</endpointName>
+       <name>Nimbus Airline</name>
+       <port>1234</port>
+       <type>COMMAND_LINE</type>
+       <roles>airline</roles>
+    </serviceSpecs>  
     <serviceSpecs>
-      <codeUri>http://valinhos.ime.usp.br:54080/enact_test/travel-agency-service.jar</codeUri>
-      <endpointName>travelagency</endpointName>
-      <name>travelagency</name>
+      <codeUri>http://magalhaes.com/jars/magalhaesws.jar</codeUri>
+      <endpointName>magalhaes/ws</endpointName>
+      <name>Magalhaes Viagens</name>
       <port>1235</port>
       <type>COMMAND_LINE</type>
       <dependences>
-        <serviceName>airline</serviceName>
+        <serviceName>Nimbus Airline</serviceName>
         <serviceRole>airline</serviceRole>
       </dependences>
       <roles>travelagency</roles>
-    </serviceSpecs>
+    </serviceSpecs>  
   </chorSpec>
   
   <deployedServices>
     <host>choreos-node1</host>
      <ip>192.168.56.101</ip>
-     <name>airline</name>
+     <name>Nimbus Airline</name>
      <nodeId>choreos-node1</nodeId>
      <spec xsi:type="chorServiceSpec" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-       <codeUri>http://valinhos.ime.usp.br:54080/enact_test/airline-service.jar</codeUri>
-       <endpointName>airline</endpointName>
-       <name>airline</name>
-       <port>1234</port>
-       <type>COMMAND_LINE</type>
-       <roles>airline</roles>
+        <codeUri>http://nimbusairline.com/jars/nimbusws.jar</codeUri>
+         <endpointName>nimbus/ws</endpointName>
+         <name>Nimbus Airline</name>
+         <port>1234</port>
+         <type>COMMAND_LINE</type>
+         <roles>airline</roles>
      </spec>
-     <uri>http://192.168.56.101:1234/airline/</uri>
+     <uri>http://192.168.56.101:1234/nimbus/ws</uri>
   </deployedServices>
   
   <deployedServices>
      <host>choreos-node2</host>
       <ip>192.168.56.102</ip>
-      <name>travelagency</name>
+      <name>Magalhaes Viagens</name>
       <nodeId>choreos-node2</nodeId>
       <spec xsi:type="chorServiceSpec" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-       <codeUri>http://valinhos.ime.usp.br:54080/enact_test/travel-agency-service.jar</codeUri>
-        <endpointName>travelagency</endpointName>
-        <name>travelagency</name>
+        <codeUri>http://magalhaes.com/jars/magalhaesws.jar</codeUri>
+        <endpointName>magalhaes/ws</endpointName>
+        <name>Magalhaes Viagens</name>
         <port>1235</port>
         <type>COMMAND_LINE</type>
         <dependences>
-           <serviceName>airline</serviceName>
-           <serviceRole>airline</serviceRole>
+          <serviceName>Nimbus Airline</serviceName>
+          <serviceRole>airline</serviceRole>
         </dependences>
         <roles>travelagency</roles>
       </spec>
-      <uri>http://192.168.56.102:1235/travelagency/</uri>
+      <uri>http://192.168.56.102:1235/magalhaes/ws/</uri>
   </deployedServices>
 
 </choreography>
