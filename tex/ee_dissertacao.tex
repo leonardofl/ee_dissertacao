@@ -189,7 +189,7 @@ framexrightmargin=10pt
     financeiro pelo projeto CHOReOS, financiado pela Comissão Europeia, e pelo projeto Baile, financiado pela HP Labs}
     
     \vskip 0.5cm
-    \normalsize{São Paulo, março de 2013}
+    \normalsize{São Paulo, fevereiro de 2013}
 \end{center}
 
 % ---------------------------------------------------------------------------- %
@@ -274,11 +274,8 @@ framexrightmargin=10pt
 % ---------------------------------------------------------------------------- %
 % Agradecimentos:
 % Se o candidato não quer fazer agradecimentos, deve simplesmente eliminar esta página 
-\chapter*{Agradecimentos}
-Texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto. Texto opcional.
+%\chapter*{Agradecimentos}
+%Texto opcional.
 
 
 % ---------------------------------------------------------------------------- %
@@ -287,54 +284,39 @@ texto texto texto texto. Texto opcional.
 
 \noindent LEITE, L. A. F. \textbf{Implantação automatizada de coreografias de serviços web \\
     de grande escala em ambientes de computação em nuvem}. 
-2013. 120 f.
+2013. XXX f.  \Leo{XXX = número de folhas}
 Dissertação (Mestrado) - Instituto de Matemática e Estatística,
-Universidade de São Paulo, São Paulo, 2010.
+Universidade de São Paulo, São Paulo, 2013.
 \\
 
-Elemento obrigatório, constituído de uma sequência de frases concisas e
-objetivas, em forma de texto.  Deve apresentar os objetivos, métodos empregados,
-resultados e conclusões.  O resumo deve ser redigido em parágrafo único, conter
-no máximo 500 palavras e ser seguido dos termos representativos do conteúdo do
-trabalho (palavras-chave). 
-Texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto.
-Texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto texto texto texto texto texto texto texto texto texto texto texto
-texto texto.
-\\
+%Elemento obrigatório, constituído de uma sequência de frases concisas e
+%objetivas, em forma de texto.  Deve apresentar os objetivos, métodos empregados,
+%resultados e conclusões.  O resumo deve ser redigido em parágrafo único, conter
+%no máximo 500 palavras e ser seguido dos termos representativos do conteúdo do
+%trabalho (palavras-chave). 
 
-\noindent \textbf{Palavras-chave:} palavra-chave1, palavra-chave2, palavra-chave3.
+A implantação automatizada é uma necessidade no ciclo de vida de um sistema, mas muitas organizações ainda realizam a implantação de seus sistemas de forma não-sistematizada, tornando o processo de implantação moroso, propenso a erros e não-reprodutível. Esses problemas se agravam ao implantar um sistema distribuído, como é o caso de coreografias de serviços web, que implementam processos de negócios distribuídos entre organizações. A implantação de uma coreografia deve ser coordenada, pois os serviços de uma coreografia precisam conhecer a localização dos outros serviços, informação disponível apenas em tempo de implantação. Outro fator que aumenta a complexidade do desenvolvimento de software é a grande escala presente nos sistemas atuais. Nesse cenário, sistemas são mantidos de forma distribuída por várias organizações e a presença de falhas na comunicação entre componentes se torna corriqueira. Essas duas características afetam também o processo de implantação de coreografias de serviços web. Considerando as vantagens da virtualização na gerência de ambientes e do crescente uso da computação em nuvem pelas organizações, investigamos o uso da computação em nuvem em sua camada de Infraestrutura como um Serviço, observando os requisitos de sistemas de grande escala, para o desenvolvimento do CHOReOS Enactment Engine, um sistema de middleware que possibilita a implantação distribuída e automatizada de coreografias de serviços web, operando como um provedor de computação em nuvem na camada de Plataforma como um Serviço. Além da extensibilidade, nosso middleware é avaliado pela sua escalabilidade em relação ao tempo de implantação das coreografias, operação para o qual a quantidade de serviços a ser implantada é considerada como carga do sistema, enquanto que a quantidade de máquinas virtuais acessíveis são os recursos do sistema. No atual estágio da implementação do Enactment Engine, experimentos preliminares de escalabilidade foram realizados, mostrando que um aumento de 50 vezes no número de serviços implantados provocou um aumento de cerca de apenas duas vezes no tempo de implantação quando os recursos do sistemas eram aumentados na mesma proporção que a carga aplicada.\\
+
+\noindent \textbf{Palavras-chave:} implantação, coreografias, serviços web, computação em nuvem, grande escala.
 
 % ---------------------------------------------------------------------------- %
 % Abstract
 \chapter*{Abstract}
-\noindent SOBRENOME, A. B. C. \textbf{Título do trabalho em inglês}. 
-2013. 120 f.
-Dissertação (Mestrado) - Instituto de Matemática e Estatística,
-Universidade de São Paulo, São Paulo, 2010.
+\noindent LEITE, L. A. F. \textbf{Automated deployment of large scale web service choreographies in cloud computing environments}. 
+2013. XXX f. \Leo{XXX = número de folhas}
+Master thesis - Institute of Mathematics and Statistics,
+University of Sao Paulo, Brazil, 2013.
 \\
 
+%Elemento obrigatório, elaborado com as mesmas características do resumo em
+%língua portuguesa. De acordo com o Regimento da Pós- Graduação da USP (Artigo
+%99), deve ser redigido em inglês para fins de divulgação. 
 
-Elemento obrigatório, elaborado com as mesmas características do resumo em
-língua portuguesa. De acordo com o Regimento da Pós- Graduação da USP (Artigo
-99), deve ser redigido em inglês para fins de divulgação. 
-Text text text text text text text text text text text text text text text text
-text text text text text text text text text text text text text text text text
-text text text text text text text text text text text text text text text text
-text text text text text text text text text text text text.
-Text text text text text text text text text text text text text text text text
-text text text text text text text text text text text text text text text text
-text text text.
+Automated deployment is mandatory in the life cycle of a system. However, organizations still deploy their system manually, which is time-consuming, error-prone, and no-reproducible. These issues are even worse in distributed deployments, as occurs to web service choreographies, that implement distributed business process among organizations. The deployment of a choreography must be coordinated, since their services need to retrieve the endpoints of other participant services, and these endpoints may be available only at deployment time. Large scale choreographies are maintained by multiple organizations in a distributed way, and in such scenario communication faults are commonplace. These characteristics impact the deployment process too. Considering the virtualization advantages to environment management  and considering the increasing use of cloud computing by organizations, we exploit the cloud computing usage in the Infrastructure as a Service layer, considering large scale systems requirements, to develop the CHOReOS Enactment Engine, a middleware system that enables the automated and distributed deployment of web service choreographies, operating as a cloud computing provider in the Platform as a Service layer. Besides extensibility, our middleware is assessed by its scalability regarding choreographies deployment time, for which the amount of services to be deployed is the system load, whereas the amount of available virtual machines are the system resources. The current Enactment Engine implementation was assessed
+regarding its scalability, and we observed an increase about only twice when the number of services was increased by 50 times, and the resources were increased in the same proportion than the load.
 \\
 
-\noindent \textbf{Keywords:} keyword1, keyword2, keyword3.
+\noindent \textbf{Keywords:} deployment, choreography, web services, cloud computing, large scale.
 
 % ---------------------------------------------------------------------------- %
 % Sumário
