@@ -491,7 +491,7 @@ A duplicação de dados ou de componentes não será abordada neste trabalho. De
 
 Neste trabalho não abordaremos a problemática da evolução do nosso próprio sistema. No entanto, esperamos que nossa arquitetura possa dar suporte à evolução das coreografias implantadas, mesmo que de forma simples, ou seja, sem garantia da correta terminação das operações em andamento no momento da atualização. Consideramos esse ponto importante, mas fugindo do nosso escopo por merecer um trabalho dedicado somente a essa questão.
 
-A Tabela~\ref{tab:escala_ee} repete as boas práticas no desenvolvimento de sistemas de grande escala já resumidas pela Tabela~\ref{tab:escala}, evidenciando quais aspectos foram adotados na arquitetura e implementação do \ee, conforme descrevemos nesta seção. Os aspectos de alguma forma considerados são marcados com o sinal ``+'', enquanto que os aspectos fora do escopo do nosso trabalho são marcado com o sinal ``-''. Além dos aspectos levantados pela Tabela~\ref{tab:escala_ee}, vale ressaltar que a utilização dos serviços de nuvem na camada de IaaS é um salto tecnológico em relação ao item ``uso de aglomerados'', o que contribui para uma completa automação das operações implementadas.
+A Tabela~\ref{tab:escala_ee} repete as boas práticas no desenvolvimento de sistemas de grande escala já resumidas pela Tabela~\ref{tab:escala}, evidenciando quais aspectos foram adotados na arquitetura e implementação do \ee, conforme descrevemos nesta seção. Os aspectos de alguma forma considerados são marcados com o sinal ``+'', enquanto que os aspectos fora do escopo do nosso trabalho são marcado com o sinal ``-''. 
 
 \begin{table}[!t]
 \begin{center}
@@ -522,6 +522,8 @@ Suporte a \emph{roll-back} de versão & - \\
   \label{tab:escala_ee}
 \end{center}
 \end{table}
+
+Além dos aspectos levantados pela Tabela~\ref{tab:escala_ee}, a utilização dos serviços de nuvem na camada de IaaS constitui um salto tecnológico em relação ao item ``uso de aglomerados'', o que contribui para uma completa automação das operações implementadas. Dessa forma, o uso da computação em nuvem traz benefícios à automação do processo de implantação, o que é mais uma vantagem de nossa solução. Mas como o uso da computação em nuvem também traz alguns desafios, outra importante características de nosso arcabouço é a consideração da natureza dinâmica do ambiente de computação em nuvem, principalmente em relação a falta de previsibilidade dos endereços IPs das máquinas provisionadas.
 
 \section{Implementação atual}
 \label{sec:impl_atual}
