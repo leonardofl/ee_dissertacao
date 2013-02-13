@@ -542,7 +542,7 @@ A implementação atual do \ee\ se encontra em estado bem adiantado. Dentre as f
 
 Além dos pontos listados, pretendemos também efetuar uma alteração na API dos componentes que realizam operações demoradas, como a criação de um nó, a implantação de um serviço ou a encenação de uma coreografia. Atualmente, o cliente dessas operações tem que esperar um longo tempo até receber uma resposta, o que dificulta o ajuste de \textit{timeouts} adequados pelo cliente. Pretendemos alterar essas operações para um modelo assíncrono, em que o cliente recebe uma resposta imediata à requisição e depois deve verificar periodicamente o estado da operação até que seus efeitos tenham se efetivado.
 
-Há ainda duas funcionalidades sendo implementadas, mas que não são diretamente relacionadas aos objetivos desta dissertação: 1) a integração entre serviços heterogêneos através da intermediação de um Enterprise  Service Bus distribuído, que em nosso caso é o EasyESB\footnote{\url{https://research.linagora.com/display/easyesb/EASYESB+-+Open+source+Lightweight+Services+Bus}}; e 2) a replicação dos serviços em tempo de execução para aumento na escalabilidade da coreografia em execução.
+Há ainda duas funcionalidades sendo implementadas, mas que não são diretamente relacionadas aos objetivos desta dissertação: 1) a integração entre serviços heterogêneos através da intermediação de um Enterprise  Service Bus distribuído, que em nosso caso é o EasyESB\footnote{\url{https://research.petalslink.org/display/easyesb}}; e 2) a replicação dos serviços em tempo de execução para aumento na escalabilidade da coreografia em execução.
 
 \section{Avaliação preliminar de escalabilidade}
 \label{sec:avaliacao}
