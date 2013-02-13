@@ -533,13 +533,15 @@ A implementação atual do \ee\ se encontra em estado bem adiantado. Dentre as f
 \begin{itemize}
 \item aprimoramento da detecção de falhas dos serviços da camada de IaaS, o que depende da avaliação da operação do \ee\ com outros provedores de IaaS (pretendemos utilizar uma instalação privada de OpenStack);
 \item detecção das falhas do Chef nos momentos de inicialização e atualização dos nós;
+\item explorar a capacidade de replicação do Chef Server para aumentar a escalabilidade do processo de implantação;
 \item operação de encenação idempotente;
 \item atualização de coreografia;
 \item \textit{roll-back} de coreografia;
 \item implantação distribuída de uma mesma coreografia por ambientes de diferentes organizações, o que pode envolver o uso simultâneo de diferentes provedores de IaaS;
 \item a implantação co-localizada de um conjunto de serviços em um mesmo nó;
 \item interrupção e remoção de serviços;
-\item possibilitar que JARs sejam empacotados em arquivos ZIPs para que a configuração possa ser adequadamente separada do binário do serviço.
+\item possibilitar que JARs sejam empacotados em arquivos ZIPs para que a configuração possa ser adequadamente separada do binário do serviço;
+\item suporte a serviços que utilizam bancos de dados.
 \end{itemize}
 
 Além dos pontos listados, pretendemos também efetuar uma alteração na API dos componentes que realizam operações demoradas, como a criação de um nó, a implantação de um serviço ou a encenação de uma coreografia. Atualmente, o cliente dessas operações tem que esperar um longo tempo até receber uma resposta, o que dificulta o ajuste de \textit{timeouts} adequados pelo cliente. Pretendemos alterar essas operações para um modelo assíncrono, em que o cliente recebe uma resposta imediata à requisição e depois deve verificar periodicamente o estado da operação até que seus efeitos tenham se efetivado.
