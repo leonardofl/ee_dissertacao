@@ -2,7 +2,7 @@
 \chapter{Solução Proposta}
 \label{cap:solucao}
 
-Considerando os requisitos de coreografias de serviços web, de uso da computação em nuvem e de sistemas em grande escala, definimos um arcabouço para a implantação de coreografias de serviços web denominado \ee. Os serviços oferecidos pelo nosso arcabouço se integram ao Ambiente Integrado de Desenvolvimento e Execução CHOReOS, que visa fornecer todo o processo de desenvolvimento, implantação e governança de coreografias de serviços web. Para a implementação do arcabouço Enactment Engine contribuíram diretamente os seguintes colegas do grupo de pesquisa: Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura e Thiago Furtado. \gerosa{Será que precisa dizer? Não poderia estar nos agradecimentos?}. O código-fonte do \ee, que é software livre sob a licença LGPL\footnote{\url{http://www.gnu.org/copyleft/lesser.html}}, está disponível em \url{http://www.github.com/choreos/enactment\_engine}.
+Considerando os requisitos de coreografias de serviços web, de uso da computação em nuvem e de sistemas em grande escala, definimos um arcabouço para a implantação de coreografias de serviços web denominado CHOReOS \ee. Os serviços oferecidos pelo nosso arcabouço se integram ao Ambiente Integrado de Desenvolvimento e Execução CHOReOS, que visa fornecer todo o processo de desenvolvimento, implantação e governança de coreografias de serviços web. Para a implementação do arcabouço Enactment Engine contribuíram diretamente os seguintes colegas do grupo de pesquisa: Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura e Thiago Furtado. \gerosa{Será que precisa dizer? Não poderia estar nos agradecimentos?} \Leo{por outro lado, me parece que normalmente não há a seção de agradecimentos em qualificações}. O código-fonte do \ee, que é software livre sob a licença LGPL\footnote{\url{http://www.gnu.org/copyleft/lesser.html}}, está disponível em \url{http://www.github.com/choreos/enactment\_engine}. \Leo{seria melhor deixar o link para o OW2 forge?}
 
 Neste capítulo descrevemos a arquitetura do arcabouço proposto, incluindo os pontos de extensão previstos. Destacamos os aspectos cobertos e não cobertos dos requisitos de sistemas de grande escala. Apresentamos também o estado atual da implementação do arcabouço, assim como os resultados experimentais sobre sua escalabilidade obtidos até o momento.
 
@@ -11,7 +11,7 @@ Neste capítulo descrevemos a arquitetura do arcabouço proposto, incluindo os p
 
 As funcionalidades do Enactment Engine são expostas como serviços, sendo a principal operação disponível a encenação de coreografias. Para executar essa operação, o Enactment Engine recebe uma descrição arquitetural de baixo nível da coreografia, que contém as URLs para seus artefatos implantáveis. Com base nessa descrição, o Enactment Engine implanta os artefatos em diversos nós nas nuvens das diferentes organizações participantes da coreografia. O cliente do Enactment Engine recebe como resposta dados que descrevem em que nó cada serviço da coreografia foi implantado.
 
-Para realizar a implantação da coreografia de maneira distribuída pelas várias organizações participantes da coreografia, o Enactment Engine é composto por  componentes que são instanciados nas infraestruturas dessas organizações. A relação de uso entre esses componentes é exibida na Figura~\ref{fig:ee_componentes}. Os componentes Choreography Deployer e Deployment Manager são fornecidos pelo próprio arcabouço. Os componentes Chef Client e Chef Server são partes do Chef, uma solução livre para a gerência de configuração de software. Por fim, o componente Cloud Gateway é também fornecido por terceiros, com opções correspondentes às diferentes soluções para a gerência de máquinas virtuais, como , por exemplo, o serviço EC2 da Amazon. A seguir, descrevemos brevemente cada um dos componentes do arcabouço.
+Para realizar a implantação da coreografia de maneira distribuída pelas várias organizações participantes da coreografia, o Enactment Engine é composto por  componentes que são instanciados nas infraestruturas dessas organizações. A relação de uso entre esses componentes é exibida na Figura~\ref{fig:ee_componentes}. Os componentes Choreography Deployer e Deployment Manager são fornecidos pelo próprio arcabouço. Os componentes Chef Client e Chef Server são partes do Chef, uma solução livre para a gerência de configuração de software. Por fim, o componente Cloud Gateway é também fornecido por terceiros, com opções correspondentes às diferentes soluções para a gerência de máquinas virtuais, como, por exemplo, o serviço EC2 da Amazon. A seguir, descrevemos brevemente cada um dos componentes do arcabouço.
 
 \begin{figure}[!h]
   \centering
@@ -24,15 +24,15 @@ Para realizar a implantação da coreografia de maneira distribuída pelas vári
 
 \item [Cloud Gateway:]
 
-Este componente cria e destrói máquinas virtuais em uma infraestrutura de computação em nuvem. Neste contexto, essas máquinas virtuais são também chamadas \emph{nós}. Esse componente é utilizado pelo Deployment Manager, que decide quando criar ou destruir os nós. Uma instância do Deployment Manager é configurada de acordo com o Cloud Gateway a ser utilizado. Nativamente são utilizados como Cloud Gateway o serviço EC dos Web Services da Amazon ou uma instalação do OpenStack. Outras tecnologias de nuvem ou virtualização são utilizadas mediante extensão do Node Pool Manager.
+Este componente cria e destrói máquinas virtuais em uma infraestrutura de computação em nuvem. Nesse contexto, essas máquinas virtuais são também chamadas \emph{nós}. Esse componente é utilizado pelo Deployment Manager, que decide quando criar ou destruir os nós. Uma instância do Deployment Manager é configurada de acordo com o Cloud Gateway a ser utilizado. Nativamente podem ser utilizados como Cloud Gateway o serviço EC2 dos Web Services da Amazon ou uma instalação do OpenStack. Outras tecnologias de nuvem ou virtualização podem ser utilizadas mediante extensão do \dm.
 
 \item [Chef Server:]
 
-Em um sistema gerenciado pelo Chef, as configurações de software de um nó são especificadas por meio de ``receitas''. As receitas especificam configurações do sistema operacional (exemplo: instalar o pacote Java em um sistema Debian), instalação e configuração de middlewares (exemplo: instalar o Tomcat), assim como a instalação de um serviço final implantado sobre o middleware já configurado (exemplo: um web service). Essas receitas e as associações entre receitas e nós são armazenadas no Chef Server. Os operadores do Chef atualizam essas configurações diretamente pela interface gráfica do Chef Server ou pelo uso do Knife, uma ferramenta de linha de comando que se comunica com o Chef Server por meio de uma API REST. Na arquitetura do Chef, a máquina onde o operador utiliza o Knife é denominada ``workstation''. A arquitetura de um sistema gerenciado pelo Chef pode ser observada na Figura~\ref{fig:chef_arquitetura}.
+Em um sistema gerenciado pelo Chef, as configurações de software de um nó são especificadas por meio de ``receitas''. As receitas especificam configurações do sistema operacional (ex: instalar o pacote Java em um sistema Debian), instalação e configuração de middlewares (ex: instalar o Tomcat), assim como a instalação de um serviço final implantado sobre o middleware já configurado (ex: um web service). Essas receitas e as associações entre receitas e nós são armazenadas no Chef Server. Os operadores do Chef atualizam essas configurações diretamente pela interface gráfica do Chef Server ou pelo uso do Knife, uma ferramenta de linha de comando que se comunica com o Chef Server por meio de uma API REST. Na arquitetura do Chef, a máquina onde o operador utiliza o Knife é denominada ``\textit{workstation}''. A arquitetura de um sistema gerenciado pelo Chef pode ser observada na Figura~\ref{fig:chef_arquitetura}.
 
 \item [Chef Client:]
 
-Em cada nó gerenciado pelo Chef é instalado um programa denominado Chef Client, que utiliza a API REST do Chef Server para obter as receitas relacionadas ao nó e assim atualizar suas configurações de software. O processo de instalação do Chef Client no nó é denominado ``bootstrap'', e é executado por meio de um comando do Knife, que se conecta por SSH na máquina para realizar a instalação do Chef Client e suas dependências.
+Em cada nó gerenciado pelo Chef é instalado um programa denominado Chef Client, que utiliza a API REST do Chef Server para obter as receitas relacionadas ao nó e assim atualizar suas configurações de software. Chamaremos o processo de instalação do Chef Client por ``inicialização'' (\textit{bootstrap}), que e é executado por meio de um comando do Knife, que se conecta por SSH na máquina para realizar a instalação do Chef Client e suas dependências.
 
 \item [Deployment Manager:]
 
@@ -82,7 +82,7 @@ Terminamos esta seção com um diagrama de sequência (Figura~\ref{fig:ee_sequen
 
 O processo de implantação se inicia com duas requisições ao Choreography Deployer: uma para a criação do recurso\footnote{Usamos aqui o termo ``recurso'' em seu sentido usual em arquiteturas REST.} \emph{coreografia} associado à especificação fornecida pelo cliente e outra para a encenação da coreografia. Para cada especificação de serviço contido na especificação da coreografia, o Choreography Deployer requisita a criação de um recurso \emph{serviço} ao Deployment Manager. Para isso, o Deployment Manager cria uma receita Chef que automatiza a instalação do serviço, armazena-a no Chef Server e associa a receita a algum nó por ele selecionado. O Deployment Manager retorna ao Choreography Deployer o recurso \emph{serviço}, contendo a URI de acesso a esse serviço e uma referência ao nó selecionado. Em seguida, o Choreography Deployer requisita ao Deployment Manager a atualização de todos os nós selecionados. Quando o Deployment Manager recebe um pedido de atualização de nó, ele se conecta por SSH a esse nó e executa o Chef Client, que se comunica com o Chef Server para obter as receitas associadas àquele nó e instalar os serviços com base nas receitas obtidas. O Choreography Deployer ainda invoca a operação \emph{setInvocationAddress} do serviço B, informando ao serviço B a URI de acesso do serviço A. Finalmente, o Choreography Deployer devolve ao cliente a representação da coreografia, contendo informações da implantação, especialmente as URIs dos serviços em execução.
 
-Uma observação sobre o diagrama da Figura~\ref{fig:ee_sequencia} é que todas as operação foram dispostas de forma sequencial para facilitar a leitura do diagrama, mas o Choreography Deployer realiza as chamadas de criação dos serviços em paralelo, assim como as chamadas de atualização dos nós e as invocações às operações \emph{setInvocationAddress}.
+Uma observação sobre o diagrama da Figura~\ref{fig:ee_sequencia} é que todas as operação foram dispostas de forma sequencial para facilitar a leitura do diagrama, mas o Choreography Deployer realiza as chamadas de criação dos serviços em paralelo, assim como as chamadas de atualização dos nós e as invocações às operações setInvocationAddress.
 
 \section{Descrição arquitetural da coreografia}
 \label{sec:adl}
@@ -128,11 +128,9 @@ Iremos agora detalhar o significado dos atributos das classes já apresentadas:
 
 \item [ServiceSpec.type:] especifica o tipo de serviço, de acordo com a enumeração ServiceType, que contém os valores SOAP e REST. Com essa informação, o Enactment Engine sabe como acessar a operação setInvocationAddress desses serviços, para que os serviços da coreografia saibam da localização uns dos outros. 
 
-\item [ServiceSpec.artifactType:] o tipo do artefato implantável. Deve corresponder a algum valor da enumeração ArtifactType. Se tipo do artefato for COMMAND\_LINE, o serviço é iniciado com o comando ``java -jar''. Se possui o valor TOMCAT, é simplesmente instalado em um Tomcat em execução. Se for EASY\_ESB, assume-se que se trata de um arquivo de configuração que executará ações em um nó do EasyESB. Se for LEGACY, trata-se de um serviço já acessível pela Internet.
+\item [ServiceSpec.artifactType:] o tipo do artefato implantável. Deve corresponder a algum valor da enumeração ArtifactType. Se tipo do artefato for COMMAND\_LINE, o serviço é iniciado com o comando ``java -jar''. Se possui o valor TOMCAT, é simplesmente instalado em um Tomcat em execução. Se for EASY\_ESB, assume-se que se trata de um arquivo de configuração que executará ações em um nó do EasyESB\footnote{EasyESB é um Enterprise Service Bus distribuído: \url{https://research.petalslink.org/display/easyesb}}. Se for LEGACY, trata-se de um serviço já acessível pela Internet.
 
-\item [ServiceSpec.codeUri:] a localização do artefato que instalará o serviço. Se o tipo do serviço é LEGACY o valor de codeUri corresponde à URI do serviço já disponível.
-
-Para o artefato COMMAND\_LINE, o atributo codeUri pode apontar para um arquivo jar ou para um tar.gz, que deve ter um jar compactado em sua raiz. O suporte à opção tar.gz é muito importante para que o cliente mantenha a separação entre código executável e configuração de seus serviços. Caso apenas os arquivos jars fossem suportados, o cliente seria obrigado a empacotar as configurações de seu serviço dentro do próprio jar, o que é visto como uma má prática no livro Continous Delivery~\cite{Humble2011Continuous}, que prega que um binário deve ser executável, na medida do possível, em todos os ambientes necessários. Ou seja, gerar um executável para cada plataforma alvo é indesejável. Esse objetivo pode ser atingido com a separação das configurações específicas de cada ambiente em arquivos de configuração. Infelizmente, tal prática não é viável para artefatos do tipo war, que são implantados no Tomcat.
+\item [ServiceSpec.codeUri:] a localização do artefato que instalará o serviço. Se o tipo do serviço é LEGACY o valor de codeUri corresponde à URI do serviço já disponível. Para o artefato COMMAND\_LINE, o atributo codeUri pode apontar para um arquivo jar ou para um tar.gz, que deve ter um jar compactado em sua raiz. O suporte à opção tar.gz é muito importante para que o cliente mantenha a separação entre código executável e configuração de seus serviços. Caso apenas os arquivos jars fossem suportados, o cliente seria obrigado a empacotar as configurações de seu serviço dentro do próprio jar, o que é visto como uma má prática no livro Continous Delivery~\cite{Humble2011Continuous}, que prega que um binário deve ser executável, na medida do possível, em todos os ambientes necessários. Ou seja, gerar um executável para cada plataforma alvo é indesejável. Esse objetivo pode ser atingido com a separação das configurações específicas de cada ambiente em arquivos de configuração. Infelizmente, tal prática não é viável para artefatos do tipo WAR, que são implantados no Tomcat.
 
 \item [ServiceSpec.port:] a porta TCP utilizada pelo serviço. Obrigatório caso o tipo seja COMMAND\_LINE.
 
@@ -140,7 +138,7 @@ Para o artefato COMMAND\_LINE, o atributo codeUri pode apontar para um arquivo j
 
 \item [ServiceSpec.version:] a versão do serviço, que será usada pela operação de atualização da coreografia para determinar os serviços que precisam ser re-implantados.
 
-\item [ServiceSpec.resourceImpact:] conjunto de pares chave-valor que especificam os requisitos não-funcionais do serviço. Esses requisitos não-funcionais são utilizados pelo Node Pool Manager para a escolha, se possível, de um nó nuvem que satisfaça esses requisitos.
+\item [ServiceSpec.resourceImpact:] conjunto de pares chave-valor que especificam os requisitos não-funcionais do serviço. Esses requisitos não-funcionais são utilizados pelo \dm\ para a escolha, se possível, de um nó que satisfaça esses requisitos.
 
 \item [Service.uri:] URI completa do serviço implantado.
 
@@ -148,7 +146,7 @@ Para o artefato COMMAND\_LINE, o atributo codeUri pode apontar para um arquivo j
 
 \item [Service.ip:] IP público do nó em que o serviço foi implantado.
 
-\item [Service.nodeId:] ID do nó onde o serviço foi implantado. Este ID possibilita acessar mais informações sobre o nó pelo Node Pool Manager. 
+\item [Service.nodeId:] ID do nó onde o serviço foi implantado. Esse ID possibilita acessar mais informações sobre o nó pela API REST de nós do \dm. 
 
 \end{description}
 
@@ -156,31 +154,16 @@ Segundo Dearle~\cite{Dearle2007PastPresentFuture}, componentes podem ser ligados
 
 A solução adotada no \ee\ para possibilitar a ligação entre serviços envolve a utilização do middleware para a passagem de endereços dos serviços implantados aos seus consumidores, o que é feito com base na lista de objetos \textsf{ServiceDependency} pertencentes a um \textsf{ChorServiceSpec}. Essa solução consiste na aplicação do padrão de injeção de dependência de forma distribuída, e é similar ao que foi feito nos trabalhos sobre a linguagem Darwin~\cite{Magee1996Dynamic, Magee1994Regis}. Para que esse processo funcione, é preciso que cada serviço na coreografia que possua dependências implemente uma operação denominada \emph{setInvocationAddress}, por nós padronizada. Essa operação recebe como argumentos as seguintes informações sobre a dependência: papel do serviço, nome do serviço no contexto da coreografia e a URI de acesso ao serviço.  Em uma coreografia em que, por exemplo, um serviço de agência de viagem dependa do serviço de uma companhia aérea, o \ee\ poderá executar a seguinte invocação ao serviço da agência de viagens: \texttt{setInvocationAddress('Companhia Aérea', 'Nimbus Airline', 'http://192.168.56.107:8080/nimbus/ws/')}. Nessa solução, a ``inteligência'' em determinar quais serviços satisfazem as necessidades de outros serviços está na camada que produz a entrada do \ee.
 
-Apesar dos benefícios de uma solução como essa, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação \texttt{setInvocationAddress} e conhecer os papeis de suas dependências, o que implica em conhecer a interface sintática de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e possibilita seu uso por outros middlewares que adotem a mesma convenção para o \texttt{setInvocationAddress}.
+Apesar dos benefícios de uma solução como essa, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação setInvocationAddress e conhecer os papeis de suas dependências, o que implica em conhecer a interface sintática de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e possibilita seu uso por outros middlewares que adotem a mesma convenção para o setInvocationAddress.
 
 \section{Interface}
 \label{sec:interface}
 
-Os sistemas externos ao Enactment Engine utilizam suas funcionalidades por meio da API REST exposta pelo componente Choreography Deployer, que é descrita nesta subseção. Por se tratar de uma API REST, o cliente pode ser implementado em qualquer linguagem e ambiente que possua alguma biblioteca HTTP. Também disponibilizamos um cliente na forma de uma biblioteca na linguagem Java, tornando o uso do Enactment Engine ainda mais simples para os usuários da linguagem Java, atualmente uma das mais utilizadas do mercado. Seguimos agora listando as operações disponíveis. 
+Os sistemas externos ao Enactment Engine utilizam suas funcionalidades por meio da API REST exposta pelo componente Choreography Deployer, que é descrita nesta seção. Por se tratar de uma API REST, o cliente pode ser implementado em qualquer linguagem e ambiente que possua alguma biblioteca HTTP. Também disponibilizamos um cliente na forma de uma biblioteca na linguagem Java, tornando o uso do Enactment Engine ainda mais simples para os usuários da linguagem Java, atualmente uma das mais utilizadas do mercado. Seguimos agora listando as operações disponíveis. 
 
 \begin{description}
 
-\item [Criar coreografia:]
-
-Descrição: registra a especificação de uma coreografia no Choreography Deployer. Essa especificação é a descrição arquitetural da coreografia, estruturada de acordo com a classe ChorSpec. Esa operação não realiza a encenação da coreografia.
-
-%Requisição:
-%URI: choreographydeployer/chors
-%Método: POST
-%Corpo: representação XML da classe ChorSpec.
-%
-%Resposta em caso de sucesso:
-%Código de estado: 201 CREATED
-%Cabeçalho ?location?: choreographydeployer/chors/{id} 
-%
-%Respostas em caso de falha:
-%400 BAD REQUEST
-%500 INTERNAL SERVER ERROR
+\item [Criar coreografia:] registra a especificação de uma coreografia no Choreography Deployer. Essa especificação é a descrição arquitetural da coreografia, estruturada de acordo com a classe \textsf{ChorSpec}. Esa operação não realiza a encenação da coreografia.
 
 {\small
 \begin{tabular}{|c|c|c|c|}
@@ -212,23 +195,7 @@ location = "/chors/{id}"
 \end{tabular} 
 }
 
-\item [Obter coreografia:]
-
-Obtém informações sobre uma coreografia registrada no Choreography Deployer. Essas informações se referem à especificação da coreografia e ao estado da implantação de seus serviços, como os nós em que os serviços foram implantados, no caso de a implantação já ter sido realizada.
-
-%Requisição:
-%URI: choreographydeployer/chors/{id}
-%Método: GET
-%
-%Resposta em caso de sucesso:
-%Código de estado: 200 OK
-%Cabeçalho ?location?: choreographydeployer/chors/{id} 
-%Corpo: representação em XML da classe Choreography. 
-%
-%Respostas em caso de falha:
-%400 BAD REQUEST
-%404 NOT FOUND
-%500 INTERNAL SERVER ERROR
+\item [Obter coreografia:] obtém informações sobre uma coreografia registrada no Choreography Deployer. Essas informações se referem à especificação da coreografia e ao estado da implantação de seus serviços, como os nós em que os serviços foram implantados, no caso de a implantação já ter sido realizada.
 
 {\small
 \begin{tabular}{|c|c|c|c|}
@@ -260,23 +227,7 @@ Representação XML \\ de \textsf{Choreography}\\
 \end{tabular}
 }
 
-\item [Encenar coreografia:]
-
-Descrição: realiza a encenação de uma coreografia já registrada no Choreography Deployer. Ao fim do processo, detalhes do resultado da implantação são retornados na representação XML da coreografia. A implementação dessa operação deve possuir duas importantes propriedades: 1) a falha na encenação de parte da coreografia não deve interromper o encenação do resto da coreografia; 2) a operação deve ser \emph{idempotente}, ou seja, uma nova requisição para a encenação da mesma coreografia não deve tentar implantar os serviços já implantados, mas somente aqueles cujas implantações falharam na última execução. Para que serviços sejam atualizados, é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço.
-
-%Requisição:
-%URI: choreographydeployer/chors/{id}/enactment
-%Método: POST
-%
-%Resposta em caso de sucesso:
-%Código de estado: 200 OK
-%Cabeçalho ?location?: choreographydeployer/chors/{id} 
-%Corpo: representação em XML da classe Choreography. 
-%
-%Respostas em caso de falha:
-%400 BAD REQUEST
-%404 NOT FOUND
-%500 INTERNAL SERVER ERROR
+\item [Encenar coreografia:] realiza a encenação de uma coreografia já registrada no Choreography Deployer. Ao fim do processo, detalhes do resultado da implantação são retornados na representação XML da coreografia. A implementação dessa operação deve possuir duas importantes propriedades: 1) a falha na encenação de parte da coreografia não deve interromper a encenação do resto da coreografia; 2) a operação deve ser \emph{idempotente}, ou seja, uma nova requisição para a encenação da mesma coreografia não deve tentar implantar os serviços já implantados, mas somente aqueles cujas implantações falharam na última execução. Para que serviços sejam atualizados, é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço.
 
 {\small
 \begin{tabular}{|c|c|c|c|}
@@ -308,24 +259,7 @@ Representação XML \\ de \textsf{Choreography}\\
 \end{tabular} 
 }
 
-\item [Atualizar coreografia:]
-
-Registra uma nova versão de uma coreografia no Choreography Deployer. Os serviços atualizados na nova versão da coreografia devem possuir um novo número de versão em suas especificações. Essa operação, assim como a criação da coreografia, não encena a nova coreografia. Para isso, é preciso invocar novamente a operação de encenação.
-
-%Requisição:
-%URI: choreographydeployer/chors/{id}
-%Método: PUT
-%Corpo: representação em XML da classe ChorSpec
-%
-%Resposta em caso de sucesso:
-%Código de estado: 200 OK
-%Cabeçalho ?location?: choreographydeployer/chors/{id} 
-%Corpo: representação em XML da classe Choreography. 
-%
-%Respostas em caso de falha:
-%400 BAD REQUEST
-%404 NOT FOUND
-%500 INTERNAL SERVER ERROR
+\item [Atualizar coreografia:] registra uma nova versão de uma coreografia no Choreography Deployer. Os serviços atualizados na nova versão da coreografia devem possuir um novo número de versão em suas especificações. Essa operação, assim como a criação da coreografia, não encena a nova coreografia. Para isso, é preciso invocar novamente a operação de encenação.
 
 {\small
 \begin{tabular}{|c|c|c|c|}
@@ -344,12 +278,7 @@ Representação XML \\ de \textsf{ChorSpec}\\
 
 200 OK
 location = "/chors/{id}"
-Corpo: 
-\end{verbatim}
-Representação XML \\ de \textsf{Choreography}\\ 
-(ver Listagem \ref{lst:chor_xml})
 
-\begin{verbatim}
 400 BAD REQUEST
 
 404 NOT FOUND
@@ -370,20 +299,17 @@ Em nosso trabalho a atualização dos serviços será feita da forma mais simple
 \section{Pontos de extensão}
 \label{sec:extensao}
 
-Para lidar com as particularidades do ambiente de cada organização, o Enactment Engine fornece alguns pontos de extensão. Esses pontos de extensão são classes que desenvolvedores devem escrever na linguagem Java e que, de acordo com as configurações do sistema, poderão ser executadas por nossa plataforma.
+Para lidar com as particularidades do ambiente de cada organização, o Enactment Engine fornece alguns pontos de extensão. Esses pontos de extensão são classes que desenvolvedores devem escrever na linguagem Java e que, de acordo com as configurações do sistema, poderão ser executadas pelo arcabouço.
 
 \begin{description}
 
-\item [CloudProvider:] 
-
-Implementando a interface CloudProvider é possível o suporte a novas plataforma de computação em nuvem. Atualmente nossa implementação suporta o serviço EC2 do AWS e o OpenStack.
+\item [CloudProvider:] implementando a interface \textsf{CloudProvider} é possível o suporte a novas plataforma de computação em nuvem. Atualmente nossa implementação suporta o serviço EC2 do AWS e o OpenStack.
 
 \begin{lstlisting}[frame=trbl, label=lst:cloud_provider, caption=Interface CloudProvider]
 /**
  * Provides access to cloud service functions to create nodes on the cloud. 
  * 
  * Each specific provider (e.g. AmazonWS) must have an implementing class of this interface.
- * 
  * 
  */
 public interface CloudProvider {
@@ -404,9 +330,7 @@ public interface CloudProvider {
 \end{lstlisting}
 
 
-\item [NodeSelector:]
-
-A implementação da interface NodeSelector define uma nova política de alocação de serviços em nós da nuvem, que pode levar em conta os requisitos não-funcionais do serviço e propriedades dos nós à disposição.
+\item [NodeSelector:] a implementação da interface \textsf{NodeSelector} define uma nova política de alocação de serviços em nós da nuvem, que pode levar em conta os requisitos não-funcionais do serviço e propriedades dos nós à disposição.
 
 \begin{lstlisting}[frame=trbl, label=lst:node_selector, caption=Interface NodeSelector]
 /**
@@ -415,8 +339,6 @@ A implementação da interface NodeSelector define uma nova política de alocaç
  * The selection can consider functional requirements, which is provided by config.name and non-functional requirements, which is provided by config.resourceImpact
  * Implementing classes must receive a CloudProvider
  * 
- * @author leonardo
- *
  */
 public interface NodeSelector {
 
@@ -428,27 +350,21 @@ Formas similares dessa funcionalidade são também utilizadas em estudos já apr
 
 Para avançar em relação às limitações dos trabalhos anteriormente citados,  consideramos como requisitos principais a dinamicidade do ambiente de nuvem, que nos impede de conhecer os IPs das máquinas em tempo de configuração, bem como a flexibilidade para que cada organização determine os requisitos de distribuição dos serviços.
 
-\item [Receitas:]
-
-Um serviço pode ser distribuído por diferentes tipos de artefatos implantáveis, como em um JAR ou em um WAR, por exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada tipo de distribuição, pode-se escrever uma receita Chef que sabe como instalar e executar o serviço. Como essas receitas são criadas dinamicamente com base em modelos pré-definidos e propriedades do serviço a ser implantado, é preciso também implementar a interface RecipeBuilder para criar uma nova extensão correspondente a um novo tipo de artefato implantável.
+\item [Receitas:] um serviço pode ser distribuído por diferentes tipos de artefatos implantáveis, como em um JAR ou em um WAR, por exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada serviço, pode-se escrever uma receita Chef que sabe como instalar e executar esse serviço. Como essas receitas são criadas dinamicamente com base em modelos pré-definidos e propriedades do serviço a ser implantado, é preciso também implementar a interface \textsf{RecipeBuilder} para criar uma nova extensão correspondente a um novo tipo de artefato implantável.
 
 \begin{lstlisting}[frame=trbl, label=lst:recipe_builder, caption=Interface RecipeBuilder]
 public interface RecipeBuilder {
-	
- /**
+
+/**
   * Uses the template to create a new recipe according to service specification.
   * This new recipe can be used by Chef to deploy the service.
   * 
-  * @param service
-  * @return
-  */
+  */	
  public Recipe createRecipe(ServiceSpec serviceSpec);
 }
 \end{lstlisting}
 
-\item [ContextSender:]
-
-A ligação entre serviços de uma coreografia depende da passagem de endereços que é feita do Choreography Deployer para os serviços. Para isso, o Choreography Deployer precisa invocar a operação setInvocationAddres dos serviços. A implementação de tal invocação se dará de forma diferente se o serviço for SOAP ou REST. A implementação da interface ContextSender possibilita ao Choreography Deployer realizar a invocação da operação setInovcationAddress em serviços de outras tecnologias (JMS e CORBA por exemplo). Nota-se que para cada um desses tipos de serviços adicionados pelo usuário, é preciso criar uma convenção para a assinatura sintática da operação setInvocationAddres.
+\item [ContextSender:] a ligação entre serviços de uma coreografia depende da passagem de endereços que é feita do Choreography Deployer para os serviços. Para isso, o Choreography Deployer precisa invocar a operação setInvocationAddres dos serviços. A implementação de tal invocação se dará de forma diferente se o serviço for SOAP ou REST. A implementação da interface \textsf{ContextSender} possibilita ao Choreography Deployer realizar a invocação da operação setInovcationAddress em serviços de outras tecnologias (JMS e CORBA por exemplo). Nota-se que para cada um desses tipos de serviços adicionados pelo usuário, é preciso criar uma convenção para a assinatura sintática da operação setInvocationAddres.
 
 \begin{lstlisting}[frame=trbl, label=lst:context_sender, caption=Interface ContextSender]
 public interface ContextSender {
@@ -538,9 +454,9 @@ A implementação atual do \ee\ se encontra em estado bem adiantado. Dentre as f
 \item atualização de coreografia;
 \item \textit{roll-back} de coreografia;
 \item implantação distribuída de uma mesma coreografia por ambientes de diferentes organizações, o que pode envolver o uso simultâneo de diferentes provedores de IaaS;
-\item a implantação co-localizada de um conjunto de serviços em um mesmo nó;
+\item a implantação co-localizada de um conjunto de serviços se requisitado pela especificação;
 \item interrupção e remoção de serviços;
-\item possibilitar que JARs sejam empacotados em arquivos ZIPs para que a configuração possa ser adequadamente separada do binário do serviço;
+\item possibilitar que JARs sejam empacotados em arquivos tar.gz para que a configuração possa ser adequadamente separada do binário do serviço;
 \item suporte a serviços que utilizam bancos de dados.
 \end{itemize}
 
@@ -553,7 +469,7 @@ Há ainda duas funcionalidades sendo implementadas, mas que não são diretament
 
 Nesta seção apresentaremos uma avaliação experimental da escalabilidade de nossa solução em seu atual estágio de implementação. Além de oferecer um tempo de implantação razoável para sistemas de grande escala, um processo de implantação escalável também contribui para a implantação contínua de novas versões em um ambiente de homologação. A implantação contínua reduz o tempo de \textit{feedback} sobre eventuais problemas no sistema após alterações feitas pelos desenvolvedores~\cite{Humble2011Continuous}. Quanto mais demorado for o processo de implantação, mais demorado será esse \textit{feedback} aos desenvolvedores e, em alguns casos, a demora nesse processo desmotiva sua execução frequente, o que prejudica a qualidade do sistema sendo desenvolvido.
 
-Um aumento significativo na carga de um sistema normalmente tem grande impacto no seu tempo de execução; consideramos um sistema escalável se é possível amenizar esse efeito através de um aumento proporcional nos recursos utilizados pelo sistema, ou seja, se um aumento nos recursos do sistema implica em um aumento diretamente proporcional na sua capacidade de processamento~\cite{Law1998Scalable}. Assim, em nosso caso, medimos o tempo de implantação de coreografias variando a carga -- quantidade de serviços -- e os recursos disponíveis -- quantidade de nós (máquinas virtuais) disponíveis. A quantidade de serviços se caracteriza como carga do sistema uma vez que o tempo de implantação se eleva com o aumento na quantidade de serviços a serem implantados. A quantidade de nós disponíveis, associada a uma distribuição igualitária de serviços pelos nós, se caracteriza como recurso do sistema, pois quanto mais nós no sistema, maior será a paralelização do processo. Essas características se devem ao modelo de implantação adotado no Chef, que faz com que dois serviços implantados no mesmo nó tenham que ser implantados sequencialmente.
+Um aumento significativo na carga de um sistema normalmente tem grande impacto no seu tempo de execução; consideramos um sistema escalável se é possível amenizar esse efeito através de um aumento proporcional nos recursos utilizados pelo sistema, ou seja, se um aumento nos recursos do sistema implica em um aumento diretamente proporcional na sua capacidade de processamento~\cite{Law1998Scalable}. Assim, em nosso caso, medimos o tempo de implantação de coreografias variando a carga -- quantidade de serviços -- e os recursos disponíveis -- quantidade de nós (máquinas virtuais) disponíveis. A quantidade de serviços se caracteriza como carga do sistema, uma vez que o tempo de implantação se eleva com o aumento na quantidade de serviços a serem implantados. A quantidade de nós disponíveis, associada a uma distribuição igualitária de serviços pelos nós, se caracteriza como recurso do sistema, pois quanto mais nós no sistema, maior será a paralelização do processo. Essas características se devem ao modelo de implantação adotado no Chef, que faz com que dois serviços implantados no mesmo nó tenham que ser implantados sequencialmente.
 
 Definimos uma \emph{execução} do experimento como o processo de \emph{encenações} simultâneas de $N$ coreografias, sendo os valores utilizados para $N$: 1, 5, 10, 15, 20, 25. Cada execução é composta por três \emph{fases}: 1) a criação de $2*N$ nós no ambiente de computação em nuvem (um nó por serviço), 2) a implantação das $N$ coreografias nos nós criados na fase anterior e 3) a invocação das coreografias para verificação do funcionamento adequado do processo de negócio. Para cada fase em cada execução, registramos três valores: o \emph{tempo total} ($t$) de duração da fase, o \emph{tempo médio} ($m$) gasto por cada coreografia naquela fase e o \emph{desvio padrão} ($s$) dos valores usados no cálculo do tempo médio. Tomando como exemplo a fase de implantação de uma execução com $N=5$, o tempo médio é a média aritmética dos tempos de implantação das 5 coreografias, o desvio padrão é o desvio padrão dos tempos de implantação e o tempo total é o tempo gasto para que as coreografias sejam implantadas. Para cada valor de $N$, coletamos uma amostra de 10 execuções\footnote{Os dados brutos coletados durante as execuções se encontram em \\ \url{http://ccsl.ime.usp.br/baile/files/ee_scalability_sbrc2013.zip}}, não havendo nessas amostras execuções com falhas. 
 
