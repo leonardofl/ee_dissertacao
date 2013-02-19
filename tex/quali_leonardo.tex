@@ -169,24 +169,24 @@ framexrightmargin=10pt
     
     \vskip 2cm
     \textsc{
-    Texto de qualificação apresentado\\[-0.25cm] 
+    Texto apresentado\\[-0.25cm] 
     ao\\[-0.25cm]
     Instituto de Matemática e Estatística\\[-0.25cm]
     da\\[-0.25cm]
     Universidade de São Paulo\\[-0.25cm]
     para\\[-0.25cm]
     o exame de qualificação\\[-0.25cm]
-    de\\[-0.25cm]
-    Mestre em Ciência da Computação}
+    do\\[-0.25cm]
+    Mestrado em Ciência da Computação}
     
     \vskip 1.5cm
     %Programa: Nome do Programa\\
     Orientador: Prof. Dr. Marco Aurélio Gerosa\\
-    % Coorientador: Prof. Dr. Nome do Coorientador
+    Coorientador (informal): Prof. Dr. Fabio Kon
 
    	\vskip 1cm
     \normalsize{Durante o desenvolvimento deste trabalho o autor recebeu auxílio
-    financeiro pelo projeto CHOReOS, financiado pela Comissão Europeia, e pelo projeto Baile, financiado pela HP Labs}
+    financeiro pelo projeto CHOReOS, financiado pela Comissão Europeia, e pelo projeto Baile, financiado pela HP Brasil}
     
     \vskip 0.5cm
     \normalsize{São Paulo, fevereiro de 2013}
@@ -282,12 +282,12 @@ framexrightmargin=10pt
 % Resumo
 \chapter*{Resumo}
 
-\noindent LEITE, L. A. F. \textbf{Implantação automatizada de coreografias de serviços web \\
-    de grande escala em ambientes de computação em nuvem}. 
-2013. XXX f.  \Leo{XXX = número de folhas}
-Dissertação (Mestrado) - Instituto de Matemática e Estatística,
-Universidade de São Paulo, São Paulo, 2013.
-\\
+%\noindent LEITE, L. A. F. \textbf{Implantação automatizada de coreografias de serviços web \\
+%    de grande escala em ambientes de computação em nuvem}. 
+%2013. XXX f.  \Leo{XXX = número de folhas}
+%Dissertação (Mestrado) - Instituto de Matemática e Estatística,
+%Universidade de São Paulo, São Paulo, 2013.
+%\\
 
 %Elemento obrigatório, constituído de uma sequência de frases concisas e
 %objetivas, em forma de texto.  Deve apresentar os objetivos, métodos empregados,
@@ -295,27 +295,27 @@ Universidade de São Paulo, São Paulo, 2013.
 %no máximo 500 palavras e ser seguido dos termos representativos do conteúdo do
 %trabalho (palavras-chave). 
 
-A implantação automatizada é uma necessidade no ciclo de vida de um sistema, mas muitas organizações ainda realizam a implantação de seus sistemas de forma não-sistematizada, tornando o processo de implantação moroso, propenso a erros e não-reprodutível. Esses problemas se agravam ao implantar um sistema distribuído, como é o caso de coreografias de serviços web, que implementam processos de negócios distribuídos entre organizações. A implantação de uma coreografia deve ser coordenada, pois os serviços de uma coreografia precisam conhecer a localização dos outros serviços, informação possivelmente disponível apenas em tempo de implantação. Coreografias de grande escala são mantidas de forma distribuída por várias organizações e a presença de falhas na comunicação entre seus serviços se torna corriqueira. Essas duas características afetam também o processo de implantação de coreografias. Considerando as vantagens da virtualização na gerência de ambientes, o crescente uso da computação em nuvem pelas organizações e os requisitos de sistemas de grande escala, investigamos o uso da computação em nuvem na implantação de coreografias de serviços web. Para isso, desenvolvemos o CHOReOS Enactment Engine, um sistema de middleware que possibilita a implantação distribuída e automatizada de coreografias de serviços web, operando como um provedor de computação em nuvem na camada de Plataforma como um Serviço. Nosso middleware é avaliado pela sua escalabilidade em relação ao tempo de implantação das coreografias, operação para o qual a quantidade de serviços a ser implantada é considerada como carga do sistema, enquanto que a quantidade de máquinas virtuais acessíveis são os recursos do sistema. No atual estágio de implementação do Enactment Engine, experimentos preliminares de escalabilidade foram realizados, mostrando que um aumento de 50 vezes no número de serviços implantados provocou um aumento de cerca de apenas duas vezes no tempo de implantação quando os recursos do sistemas eram aumentados na mesma proporção que a carga aplicada, o que consideramos um resultado muito satisfatório.\\
+A implantação automatizada é uma necessidade no ciclo de vida de um sistema de grande escala, mas muitas organizações ainda realizam a implantação de seus sistemas de forma não-sistematizada, tornando o processo de implantação moroso, propenso a erros e não-reprodutível. Esses problemas agravam-se ao implantar um sistema distribuído, como é o caso de coreografias de serviços web, que implementam processos de negócios distribuídos entre várias organizações. A implantação de uma coreografia deve ser coordenada, pois os serviços de uma coreografia precisam conhecer a localização dos outros serviços, informação possivelmente disponível apenas em tempo de implantação. Coreografias de grande escala são mantidas de forma distribuída por várias organizações e a presença de falhas na comunicação entre seus serviços torna-se corriqueira. Considerando as vantagens da virtualização na gerência de ambientes, o crescente uso da computação em nuvem pelas organizações e os requisitos de sistemas de grande escala, investigamos o uso da computação em nuvem na implantação de coreografias de serviços web. Para isso, desenvolvemos o CHOReOS Enactment Engine, um sistema de middleware que possibilita a implantação distribuída e automatizada de coreografias de serviços web, operando como um provedor de computação em nuvem na camada de Plataforma como um Serviço. O middleware desenvolvido será avaliado pela sua escalabilidade em relação ao tempo de implantação das coreografias, operação para a qual a quantidade de serviços a ser implantada é considerada como carga do sistema, enquanto que a quantidade de máquinas virtuais acessíveis são os recursos do sistema. No atual estágio de implementação do Enactment Engine, experimentos preliminares de escalabilidade foram realizados, mostrando que um aumento de 50 vezes no número de serviços implantados provocou um aumento de cerca de apenas duas vezes no tempo de implantação quando os recursos do sistemas eram aumentados na mesma proporção que a carga aplicada, o que consideramos um resultado preliminar muito satisfatório.\\
 
-\noindent \textbf{Palavras-chave:} implantação, coreografias, serviços web, computação em nuvem, grande escala.
+\noindent \textbf{Palavras-chave:} implantação de software, coreografias, serviços web, computação em nuvem, grande escala.
 
 % ---------------------------------------------------------------------------- %
 % Abstract
 \chapter*{Abstract}
-\noindent LEITE, L. A. F. \textbf{Automated deployment of large scale web service choreographies in cloud computing environments}. 
-2013. XXX f. \Leo{XXX = número de folhas}
-Master thesis - Institute of Mathematics and Statistics,
-University of Sao Paulo, Brazil, 2013.
-\\
+%\noindent LEITE, L. A. F. \textbf{Automated deployment of large scale web service choreographies in cloud computing environments}. 
+%2013. XXX f. \Leo{XXX = número de folhas}
+%Master thesis - Institute of Mathematics and Statistics,
+%University of Sao Paulo, Brazil, 2013.
+%\\
 
 %Elemento obrigatório, elaborado com as mesmas características do resumo em
 %língua portuguesa. De acordo com o Regimento da Pós- Graduação da USP (Artigo
 %99), deve ser redigido em inglês para fins de divulgação. 
 
-Automated deployment is mandatory in the life cycle of a system. However, organizations still deploy their system manually, which is time-consuming, error-prone, and no-reproducible. These problems are even worse in distributed deployment, as occurs with web service choreographies, that implement distributed business process among organizations. The deployment of a choreography must be coordinated, since their services need to retrieve the endpoints of other participant services, and these endpoints may be available only at deployment time. Large scale choreographies are maintained by multiple organizations in a distributed way, and in such scenario communication faults are commonplace. These characteristics impact the deployment process too. Considering the virtualization advantages in environment management,  the increasing use of cloud computing by organizations, and large scale system requirements, we exploit the cloud computing usage in web service choreography deployment. This is achieved through the development of the CHOReOS Enactment Engine, a middleware system that enables the automated and distributed deployment of web service choreographies, operating as a cloud computing provider in the Platform as a Service layer. Our middleware is assessed by its scalability regarding choreography deployment time, for which the amount of services to be deployed is the system load, whereas the amount of available virtual machines are the system resources. The current Enactment Engine implementation was assessed regarding its scalability, and we observed an increase about only twice when the number of services was increased by 50 times, and the resources were increased in the same proportion than the load. We believe this result can be considered as very satisfactory.
+Automated deployment is mandatory in the life cycle of large-scale systems. However, some organizations still deploy their system manually, what is time-consuming, error-prone, and no-reproducible. These problems are even worse in distributed deployment, as occurs with web service choreographies, that implement distributed business process among many organizations. The deployment of a choreography must be coordinated, since their services need to retrieve the endpoints of other participant services, and these endpoints may be available only at deployment time. Large scale choreographies are maintained by multiple organizations in a distributed way, and in such scenario communication faults are commonplace. Considering the virtualization advantages in environment management,  the increasing use of cloud computing by organizations, and large scale system requirements, we exploit cloud computing in web service choreography deployment. This is achieved by means of the development of the CHOReOS Enactment Engine, a middleware system that enables the automated and distributed deployment of web service choreographies, operating as a cloud computing provider in the Platform as a Service layer. Our middleware is assessed by its scalability regarding choreography deployment time, for which the amount of services to be deployed is the system load, whereas the amount of available virtual machines are the system resources. The current Enactment Engine implementation was assessed regarding its scalability, and we observed an increase about only twice when the number of services was increased by 50 times, and the resources were increased in the same proportion than the load. We consider this preliminary result very satisfactory.
 \\
 
-\noindent \textbf{Keywords:} deployment, choreography, web services, cloud computing, large scale.
+\noindent \textbf{Keywords:} software deployment, choreography, web services, cloud computing, large scale.
 
 % ---------------------------------------------------------------------------- %
 % Sumário
@@ -341,7 +341,7 @@ Automated deployment is mandatory in the life cycle of a system. However, organi
          JDK & Java Development Kit \\
          JMS & Java Message Service \\
          JVM & Java Virtual Machine \\
-         LGPL & GNU Lesser General Public License \\
+%         LGPL & GNU Lesser General Public License \\
          MIL & Module Description Language \\
          MIME & Multipurpose Internet Mail Extensions \\
          NIST & The National Institute of Standards and Technology \\
