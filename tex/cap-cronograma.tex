@@ -36,15 +36,10 @@ Para a futura avaliação, desejamos cobrir os seguintes pontos:
 
 \begin{itemize}
 \item avaliação da capacidade de extensão do arcabouço através de sua utilização em cenários definidos por terceiros; para isso utilizaremos os ``casos de uso'' formulados pelo projeto CHOReOS~\cite{Choreos2011D6.1, Choreos2011D8.1};
-\item avaliar a escalabilidade do tempo de implantação ao implantar-se coreografias com centenas de serviços, e não somente centenas de pequenas coreografias;
+\item avaliar a escalabilidade do tempo de implantação ao implantar-se coreografias com vários serviços, e não somente várias de pequenas coreografias;
+\item utilização de um cenário com centenas de nós e milhares de serviços;
 \item avaliar o uso do \ee\ quando nem todos os serviços são corretamente encenados, o que fará uso da encenação idempotente;
 \item utilização tanto do serviço Amazon EC2, quanto de uma instalação privada de Open Stack como provedores de IaaS.
 \end{itemize}
 
 O objetivo da avaliação de escalabilidade continua sendo fazer com que o tempo de implantação mantenha-se constante, ou o mais próximo possível disso, quando estamos implantando um serviço por nó (variação proporcional de carga e recursos).
-
-\fabio{Acho muito importante incluir no plano de trabalho a realização de
-experimentos com a alocação de centenas de VMs para a instanciação de
-coreografias com milhares de serviços (e citar esses números
-explicitamente). Sem chegar nessas grandezas, ninguém vai comprar
-muito a ideia que o seu sistema comporta grande escala.}

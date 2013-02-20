@@ -2,7 +2,7 @@
 \chapter{Trabalhos relacionados}
 \label{cap:relacionados}
 
-Neste capítulo apresentaremos os trabalhos relacionados à nossa pesquisa e algumas ferramentas utilizadas pela comunidade referentes à implantação automatizada de serviços. 
+Neste capítulo apresentamos os trabalhos relacionados à nossa pesquisa e algumas ferramentas utilizadas pela comunidade referentes à implantação automatizada de serviços. 
 
 A automação do processo de implantação requer uma descrição formal do sistema a ser implantado, contendo as informações necessárias para sua instanciação. Portanto, um dos aspectos fundamentais de um processo de implantação automatizado é a linguagem de configuração utilizada para definir o processo de implantação. Essa linguagem pode ser procedimental~\cite{Dolstra2005Configuration} ou declarativa~\cite{Magee1996Dynamic, Balter1998Olan}. Outro aspecto relevante é o escalonamento de recursos computacionais para os serviços a serem implantados, o que pode ser feito, por exemplo, com o auxílio de sistemas de computação em grade~\cite{Watson2006Dynasoar}.
 
@@ -28,7 +28,7 @@ Embora os trabalhos de Watson et al. e Lacour et al. avancem na problemática da
 
 Uma tendência recente para se atingir os objetivos de uma implantação simples, rápida, automatizada e escalável é a utilização de serviços de computação em nuvem que oferecem Plataforma como um Serviço (PaaS), que se encarregam não só da implantação da aplicação, como também do processo de criação e configuração do ambiente. O Cloud Foundry\footnote{\url{http://www.cloudfoundry.com/}} é um PaaS de código aberto, podendo ser instalado na infraestrutura de uma organização para a oferta de serviços a clientes internos ou externos. O Cloud Foundry suporta uma grande diversidade de linguagens, arcabouços e bancos de dados a serem utilizados pela aplicação. Operadores do Cloud Foundry podem configurá-lo para utilizar diferentes provedores de Infraestrutura como um Serviço (IaaS), desacoplando as escolhas de IaaS e PaaS, o que será também adotado no \ee. O Cloud Foundry tem como objetivo facilitar a implantação de aplicações web, e não a implantação de composições de serviços. Durante a implantação de uma aplicação pelo Cloud Foundry, o operador pode realizar ligações entre a aplicação e serviços tipicamente utilizados por aplicações web, como bancos de dados, que serão criados e configurados pela própria plataforma. Essa escolha deve ser feita dentro de um conjunto fechado de serviços oferecidos (MySQL, MongoDB, etc.). No entanto, ao implantar-se composições de serviços é preciso estabelecer também ligações entre os próprios serviços sendo implantados, cenário não considerado pelos atuais provedores de PaaS.
 
-A Tabela~\ref{tab:relacionados} realiza uma comparação entre os estudos e ferramentas apresentados em relação a características presentes em nossa solução. As letras na tabela possuem os seguintes significados: ``S'' para ``sim'', ``N'' para ``não'', ``n'' para ``não de forma totalmente satisfatória'' e ``X'' para quando a característica não se aplica ou não foi possível determinar. As características, que formam as colunas da tabela, são listadas a seguir:
+A Tabela~\ref{tab:relacionados} realiza uma comparação entre os estudos e ferramentas apresentados em relação a características presentes em nossa solução. Os símbolos na tabela possuem os seguintes significados: ``\checkmark{}'' para ``possui a característica'', espaço vazio para ``não possui a característica'', ``+/-'' para ``não possui a característica de forma totalmente satisfatória'' e ``-'' para quando a característica não se aplica ou não foi possível determinar. As características, que formam as colunas da tabela, são listadas a seguir:
 
 \begin{description}
 \item [Automatizado:] processo de implantação automatizado;
@@ -38,33 +38,28 @@ A Tabela~\ref{tab:relacionados} realiza uma comparação entre os estudos e ferr
 \item [Nuvem:] consideração das potencialidades e desafios trazidos por ambientes de computação em nuvem.
 \end{description}
 
-\Fabio{essa tabela está com legibilidade ruim. Inicialmente, eu trocaria N por espaço em branco
-trocaria S por um \checkmark{}; trocaria X por - trocaria n por +/-; finalmente, incluiria uma última linha para o CHOReOS Enactment Engine}
-
 \begin{table}[!t]
 \begin{center}
     \begin{tabular}{l c c c c c c}
 	 \hline
 	 \itshape{Trabalho} & \itshape{Automatizado} & \itshape{ADL} & \itshape{Escala} & \itshape{Composições} & \itshape{Nuvem}  \\ \hline
-    \cite{Magee1994Regis, Magee1996Dynamic} & X & S & N & S & N \\
-    \cite{Balter1998Olan}   & X & S & N & S & N \\
-    \cite{quema2004hierarchical}  & S & S & n & S & N \\
-    \cite{akkerman2005j2ee}   & n & S & X & S & X \\
-    \cite{Lacour2004Corba} & S & X & N & S & N \\
-    \cite{Dolstra2005Configuration}   & S & N & X & X & N \\
-    \cite{Watson2006Dynasoar}   & S & X & n & S & N \\
-    Chef   & S & N & X & X & X \\
-    Capistrano   & S & N & X & X & X \\
-    Cloud Foundry   & S & X & S & N & S \\
-
+    \cite{Magee1994Regis, Magee1996Dynamic} & - & \checkmark  &  & \checkmark &  \\
+    \cite{Balter1998Olan}   & - & \checkmark &  & \checkmark &  \\
+    \cite{quema2004hierarchical}  & \checkmark & \checkmark & +/- & \checkmark &  \\
+    \cite{akkerman2005j2ee}   & +/- & \checkmark & - & \checkmark & - \\
+    \cite{Lacour2004Corba} & \checkmark & - &  & \checkmark &  \\
+    \cite{Dolstra2005Configuration}   & \checkmark &  & - & - &  \\
+    \cite{Watson2006Dynasoar}   & \checkmark & - & +/- & \checkmark &  \\
+    Chef   & \checkmark &  & - & - & - \\
+    Capistrano   & \checkmark &  & - & - & - \\
+    Cloud Foundry   & \checkmark & - & \checkmark &  & \checkmark \\
+    \ee   & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
     \end{tabular}
-  \caption{Tabela comparativa entre trabalhos relacionados}
-  \label{tab:relacionados}
+  \caption{Tabela comparativa com os trabalhos relacionados}
+   \label{tab:relacionados}
 \end{center}
 \end{table}
 
-\fabio{o capítulo termina abruptamente, de repente. 
-Incluir pequeno parágrafo para fazer a ponte para o capítulo seguinte.}
-
+No próximo capítulo prosseguimos mostrando como o \ee\ implementa as características descritas. Também mostraremos os resultados de uma avaliação preliminar da escalabilidade do processo de implantação  automatizado pelo \ee.
 
 
