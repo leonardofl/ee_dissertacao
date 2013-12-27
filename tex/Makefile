@@ -32,6 +32,6 @@ $(BASE_NAME).ps: $(BASE_NAME).tex
 	
 clean:
 	rm -f $(BASE_NAME)*.ps $(BASE_NAME)*.dvi *.log \
-	      *.aux *.blg *.toc *.brf *.ilg *.ind \
+	      *.aux *.blg *.toc *.brf *.ilg *.ind *.gz \
 	      missfont.log $(BASE_NAME)*.bbl $(BASE_NAME)*.out \
 		  $(BASE_NAME)*.lof $(BASE_NAME)*.lot 
