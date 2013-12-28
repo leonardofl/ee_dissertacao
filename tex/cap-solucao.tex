@@ -1,18 +1,29 @@
 \chapter{Solução Proposta}
 \label{cap:solucao}
 
-Considerando os requisitos de coreografias de serviços web, de uso da computação em nuvem e de sistemas em grande escala, projetamos e implementamos um arcabouço de middleware para a implantação de coreografias de serviços web denominado CHOReOS \ee. Os serviços oferecidos pelo nosso arcabouço integram-se ao Ambiente Integrado de Desenvolvimento e Execução CHOReOS, que visa fornecer todo o processo de desenvolvimento, implantação e governança de coreografias de serviços web. Para a implementação do arcabouço Enactment Engine contribuíram Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O código-fonte do \ee\ é software livre 
+
+Neste capítulo, nós apresentamos a arquitetura e aspectos de implementação do \choreos \ee (EE).   
+Incluímos na descrição os pontos de extensão do arcabouço, e destacamos
+como as decisões arquiteturais e de implementação auxiliam o implantador
+a superar os desafios presentes na implantação de coreografia de grande escala.
+
+Para a implementação do arcabouço Enactment Engine contribuíram Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O \ee é software livre 
 sob a Licença Pública da Mozilla 2\footnote{\url{http://www.mozilla.org/MPL/2.0/}} 
 e está disponível em \url{http://ccsl.ime.usp.br/enactmentengine}. 
 
-Neste capítulo, descrevemos a arquitetura do arcabouço proposto, incluindo os pontos de extensão previstos. Destacamos os aspectos cobertos e não cobertos dos requisitos de sistemas de grande escala. Apresentamos também o estado atual da implementação do arcabouço, assim como os resultados experimentais sobre sua escalabilidade obtidos até o momento.
+Alguns aspectos aqui discutidos serão o tratados em alto nível,
+priorizando o que é importante para o entendimento das contribuições
+acadêmicas deste trabalho.
+Detalhes de mais baixo nível, principalmente do ponto de vista do
+usuário, podem ser encontrados no \userguide.
+
+Conforme já anunciado no Capítulo~\ref{cap:implantacao},
+lembramos que para as descrições que se seguem utilizaremos
+termos técnicos como definidos no DEPL~\cite{DEPL2006}.
 
 \section{Arquitetura}
 
-\todo{atenção, estaremos utilizando a nomenclatura do DEPL, como definida no cap 2}
-
 A arquitetura do \ee é exibida na Figura~\ref{fig:arquitetura}.
-\todo{quais fizemos e quais são prontos}
 
 \begin{figure}[ht]
 \centering
@@ -23,7 +34,9 @@ A arquitetura do \ee é exibida na Figura~\ref{fig:arquitetura}.
 
 \begin{itemize}
 
-\item O \emph{Cloud Gateway} é um serviço capaz de criar e destruir máquinas virtuais (também chamadas de \emph{nós}), normalmente em um ambiente de computação em nuvem. Atualmente o \ee suporta o Amazon EC2 e o OpenStack.
+\item O \emph{Cloud Gateway} é um serviço de terceiros capaz de criar e destruir máquinas virtuais 
+(também chamadas de \emph{nós}), normalmente em um ambiente de computação em nuvem. 
+Atualmente o \ee suporta o Amazon EC2 e o OpenStack.
 
 \item O \emph{agente de configuração} é executado nos nós alvos
 e dispara os scripts que implementam as fases de preparação
@@ -31,26 +44,19 @@ e inicialização da implantação dos serviços.
 O \ee utiliza o Chef Solo\footnote{\url{http://docs.opscode.com/chef_solo.html}}
 como seu agente de configuração.
 
-\item O \emph{\ee} em si...
+\item O \emph{cliente do \ee} é um programa ou script desenvolvido
+pelo implantador, onde a especificação da coreografia é definida.
+Esse script deve enviar a especificação da coreografia para o \ee
+através das operações REST fornecidas pelo \ee.
+Uma opção para implementar essas chamadas é utilizar
+a biblioteca Java por nós fornecidas, que abstrai os detalhes
+das chamadas REST.
 
-%
-%\item The \emph{\dm} deploys services in a cloud environment. 
-%	It receives a declarative service specification and creates or selects the
-%    node onto which the service will be deployed, possibly considering service
-%    non-functional requirements. The \dm\ converts the received specification
-%    into scripts that prepares and execute the service
-%    processes. It also runs the Configuration Agent on the target nodes,
-%    where services are actually deployed. 
-%    Each \dm\ is associated with a cloud infrastructure account.
-%
-%\item The \emph{\cd}, based on a choreography specification, 
-%    coordinates invocations to multiple \dm{s}
-%    belonging to participant organizations. When services are
-%    already running, the \cd\ performs \emph{service binding}, 
-%    so participant services are informed about the location of each other.
-%
-
-\item O \emph{cliente do \ee} ...
+\item O \emph{\ee} implanta os serviços da coreografia
+com base na especificação enviada pelo cliente.
+O processo implementado pelo \ee para efetuar a implementação
+é descrito na Figura~\ref{fig:processo}, e explicado logo em seguida. 
+\todo{explicar q é um serviço, mas q deve ser instalado}
 
 \end{itemize} 
 
@@ -65,27 +71,65 @@ de serviços implementado pelo \ee:
 \end{figure}
 
 \begin{enumerate}
-\item \emph{Requisição do cliente:}
-\item \emph{Seleção/criação de nós}:
-\item \emph{Geração de scripts}:
-\item \emph{Atualização dos nós}:
-\item \emph{Ligação entre serviços}:
-\item \emph{Resposta para o cliente}:
 
-%\item \emph{Client request:} receives the specification of the service composition to be deployed.
-%\item \emph{Node selection:} selects one or more cloud nodes where each service will be deployed, creating new nodes if necessary and accommodating service non-functional requirements.
-%\item \emph{Scripts generation:} dynamically creates scripts for environment configuration and service launching. 
-%\item \emph{Nodes update:} executes the scripts on the selected nodes, so that services are installed and launched.
-%\item \emph{Service binding:} injects addresses of service dependencies (other participant services in the composition).
-%\item \emph{Response to client:} sends the response to the client, informing which services were deployed in which nodes, and the service URIs enabling runtime monitoring.
+\item \emph{Requisição do cliente:} o EE recebe a especificação da coreografia a ser implantada.
+O formato dessa especificação é descrito na Seção~\ref{sec:spec}.
+
+\item \emph{Seleção/criação de nós}: para cada serviço especificado, o EE seleciona um ou mais nós 
+onde o serviço será implantado (um serviço pode ter várias réplicas implantadas). 
+Se preciso, o EE requisitará ao Cloud Gateway a criação de novos nós.
+Esse processo de seleção/criação de nós pode levar em conta os requisitos não-funcionais
+dos serviços a serem implantados.
+A política de seleção de nós é extensível, sendo definida pela organização
+gerenciadora da instância do EE em execução. Algumas políticas já fornecidas são
+``sempre cria um novo nó'' e ``cria novos nós até um certo limite, depois faz rodízio entre eles''.
+Mais informações sobre a extensibilidade da política de seleção
+são fornecidas na Seção~\ref{sec:extensao}.
+
+\item \emph{Geração de scripts}: para cada serviço da coreografia, o EE gera dinamicamente os scripts de configuração do ambiente e inicialização do serviço. 
+O EE configura então o agente de configuração do nó alvo para aquele serviço 
+para que o script seja executado.
+
+\item \emph{Atualização dos nós}: para cada nó alvo que receberá serviços da coreografia,
+o EE dispara a execução do agente de configuração, de forma que o serviço é efeticamente
+implantado e inicializado no nó.
+
+\item \emph{Ligação entre serviços}: após os serviços terem sido iniciados, 
+para cada relação de dependência na coreografia (ex: serviço \textsf{TravelAgency}
+depende do serviço \textsf{Airline}), o EE fornece o endereço da dependência 
+(ex: \url{http://airline.com/ws}) ao serviço dependente.
+Mais informações sobre o processo de ligação são fornecidas na Seção~\ref{sec:ligacao}.
+A implementação padrão para efetivar a ligação entre serviços, é a invocação de uma
+operação SOAP, denominada \texttt{setInvocationAddress} no serviço dependente. 
+Esse comportamento padrão pode ser modificado por extensão do EE,
+conforme explicado adiante na Seção~\ref{sec:extensao}.
+
+\item \emph{Resposta para o cliente}: o EE responde ao seu cliente,
+fornecendo informações sobre em que nó cada serviço foi implantado,
+e as URIs de acesso a cada serviço da coreografia.
+O formato da resposta é descrito na Seção~\ref{sec:spec}.
+
 \end{enumerate}
 
-%Additionally, there are optional steps such as setting up a monitoring infrastructure, both at cloud resource and service level. To monitor cloud resources (e.g., VM memory, CPU, and network usage), the \EE installs a monitoring agent (Ganglia\footnote{\url{http://ganglia.sourceforge.net}}) in each node. To perform service-level monitoring, services may be bound automatically to a distributed Enterprise Service Bus node (EasyESB\footnote{\url{https://research.petalslink.org/display/easyesb}}).
+Há também alguns outros passos opcionais que não são aqui descrito por estarem fora
+do escopo deste trabalho. Um exemplo é a implantação da infra-estrutura de monitoramento
+dos nós alvos. O agente de monitoramento 
+(Ganglia\footnote{\url{http://ganglia.sourceforge.net}})
+é implantado nos nós alvos pelo EE e
+coleta valores de uso de CPU, memória e disco dos nós.
+\todo{para onde isso é enviado?}
 
+\section{Especificação da coreografia}
+\label{sec:spec}
 
-\section{Interface}
+\section{Ligação entre serviços}
+\label{sec:ligacao}
+
+\section{Interface do \ee}
+\label{sec:interface}
 
 \section{Pontos de extensão}
+\label{sec:extensao}
 
 \section{Aspectos gerais de implementação}
 
