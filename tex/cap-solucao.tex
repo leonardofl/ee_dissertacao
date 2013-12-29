@@ -1,16 +1,37 @@
 \chapter{Solução Proposta}
 \label{cap:solucao}
 
+O CHOReOS \ee (EE) é um middleware implementado no contexto deste trabalho.
+Uma vez instanciado, ele fornece serviços que automatizam
+a implantação de composições de serviços em ambientes de computação em nuvem,
+funcionando no modelo de computação em nuvem denominado Plataforma como um Serviço (PaaS).
 
-Neste capítulo, nós apresentamos a arquitetura e aspectos de implementação do \choreos \ee (EE).   
-Incluímos na descrição os pontos de extensão do arcabouço, e destacamos
-como as decisões arquiteturais e de implementação auxiliam o implantador
-a superar os desafios presentes na implantação de coreografia de grande escala.
+Para utilizar o EE, o usuário (implantador) deve descrever a composição a ser implantada
+na Linguagem de Descrição Arquitetural do EE, uma especificação de alto nível que
+diz \emph{o que} deve ser implantado, e não o \emph{como}. 
+Finalmente, o usuário deve fornecer essa descrição ao EE através de sua API remota.
+
+As funcionalidades fornecidas pelo \ee ao usuário são as seguintes:
+
+\begin{itemize}
+\item Criação automatiza de infraestrutura virtualizada (nós na nuvem).
+\item API para automatizar a implantação de coreografias na nuvem.
+\item Implantação escalável de coreografias de grande escala.
+\item Suporte a implantação multi-nuvem.
+\item Utilização de serviços de terceiros na composição a ser implantada.
+\item Implantação automatizada de infraestrutura de monitoramento dos recursos utilizados.
+\item Deleção automática de recursos da nuvem não utilizados.
+\item API para escalamento vertical e horizontal.
+\end{itemize}
 
 Para a implementação do arcabouço Enactment Engine contribuíram Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O \ee é software livre 
 sob a Licença Pública da Mozilla 2\footnote{\url{http://www.mozilla.org/MPL/2.0/}} 
 e está disponível em \url{http://ccsl.ime.usp.br/enactmentengine}. 
 
+Neste capítulo, nós apresentamos a arquitetura e aspectos de implementação do \ee.   
+Destacamos ao final do capítulo
+como as decisões arquiteturais e de implementação auxiliam o implantador
+a superar os desafios presentes na implantação de coreografia de grande escala.
 Alguns aspectos aqui discutidos serão o tratados em alto nível,
 priorizando o que é importante para o entendimento das contribuições
 acadêmicas deste trabalho.
