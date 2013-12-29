@@ -8,7 +8,20 @@ Embora nosso trabalho foque na implantação de serviços, os conceitos para imp
 Mas no contexto de implantação, pode-se dizer que a principal diferença seja o fato de que o \emph{implantador} do serviço seja a própria organização que o desenvolveu, enquanto que o conceito de componentes está mais ligado a um suposto mercado de componentes, em que uns desenvolvem, empacotam e publicam o componente, enquanto que outros adquirem e implantam o componente.
 
 Quando possível, utilizaremos a terminologia estabelecida pelo DEPL em nosso trabalho.
-\emph{Implantador} é a pessoa, ou organização, que é a ``dona'' do componente, e que será responsável pelo processo de implantação. Não é o software que propriamente realiza o processo de implantação. A máquina, ou conjunto de máquinas, onde os componentes serão implantados chama-se \emph{ambiente alvo}. E as fases do processo de implantação de um sistema são as seguintes:
+Os principais termos definidos no DEPL e utilizados neste trabalho são os seguintes:
+
+\begin{description}
+\item [Implantador:] é a pessoa, ou organização, que é a ``dona'' do componente, e que será responsável pelo processo de implantação. Não é o software que propriamente realiza o processo de implantação.
+\item [Ambiente alvo:] a máquina, ou conjunto de máquinas, onde os componentes serão implantados.
+\item [Nó:] um recurso computacional onde se implanta um componente, 
+como por exemplo uma máquina virtual; faz parte do ambiente alvo.
+\item [Pacote:] artefato executável que contém o código binário do componente.
+É através do pacote que um serviço pode ser instalado e executado em um determinado
+sistema operacional. Existem pacotes dependentes de sistema operacional (ex: deb, rpm),
+e pacotes independentes de sistema operacional (ex: jar, war).
+\end{description}
+
+O DEPL define ainda as seguintes fases do processo de implantação de um sistema:
 
 \begin{description}
 \item [Instalação:] o implantador transfere o componente adquirido para sua própria infraestrutura; a instalação está relacionada ao processo de aquisição do componente, e não se trata de mover o componente para o ambiente alvo, no qual será executado. Consideramos que essa fase não se aplica à implantação de serviços, pois após o desenvolvimento e empacotamento, o serviço já é de propriedade do implantador e já se encontra em sua infraestrutura.

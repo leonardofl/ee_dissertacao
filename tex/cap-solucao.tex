@@ -163,6 +163,8 @@ são apresentados no \userguide.
   \label{fig:adl} 
 \end{figure}
 
+\todo{destacar q a chor spec mostra oq, e não o como}
+
 A especificação da coreografia fornece todas as informações para a implantação da composição.
 Para cada serviço, especifica-se de onde o pacote do serviço pode ser baixado
 e qual o tipo do pacote (WAR, JAR, etc.).
@@ -363,7 +365,7 @@ Formas similares dessa funcionalidade são também utilizadas em estudos já apr
 
 Para avançar em relação às limitações dos trabalhos anteriormente citados,  consideramos como requisitos principais a dinamicidade do ambiente de nuvem, que nos impede de conhecer os IPs das máquinas em tempo de configuração, bem como a flexibilidade para que cada organização determine os requisitos de distribuição dos serviços.
 
-\item [Tipos de pacotes de serviços:] um serviço pode ser distribuído por diferentes tipos de artefatos implantáveis, como em um JAR ou em um WAR, por exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada serviço, pode-se escrever uma receita Chef que sabe como instalar e executar esse serviço. \todo{falar dos tokens injetados pelo EE}.
+\item [Tipos de pacotes de serviços:] um serviço pode ser distribuído por diferentes tipos de pacotes, como em um JAR ou em um WAR, por exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada serviço, pode-se escrever uma receita Chef que sabe como instalar e executar esse serviço. \todo{falar dos tokens injetados pelo EE}.
 
 \item [Tipos de serviços:] a ligação entre serviços de uma coreografia depende da passagem de endereços que é feita do \ee para os serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação dar-se-á de forma diferente se o serviço for SOAP ou REST. A implementação da interface \textsf{ContextSender} possibilita ao EE realizar a invocação da operação \texttt{setInovcationAddress} em serviços de outras tecnologias (JMS e CORBA por exemplo). Nota-se que para cada um desses tipos de serviços adicionados pelo usuário, é preciso criar uma convenção para a assinatura sintática da operação \texttt{setInvocationAddres}.
 
