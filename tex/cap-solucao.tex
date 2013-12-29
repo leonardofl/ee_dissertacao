@@ -159,7 +159,7 @@ language=Java,
 }
 
 {\scriptsize
-\begin{lstlisting}[breaklines, caption={Trecho da especificação de uma coreografia}, label={lst:service_spec}]
+\begin{lstlisting}[breaklines, caption={Trecho da especificação de uma coreografia.}, label={lst:service_spec}]
 airportBusCompanySpec =
   new DeployableServiceSpec(AIRPORT_BUS_COMPANY, ServiceType.SOAP, PackageType.COMMAND_LINE, resourceImpact, serviceVersion, AIRPORT_BUS_COMPANY_JAR_URL, AIRPORT_BUS_COMPANY_PORT, AIRPORT_BUS_COMPANY, numberOfReplicas);
 airportBusCompanySpec.setRoles(
@@ -236,7 +236,28 @@ atualização dinâmica, dentre os quais destacamos a proposta de Xiaoxing et al
 
 \end{description}
 
-\todo{exemplo de uso da API Java}
+Na Listagem~\ref{lst:java_chor_enactment} fornecemos um exemplo de como seria
+um programa Java invocando o \ee para implantar uma coreografia.
+Nesse exemplo, a classe \textsf{MyChorSpec} está escondendo a declaração
+da especificação da coreografia.
+
+\begin{lstlisting}[breaklines, caption={Programa Java que invoca o \ee para implantar uma coreografia.}, label={lst:java_chor_enactment}]
+public class Enactment {
+
+    public static void main(String[] args) throws EnactmentException, ChoreographyNotFoundException {
+
+        final String EE_URI = "http://localhost:9102/enactmentengine";
+        EnactmentEngine ee = new EnactmentEngineClient(EE_URI);
+        ChoreographySpec chorSpec = MyChorSpec.getChorSpec();
+
+        String chorId = ee.createChoreography(chorSpec);
+        Choreography chor = ee.enactChoreography(chorId);
+
+        System.out.println(chor); // vamos ver o que aconteceu...
+    }
+}
+\end{lstlisting}
+
 
 \section{Pontos de extensão}
 \label{sec:extensao}
