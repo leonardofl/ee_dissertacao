@@ -122,6 +122,53 @@ coleta valores de uso de CPU, memória e disco dos nós.
 \section{Especificação da coreografia}
 \label{sec:spec}
 
+O Enactment Engine recebe de seus clientes a especificação da coreografia na forma 
+de uma descrição arquitetural com as informações necessárias e suficientes para 
+que se possa realizar a implantação da coreografia. 
+O Enactment Engine também devolve ao seu cliente informações sobre a implantação da coreografia, 
+em especial as localizações de acesso aos serviços. As descrições da coreografia e de sua 
+especificação são feitas com uma Linguagens de Descrição Arquitetural, assim como a dos trabalhos vistos no Capítulo~\ref{cap:relacionados}. 
+A nossa ADL consiste na descrição de objetos relacionados entre si seguindo 
+a estrutura de classes apresentada na Figura~\ref{fig:adl}. 
+Em nossa implementação, essa descrição é realizada com representações em XML, 
+que são trocadas entre o Enactment Engine e seu cliente. 
+A descrição detalhada de cada atributo e o \emph{schema} XML da linguagem
+são apresentados no \userguide.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=.90\textwidth]{adl.pdf} 
+  \caption{Estrutura da descrição arquitetural de uma coreografia}
+  \label{fig:adl} 
+\end{figure}
+
+A especificação da coreografia fornece todas as informações para a implantação da composição.
+Para cada serviço, especifica-se de onde o pacote do serviço pode ser baixado
+e qual o tipo do pacote (WAR, JAR, etc.).
+Pode-se também especificar também para a coreografia a existência de serviços
+de terceiros que já estão disponíveis na Internet e que devem
+ser consumidos por serviços da coreografia.
+O implantador pode escrever a especificação da coreografia diretamente em XML
+ou utilizar objetos Java (POJOs).
+A Listagem~\ref{lst:service_spec} apresenta um trecho da especificação de uma coreografia,
+no qual um dos serviços participantes é definido,
+incluindo sua dependência de outro serviço da coreografia.
+
+\lstset{
+language=Java,
+}
+
+{\scriptsize
+\begin{lstlisting}[breaklines, caption={Trecho da especificação de uma coreografia}, label={lst:service_spec}]
+airportBusCompanySpec =
+  new DeployableServiceSpec(AIRPORT_BUS_COMPANY, ServiceType.SOAP, PackageType.COMMAND_LINE, resourceImpact, serviceVersion, AIRPORT_BUS_COMPANY_JAR_URL, AIRPORT_BUS_COMPANY_PORT, AIRPORT_BUS_COMPANY, numberOfReplicas);
+airportBusCompanySpec.setRoles(
+  Collections.singletonList(AIRPORT_BUS_COMPANY));
+airportBusCompanySpec.addDependency(
+  new ServiceDependency(AIRPORT_name, AIRPORT_endpoint));
+\end{lstlisting}
+}
+
 \section{Ligação entre serviços}
 \label{sec:ligacao}
 
