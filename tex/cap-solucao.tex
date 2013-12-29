@@ -186,6 +186,58 @@ Apesar dos benefícios de uma solução como essa, Dearle~\cite{Dearle2007PastPr
 \section{Interface do \ee}
 \label{sec:interface}
 
+Os clientes do \ee utilizam suas funcionalidades por meio de uma API REST, que é descrita nesta seção. 
+Por se tratar de uma API REST, o cliente pode ser implementado em qualquer linguagem 
+e ambiente que possua alguma biblioteca HTTP. 
+Também disponibilizamos um cliente na forma de uma biblioteca na linguagem Java, 
+tornando o uso do \ee ainda mais simples para os usuários da linguagem Java, 
+atualmente uma das mais utilizadas do mercado. 
+Seguimos agora com uma descrição de alto nível de cada uma das operações disponíveis 
+na API REST do \ee. Detalhes da API, como os códigos de status HTTP retornados, 
+são fornecidos no \userguide.
+
+\begin{description}
+
+\item [Criar coreografia:] registra a especificação de uma coreografia no \ee. 
+Essa especificação é a descrição arquitetural da coreografia, 
+estruturada de acordo com a classe \textsf{ChorSpec} (ver Seção~\ref{sec:spec}). 
+Essa operação não realiza a implantação da coreografia.
+
+\item [Obter coreografia:] obtém informações sobre uma coreografia registrada no \ee. 
+Essas informações referem-se à especificação da coreografia e ao estado da implantação 
+de seus serviços, como os nós em que os serviços foram implantados, 
+no caso de a implantação já ter sido realizada.
+
+\item [Encenar coreografia:] realiza a implantação de uma coreografia já registrada no \ee. 
+Ao fim do processo, detalhes do resultado da implantação são retornados na representação XML da coreografia. 
+A implementação dessa operação deve possuir duas importantes propriedades: 
+1) a falha na encenação de parte da coreografia não deve interromper a encenação do resto da coreografia; 
+2) a operação deve ser \emph{idempotente}, ou seja, uma nova requisição para a encenação da mesma 
+coreografia não deve tentar implantar os serviços já implantados, 
+mas somente aqueles cujas implantações falharam na última execução. 
+Para que serviços sejam atualizados, é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço.
+
+\item [Atualizar coreografia:] registra uma nova versão de uma coreografia no \ee. 
+Os serviços atualizados na nova versão da coreografia devem possuir 
+um novo número de versão em suas especificações. 
+Essa operação, assim como a criação da coreografia, não encena a nova coreografia. 
+Para isso, é preciso invocar novamente a operação de encenação.
+
+A atualização de serviços não é o foco de nosso trabalho.
+Dessa forma, em nosso trabalho a atualização dos serviços será feita da forma mais simples possível: 
+apenas substituindo o serviço existente por sua nova versão. 
+Contudo, tal procedimento pode provocar falhas na comunicação entre os serviços de uma coreografia. 
+Vários trabalhos \cite{Kramer1990Philosophers, Vandewoude2007Tranquility, Xiaoxing2011VersionConsistent} 
+estudam o processo de atualização dinâmica, pelo qual as conversações correntes 
+são preservadas durante a atualização de um serviço. 
+Embora não esteja no escopo de nosso trabalho, esperamos que a arquitetura do \ee possa ser 
+evoluída para que a operação de atualização de coreografia utilize procedimentos seguros de 
+atualização dinâmica, dentre os quais destacamos a proposta de Xiaoxing et al~\cite{Xiaoxing2011VersionConsistent}.
+
+\end{description}
+
+\todo{exemplo de uso da API Java}
+
 \section{Pontos de extensão}
 \label{sec:extensao}
 
