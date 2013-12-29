@@ -262,6 +262,99 @@ public class Enactment {
 \section{Pontos de extensão}
 \label{sec:extensao}
 
+Para lidar com as particularidades do ambiente de cada organização, o Enactment Engine fornece alguns pontos de extensão. Esses pontos de extensão são classes que desenvolvedores devem escrever na linguagem Java e que, de acordo com as configurações do sistema, poderão ser executadas pelo arcabouço.
+Neste capítulo descreveremos os pontos de extensão de nosso middleware, 
+mostrando as interface associadas a cada um deles.
+Para mais detalhes sobre todos os passos necessários para implementar
+uma extensão, verificar o \userguide.
+
+\begin{description}
+
+\item [Infraestrutura de nuvem:] implementando a interface \textsf{CloudProvider} é possível o suporte a novas plataforma de computação em nuvem. Atualmente nossa implementação suporta o serviço EC2 do AWS e o OpenStack.
+
+\begin{lstlisting}[frame=trbl, label=lst:cloud_provider, caption=Interface CloudProvider]
+/**
+ * Provides access to cloud service functions to create nodes on the cloud. 
+ * 
+ * Each specific provider (e.g. AmazonWS) must have an implementing class of this interface.
+ * 
+ */
+public interface CloudProvider {
+
+	public String getproviderName();
+	
+	public Node createNode(Node node) throws RunNodesException;
+
+	public Node getNode(String nodeId) throws NodeNotFoundException;
+
+	public List<Node> getNodes();
+
+	public void destroyNode(String id) throws NodeNotDestroyed, NodeNotFoundException;
+
+	public Node createOrUseExistingNode(Node node) throws RunNodesException;
+
+}
+\end{lstlisting}
+
+\todo{Classe base: JCloudsCloudProvider}
+
+\item [Política de seleção de nós:] a implementação da interface \textsf{NodeSelector} define uma nova política de alocação de serviços em nós da nuvem, que pode levar em conta os requisitos não-funcionais do serviço e propriedades dos nós à disposição.
+
+\begin{lstlisting}[frame=trbl, label=lst:node_selector, caption=Interface NodeSelector]
+/**
+ * Selects a node to apply a given configuration
+ * 
+ * The selection can consider functional requirements, which is provided by config.name and non-functional requirements, which is provided by config.resourceImpact
+ * Implementing classes must receive a CloudProvider
+ * 
+ */
+public interface NodeSelector {
+
+	public Node selectNode(Config config);
+}
+\end{lstlisting}
+
+Formas similares dessa funcionalidade são também utilizadas em estudos já apresentados na seção de trabalhos relacionados.  O trabalho de Magee e Kramer~\cite{Magee1997Corba} apresenta a seleção de nós em função da utilização de CPUs nos nós existentes, não havendo possibilidade de utilização de outros critérios, como memória, disco, custo etc. Nos sistemas apresentados por Dolstra et al.~\cite{Dolstra2005Configuration} e Balter et al.~\cite{Balter1998Olan} é preciso que a distribuição dos serviços seja especificada com o uso dos IPs das máquinas nas quais os serviços devem ser implantados, o que não é possível em um ambiente de nuvem. Por fim, o \emph{broker} apresentado por Watson et al. é o componente que mais se assemelha ao nosso NodeSelector, pois os autores deixam claro que várias implementações diferentes são possíveis, considerando-se diferentes tipo de requisitos e diferentes fontes de monitoramento. Como a escolha é feita em tempo de execução do serviço, seria também possível uma seleção que independa de IPs estabelecidos em tempo de projeto. No entanto, os autores não explicam como os usuários de seu sistema, os provedores de infraestrutura, deveriam proceder para criar seus próprios \emph{brokers} personalizados.
+
+Para avançar em relação às limitações dos trabalhos anteriormente citados,  consideramos como requisitos principais a dinamicidade do ambiente de nuvem, que nos impede de conhecer os IPs das máquinas em tempo de configuração, bem como a flexibilidade para que cada organização determine os requisitos de distribuição dos serviços.
+
+\item [Tipos de pacotes de serviços:] um serviço pode ser distribuído por diferentes tipos de artefatos implantáveis, como em um JAR ou em um WAR, por exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada serviço, pode-se escrever uma receita Chef que sabe como instalar e executar esse serviço. Como essas receitas são criadas dinamicamente com base em modelos pré-definidos e propriedades do serviço a ser implantado, é preciso também implementar a interface \textsf{RecipeBuilder} para criar uma nova extensão correspondente a um novo tipo de artefato implantável.
+
+\begin{lstlisting}[frame=trbl, label=lst:recipe_builder, caption=Interface RecipeBuilder]
+public interface RecipeBuilder {
+
+/**
+  * Uses the template to create a new recipe according to service specification.
+  * This new recipe can be used by Chef to deploy the service.
+  * 
+  */	
+ public Recipe createRecipe(ServiceSpec serviceSpec);
+}
+\end{lstlisting}
+
+\item [Tipos de serviços:] a ligação entre serviços de uma coreografia depende da passagem de endereços que é feita do \ee para os serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação dar-se-á de forma diferente se o serviço for SOAP ou REST. A implementação da interface \textsf{ContextSender} possibilita ao EE realizar a invocação da operação \texttt{setInovcationAddress} em serviços de outras tecnologias (JMS e CORBA por exemplo). Nota-se que para cada um desses tipos de serviços adicionados pelo usuário, é preciso criar uma convenção para a assinatura sintática da operação \texttt{setInvocationAddres}.
+
+\begin{lstlisting}[frame=trbl, label=lst:context_sender, caption=Interface ContextSender]
+public interface ContextSender {
+	
+ /**
+  * Calls setInvokationAddress operation on service in the serviceEndpoint.
+  * So, the service in endpoint will know that its
+  * partner with partnerRole is realized by partnerEndpoint.
+  * 
+  * @param serviceEndpoint
+  * @param partnerRole
+  * @param partnerEndpoint
+  * @throws ContextNotSentException if context was not successfully set
+  */
+  public void sendContext(String serviceEndpoint, String partnerRole, String partnerEndpoint) throws ContextNotSentException;
+
+}
+\end{lstlisting}
+
+\end{description}
+
+
 \section{Aspectos gerais de implementação}
 
 \section{Aspectos da implementação que auxiliam na superação dos desafios de implantação de coreografias de grande escala}
