@@ -447,91 +447,104 @@ O \ee possibilita que políticas de alocação de nós personalizadas
 escolham em tempo de execução em que nós um serviço deve ser implantado,
 considerando inclusive requisitos não-funcionais do serviço.
 
-\subsection{Handling cloud infrastructure failures}
+\subsection{Tratando falhas de terceiros}
 \label{sec:failures}
 
-Distributed large-scale systems must expect and handle third-party
-components faults~\cite{Hamilton2007InternetScale,Helland2009Quicksand,CarnegieMellon2006ULS}.
-Even if the chance of a failure in each component is small, the large number of
-components and interactions increases the likelihood of failures somewhere in
-the system~\cite{CarnegieMellon2006ULS}.
+Sistemas distribuídos de grande escala devem esperar e tratar falhas
+de componentes de terceiros~\cite{Hamilton2007InternetScale,Helland2009Quicksand,CarnegieMellon2006ULS}.
+Mesmo se a chance de falhas de cada componente é pequena,
+a grande quantidade de componentes e interações aumenta as chances de 
+falhas em algum lugar do sistema~\cite{CarnegieMellon2006ULS}.
 
-An example of a typical failure in a cloud environment involves VM provisioning.
-When a new node is requested to the infrastructure provider, there is a chance
-that provisioning will fail. Moreover, some nodes may take much longer than average to be ready.  
-Other operations that may fail during the deployment process
-are SSH connections and the execution of scripts on cloud nodes.
+Um exemplo de falhas típica em um ambiente de nuvem envolve o provisionamento de VMs.
+Quando um novo nó é requisitado para o provedor de infraestrutura,
+há uma chance de que o provisionamento irá falhar.
+Além disso, alguns nós podem levar um tempo muito maior que a média para ficarem prontos.
+Outras operações que podem falhar durante o processo de implantação são
+conexões SSH e a execução de scripts nos nós alvos.
 
-Figure~\ref{fig:ec2_boxplot}
-shows the observed distribution of node creation time when
-concurrently creating 100 nodes on the Amazon cloud
-(repeated 10 times).
-We count the time from creation request
-until the machine is able to accept SSH connections.
-We observed a failure rate of 0.6\%
-when concurrently creating 100 nodes.
-It is interesting to note that the creation time has a stable median,
-but that larger creation times are expected 
-when creating a large amount of nodes.
-In our observations, failures and long provisioning times
-affected up to 7\% of node creation requests.
+A Figura~\ref{fig:ec2_boxplot} mostra a distribuição observada
+do tempo de criação de VMs quando se requisita concorrentemente a criação
+de 100 nós na nuvem da Amazon (isso foi repetido 10 vezes).
+Nós contamos o tempo que vai da requisição de criação do nó
+até o momento em que a VM se encontra apta a receber conexões SSH,
+que é quando ela se torna pronta para uso na prática.
+Nós observamos uma taxa de falha de 0.6\%
+quando se tenta criar concorrentemente 100 nós.
+É interessante notar que o tempo de criação tem uma mediana estável,
+mas que alguns valores altos para esse tempo são esperados quando
+se cria ao mesmo tempo uma grande quantidade de nós.
+Em nossas observações, falhas e tempos longos de provisionamento
+afetaram até 7\% das requisições de criação de nós.
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\linewidth]{ec2_boxplot.pdf}
-\caption{Observed EC2 instances creation times in seconds}
+\caption{Tempos de criação de instâncias EC2 observados, em segundos.}
 \label{fig:ec2_boxplot}
 \end{figure}
 
-A simple approach adopted by the \ee to handle external failures
-was encapsulating the logic of invoking external systems
-in a class, called \textsf{Invoker}, and using it in a disciplined way throughout
-the project. Our \textsf{Invoker} receives the following parameters:
-a \emph{task}, which is a routine that will invoke an external system,
-a quantity of \emph{trials} to perform the task,
-a \emph{timeout} for each trial, and an \emph{interval} between trials.
+\todo{o q tá até aqui é problema, mover pra outro lugar... 
+daqui pra baixo é solução, q é oq deve estar aqui}
 
-The \textsf{Invoker} must be configured accordingly to its task
-(i.e., we found that three trials are not enough for \texttt{scp} file transferring)
-and service provider (rate limiting).
-Rather than having these values hard-coded, they are explicitly set
-in a configuration file. This way, it can be easily adjusted to
-the target environment characteristics. Therefore, this approach is also a strategy to cope with
-heterogeneous platforms and technologies. 
-The \textsf{Invoker} class can be easily decorated 
-to adapt timeout values automatically based on specific heuristics defined programmatically by DevOps engineers.
+Uma abordagem simples adotada pelo \ee para tratar falhas externas
+foi encapsular a lógica de invocação de sistemas externos em uma classe, 
+chamada \textsf{Invoker}, e usá-la de uma forma disciplinada pelo projeto.
+Nosso \textsf{Invoker} recebe os seguintes parâmetros:
+uma \emph{tarefa}, que é uma rotina que se comunicará com algum sistema externo,
+a quantidade de \emph{tentativas} para executar a tarefa,
+o \emph{timeout} de cada tentativa, e um \emph{intervalo} entre as tentativas.
 
-The \ee adopts a particular strategy to handle failures during the creation of new VMs.
-When a request arrives, the \ee tries to create a new node. If the creation fails,
-or takes too long,
-an already created node is retrieved from a reservoir of idle nodes.
-This strategy avoids waiting again for another node creation.
-The initial reservoir capacity is defined by configuration and
-it is refilled every time a node is requested.
-If the pool size is decreased and reaches a given threshold,
-the capacity is increased, trying to avoid a future situation
-with an empty reservoir when an extra node is requested.
+Uma instância do \textsf{Invoker} deve ser configurada deve ser configurada
+de acordo com sua tarefa (por exemplo, nós descobrimos que três tentativas
+não é o suficiente para transferência de arquivos por SCP).
+Em vez de ter esses valores fixados no código-fonte, eles são explicitamente
+ajustados em arquivos de configuração.
+Desta forma, pode-se facilmente ajustar esses valores de acordo com 
+as características do ambiente alvo.
+Portanto, essa abordagem é também uma estratégia para colaborar 
+com a heterogeneidade de plataformas e tecnologias.
+A classe \textsf{Invoker} pode ser facilmente decorada\footnote{Ver padrão de projeto \emph{decorator}} para adaptar valores de timeouts automaticamente
+baseando-se em heurísticas definidas programaticamente por engenheiros 
+da comunidade DevOps.
 
-The reservoir approach imposes an extra cost to keep more VMs running (in an
-idle state). However, this problem is treated in the \ee by a distributed management
-algorithm in each node: if the node is idle for $N-1$ minutes, where $N$ is a
-threshold of time that implies additional cost, the node sends to the \ee a
-message requesting its destruction. Thus, after a time of inactivity in the \ee, the
-reservoir eventually becomes empty, being filled again only when new requests arrive.
+O \ee adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
+Quando uma requisição chega, o \ee tenta criar um novo nó.
+Se a criação falha ou demora muito, um nó já criado é recuperado de uma reserva de nós ociosos.
+Essa estratégia evita que se tenha que esperar novamente pelo tempo de se criar um novo nó.
+A capacidade inicial da reserva é definida por configuração
+e ela é preenchida cada vez que a criação de um nó é requisitada.
+Se o tamanho da reserva é reduzido e alcança um dado limite,
+a capacidade é aumentada, de forma a tentar evitar uma situação futura
+de se encontrar uma reserva vazia em um momento de necessidade.
+
+A abordagem da reserva impõe um custo extra de se manter algumas VMs a mais
+em execução (em um estado ocioso). Contudo, esse problema é tratado
+pelo \ee por um algoritmo de gerenciamento distribuído em cada nó:
+se o nó está em um estado ocioso por $N-1$ minutos, onde $N$ é um limite
+de tempo que implica custo adicional, o nó envia ao \ee um pedido para 
+sua própria destruição. Assim, depois de um tempo de inatividade no \ee,
+a reserva se torna vazia em algum momento, sendo preenchida novamente
+somente quando chegam novas requisições de criação de nós.
 %This distributed approach alleviates the need to have the \ee periodically check
 %the status of the machines to decide whether they should be removed.
 
-Another important practice related to fault tolerance
-is \emph{graceful degradation}~\cite{Brewer2001GiantScale,Hamilton2007InternetScale}.
-In our context, graceful degradation means that if a service cannot be properly deployed, 
-it is not acceptable to halt the entire deployment process.
-With the \ee, if some service is not properly deployed, the deployment process continues,
-and the \ee response details the problems encountered during deployment, enabling recovery actions.
+\todo{na amazon vc não é cobrado por instâncias paradas!}
 
-Nonetheless, it is important to point out that graceful degradation responsibility
-must be shared with service implementation, since each service must know how
-to behave in the absence of some of its dependencies. Otherwise, each service
-becomes a single-point-of-failure in a composition, which is highly undesirable.
+Outra prática importante relacionada a tolerância a falhas é a 
+\emph{degradação suave}~\cite{Brewer2001GiantScale,Hamilton2007InternetScale}.
+Em nosso contexto, degradação suave significa que se um serviço não foi 
+implantado apropriadamente, não é aceitável que o processo de implantação
+de toda a composição seja interrompido.
+Com o \ee, se algum serviço não é implantado, o processo de implantação continua,
+e a resposta do \ee fornece informações sobre os problemas ocorridos,
+possibilitando ações de recuperação.
+
+Contudo, é importante destacar que a responsabilidade pela degradação suave
+debe ser compartilhada com a implementação dos serviços, uma vez que cada serviço
+debe saber como se comportar na ausência de uma ou mais de suas dependências.
+De outra forma, cada serviço se tornaria um \emph{ponto de falha único} na composição,
+o que é altamente indesejável.
 
 \subsection{Scalability}
 
