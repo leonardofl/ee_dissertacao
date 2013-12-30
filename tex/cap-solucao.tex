@@ -399,3 +399,301 @@ public interface ContextSender {
 \section{Aspectos gerais de implementação}
 
 \section{Aspectos da implementação que auxiliam na superação dos desafios de implantação de coreografias de grande escala}
+
+\subsection{Confiança no processo de implantação}
+\label{subsec:process}
+
+Tornar a implantação de sistemas ``\emph{Internet-scale}'' processos totalmente automatizados
+é necessário para que a implantação se torne testável, flexível e confiável~\cite{Hamilton2007InternetScale}.
+Enquanto implantar sistemas distribuídos de grande escala se torna uma atividade
+morosa e propensa a erros~\cite{Dolstra2005Configuration},
+o processo de implantação deveria ser automatizado,
+conforme já é reconhecido por praticantes~\cite{Humble2011Continuous}.
+
+O \ee possibilita a automação do processo de implantação
+graças a sua interface remota (REST), que recebe a especificação
+da composição a ser implantada e devolve o resultado do processo.
+
+O uso de uma especificação declarativa,
+como já utilizado em outros trabalhos~\cite{Balter1998Olan,Magee1996Dynamic},
+também facilita o desenvolvimento do script de implantação
+para cada nova composição a ser implantada.
+Sem isso, a implantação automatizada também é possível,
+com o reuso entre scripts implantadores de diferentes composições
+se torna mais complicado, o que aumenta o tempo de trabalho
+para se produzir novos scripts.
+
+A tendência atual na implantação de sistemas de grande escala é o uso
+de recursos elásticos possibilitados pela computação em nuvem.
+Recursos virtualizados fornecidos pela nuvem potencializam
+a automação do processo de implantação~\cite{Humble2011Continuous}.
+Uma vez que a criação de todo um novo ambiente pode ser automatizado
+pelo provisionamento de máquinas virtuais, cada nova implantação
+pode facilmente criar um ambiente limpo onde os sistemas implantados
+serão executados.
+Reproducibilidade e isolamento entre ambientes são facilitados
+ao se evitar passos manuais no preparo do ambiente.
+
+Por outro lado, a utilização dos recursos de nuvem também trazem alguns desafios,
+uma vez que se faz necessário levar em contar a natureza dinâmica da nuvem~\cite{Amazon2012Practices}.
+Diferentemente dos cenários estudados em trabalhos anteriores sobre
+implantação de sistemas baseados em componentes~\cite{Balter1998Olan,Magee1996Dynamic},
+os nós alvos são mais dinâmicos, não sendo possível conhecer os endereços IPs
+desses nós quando se está escrevendo a especificação da composição a ser implantada.
+A ligação entre serviços deve ser feita em tempo de execução (via \texttt{setInvocationAddress})
+e a política de alocação de nós deve ser flexível, i.e.,
+um serviço não deve ser alocado a um IP estático antes do tempo de implantação.
+O \ee possibilita que políticas de alocação de nós personalizadas
+escolham em tempo de execução em que nós um serviço deve ser implantado,
+considerando inclusive requisitos não-funcionais do serviço.
+
+\subsection{Handling cloud infrastructure failures}
+\label{sec:failures}
+
+Distributed large-scale systems must expect and handle third-party
+components faults~\cite{Hamilton2007InternetScale,Helland2009Quicksand,CarnegieMellon2006ULS}.
+Even if the chance of a failure in each component is small, the large number of
+components and interactions increases the likelihood of failures somewhere in
+the system~\cite{CarnegieMellon2006ULS}.
+
+An example of a typical failure in a cloud environment involves VM provisioning.
+When a new node is requested to the infrastructure provider, there is a chance
+that provisioning will fail. Moreover, some nodes may take much longer than average to be ready.  
+Other operations that may fail during the deployment process
+are SSH connections and the execution of scripts on cloud nodes.
+
+Figure~\ref{fig:ec2_boxplot}
+shows the observed distribution of node creation time when
+concurrently creating 100 nodes on the Amazon cloud
+(repeated 10 times).
+We count the time from creation request
+until the machine is able to accept SSH connections.
+We observed a failure rate of 0.6\%
+when concurrently creating 100 nodes.
+It is interesting to note that the creation time has a stable median,
+but that larger creation times are expected 
+when creating a large amount of nodes.
+In our observations, failures and long provisioning times
+affected up to 7\% of node creation requests.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{ec2_boxplot.pdf}
+\caption{Observed EC2 instances creation times in seconds}
+\label{fig:ec2_boxplot}
+\end{figure}
+
+A simple approach adopted by the \ee to handle external failures
+was encapsulating the logic of invoking external systems
+in a class, called \textsf{Invoker}, and using it in a disciplined way throughout
+the project. Our \textsf{Invoker} receives the following parameters:
+a \emph{task}, which is a routine that will invoke an external system,
+a quantity of \emph{trials} to perform the task,
+a \emph{timeout} for each trial, and an \emph{interval} between trials.
+
+The \textsf{Invoker} must be configured accordingly to its task
+(i.e., we found that three trials are not enough for \texttt{scp} file transferring)
+and service provider (rate limiting).
+Rather than having these values hard-coded, they are explicitly set
+in a configuration file. This way, it can be easily adjusted to
+the target environment characteristics. Therefore, this approach is also a strategy to cope with
+heterogeneous platforms and technologies. 
+The \textsf{Invoker} class can be easily decorated 
+to adapt timeout values automatically based on specific heuristics defined programmatically by DevOps engineers.
+
+The \ee adopts a particular strategy to handle failures during the creation of new VMs.
+When a request arrives, the \ee tries to create a new node. If the creation fails,
+or takes too long,
+an already created node is retrieved from a reservoir of idle nodes.
+This strategy avoids waiting again for another node creation.
+The initial reservoir capacity is defined by configuration and
+it is refilled every time a node is requested.
+If the pool size is decreased and reaches a given threshold,
+the capacity is increased, trying to avoid a future situation
+with an empty reservoir when an extra node is requested.
+
+The reservoir approach imposes an extra cost to keep more VMs running (in an
+idle state). However, this problem is treated in the \ee by a distributed management
+algorithm in each node: if the node is idle for $N-1$ minutes, where $N$ is a
+threshold of time that implies additional cost, the node sends to the \ee a
+message requesting its destruction. Thus, after a time of inactivity in the \ee, the
+reservoir eventually becomes empty, being filled again only when new requests arrive.
+%This distributed approach alleviates the need to have the \ee periodically check
+%the status of the machines to decide whether they should be removed.
+
+Another important practice related to fault tolerance
+is \emph{graceful degradation}~\cite{Brewer2001GiantScale,Hamilton2007InternetScale}.
+In our context, graceful degradation means that if a service cannot be properly deployed, 
+it is not acceptable to halt the entire deployment process.
+With the \ee, if some service is not properly deployed, the deployment process continues,
+and the \ee response details the problems encountered during deployment, enabling recovery actions.
+
+Nonetheless, it is important to point out that graceful degradation responsibility
+must be shared with service implementation, since each service must know how
+to behave in the absence of some of its dependencies. Otherwise, each service
+becomes a single-point-of-failure in a composition, which is highly undesirable.
+
+\subsection{Scalability}
+
+When deploying a large amount of services in a distributed environment, 
+it is not desirable to perform the deployment of each service sequentially.
+Since the deployment of different services are independent tasks,
+deploying them concurrently drastically increases scalability.
+
+We say an architecture is perfectly scalable
+if it continues to yield the same performance per resource,
+albeit used on a larger problem size, as the number of
+resources increases~\cite{Quinn1994Scalability}.
+In the deployment context, it means that, ideally, the deployment
+time should remain constant when there is a proportional increase
+on the number of services to be deployed and on the number
+of available target nodes.
+
+Note that the number of services to be deployed increases only
+on two situations: 1) when deploying larger compositions and 2)
+when deploying a larger number of compositions simultaneously.
+The second situation may occur, for instance, when executing a battery of
+acceptance tests of a service composition.
+In such situation, it is desirable that the acceptance tests run
+in parallel, which demands concurrent deployment of multiple instances
+of the same composition.
+
+Although the required concurrent programming knowledge 
+to achieve a scalable deployment is quite simple,
+concurrent programming \textit{per se}
+is hard and error prone. Most of the time, scripting tools do not provide good
+support for concurrent programming.
+It would also imply some failure handing (Section~\ref{sec:failures}), and that
+would impact scalability, too.
+Therefore, handling concurrency and fault handling in the middleware layer
+is a significant step in facilitating the effective implementation of a scalable 
+deployment process.
+
+\subsection{Extensibility}
+\label{sec:extensibility}
+
+Although web services emerged to solve heterogeneity problems among systems and
+organizations, nowadays we have more than one mechanism to implement the
+concept of services, mainly SOAP and REST, but others too. 
+Therefore, supporting heterogeneity is important to service-based systems.
+When deploying service compositions on the cloud,
+there are also other points in which the middleware should offer flexibility.
+The \ee provides this flexibility by offering the following extension points:
+
+
+%The same is true for the infrastructure cloud computing
+%layer, since the user can write new classes to communicate with new
+%infrastructure providers. The \ee has a third extension point to allow the
+%creation of new node allocation policies.
+%
+%The \ee deals with heterogeneity via extensibility: although the current
+%version can deploy only SOAP services packaged as JAR or WAR files,
+
+\begin{itemize}
+
+\item \emph{Service type:} after deploying a service, the \ee invokes its
+\texttt{setInvocationAddress} operation. But this is highly dependent
+on a signature convention of a SOAP operation.
+Supporting service binding in other technologies 
+(REST, CORBA, etc.) requires new conventions
+that can be created by implementing the \textsf{ContextSender} interface.
+
+\item \emph{Package type:} the current supported types
+are JAR and WAR packages. Users may add support to a new package type
+by writing a Chef cookbook template.
+One example would be a Python web service deployment in an Nginx server.
+
+\item \emph{Cloud infrastructures:} The access to a cloud infrastructure is
+defined in the \textsf{CloudProvider} interface.
+New cloud infrastructures can be supported by implementing this interface.
+To ease the development of new implementations, we provide a base one: \textsf{JCloudsCloudProvider}. It uses
+the JClouds\footnote{\url{http://jclouds.incubator.apache.org/}} 
+library, that is already able to access a wide range of cloud infrastructures
+available on the market.
+This base implementation was used to implement our Amazon cloud provider,
+counting with only 79 lines of code, and our Openstack cloud provider,
+with 96 lines.
+
+\item \emph{Node selection policy:} current node selection policies are:
+1) \emph{always create} a new node to each service; 2) \emph{round robin} available nodes;
+and 3) \emph{limited round robin}, which first allocates a predefined number of nodes, 
+and then selects nodes in a round robin fashion.
+Users may implement new allocation policies by implementing the \textsf{NodeSelection}
+interface. New implementations can have access to non-functional service requirements
+to be considered on the node selection algorithm.
+
+\end{itemize}
+
+Such flexibility offered by the \ee
+helps to overcome current limitations of
+PaaS solutions that restrict application developers' technological choices,
+such as IaaS provider and application programming language. 
+
+\subsection{Supporting cross-organizational compositions}
+
+A service composition may encompass services belonging to multiple organizations.
+The \ee has two main mechanisms to cope with this situation.
+The first uses a service specification attribute to
+define under which ``cloud account'' the service will be deployed (and billed).
+%since, usually, the service owner must be billed by the infrastructure provider.
+Each organization can also define a proper node selection policy.
+
+The second mechanism is used when an organization performs the deployment 
+of a composition encompassing both services belonging to the organization itself
+and also existing third-party services.
+This situation can be modeled in the composition specification,
+so the \ee will deploy only the services belonging to the organization
+and bind them to the existing third-party services.
+
+\subsection{Coping with adaptability}
+
+The \ee does not guarantee that the service composition
+will be autonomic and self-adaptive. However, it provides support
+for the development of such systems.
+
+Self-adaptive and autonomic systems need to be aware of and have full
+control of deployment activities. To empower such
+systems, the \choreos \ee grants information and control of the
+following functionalities:
+
+\begin{itemize}
+\item service composition updates;
+\item service migrations;
+\item service replications;
+\item monitoring infrastructure deployment.
+\end{itemize}
+
+Service composition updates may be necessary when the business rules
+or the non-functional requirements of the system change. The \ee
+allows the addition, removal and reconfiguration of the services and
+its associated computational resources via a REST API.
+
+\ee's service migration control can be used to optimize the resource
+usage of the underlying platform. It can be used to group more than
+one service in a single computational resource or to migrate a service
+to a different resource to increase its performance.
+
+Service replication is a particular and important kind of composition
+update. Associated with load balancing, it is a common strategy to
+provide system scalability~\cite{Amazon2012Practices}. The \ee enables
+service replication by deploying multiple instances of a service and
+informing consumer services about their existence during service
+binding. The initial number of replicas is defined by an attribute in
+the service specification provided to the \ee and, later, can be
+redefined dynamically.
+
+To take its decisions, every self-adaptation system needs to monitor
+itself to retrieve metrics for an adaptation algorithm.
+They can be machine-related (e.g., CPU, memory, network usage) or
+service related (e.g., response time, throughput).  Collecting such
+metrics requires the deployment of a monitoring infrastructure. To
+cope with this need, the \ee provides the optional automated
+deployment of \emph{Ganglia probes} on target machines and
+\emph{EasyESB nodes} that act as service proxies to monitor service
+interactions.
+
+These features makes \ee a suitable option for researching
+service composition self-adaptation. They ease the implementation
+of adaptive systems by letting researchers be more focused on high
+level adaptation problems instead of highly specific deployment
+management details.
