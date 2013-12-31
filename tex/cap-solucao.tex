@@ -680,33 +680,30 @@ as regras de negócio ou os requisitos não-funcionais mudam.
 O \ee permite, por uma API REST, a adição, remoção e reconfiguração dos serviços
 e seus recursos computacionais associados.
 
+O controle de migração de serviço do EE pode ser usado para otimizar
+a utilização de recursos da plataforma subjacente.
+Isso pode ser usado para agrupar mais de um serviço em um único
+recurso computacional ou para migrar o serviço para um recurso diferente
+para aumentar seu desempenho.
 
-\ee's service migration control can be used to optimize the resource
-usage of the underlying platform. It can be used to group more than
-one service in a single computational resource or to migrate a service
-to a different resource to increase its performance.
+Replicação de serviço é um tipo particular e importante de atualização de composição.
+Associado a um balanceamento de carga, é uma estratégia comum para
+a construção de sistemas escaláveis~\cite{Amazon2012Practices}.
+O \ee possibilita a replicação de serviço através da implantação de
+múltiplas instâncias do serviço e informando aos seus serviços consumidores
+sobre a existência dessas réplicas durante a fase de ligação de serviços.
+A quantidade inicial de réplicas é definida por atributo na especificação
+do serviço fornecida ao EE, e, depois, pode ser redefinida dinamicamente.
 
-Service replication is a particular and important kind of composition
-update. Associated with load balancing, it is a common strategy to
-provide system scalability~\cite{Amazon2012Practices}. The \ee enables
-service replication by deploying multiple instances of a service and
-informing consumer services about their existence during service
-binding. The initial number of replicas is defined by an attribute in
-the service specification provided to the \ee and, later, can be
-redefined dynamically.
+Para tomar suas decisões, todo sistemas auto-adaptativo precisa monitorar
+a si próprio para coletar métricas a serem utilizadas em algum algoritmo adaptativo.
+Exemplos de métricas são utilização de CPU e memória.
+Coletar tais métricas requer a implantação de uma infraestrutura de monitoramento.
+Para contribuir com essa necessidade, o EE fornece opcionalmente a implantação
+de \emph{coletores do Ganglia} nos nós alvos.
 
-To take its decisions, every self-adaptation system needs to monitor
-itself to retrieve metrics for an adaptation algorithm.
-They can be machine-related (e.g., CPU, memory, network usage) or
-service related (e.g., response time, throughput).  Collecting such
-metrics requires the deployment of a monitoring infrastructure. To
-cope with this need, the \ee provides the optional automated
-deployment of \emph{Ganglia probes} on target machines and
-\emph{EasyESB nodes} that act as service proxies to monitor service
-interactions.
-
-These features makes \ee a suitable option for researching
-service composition self-adaptation. They ease the implementation
-of adaptive systems by letting researchers be more focused on high
-level adaptation problems instead of highly specific deployment
-management details.
+Essas funcionalidades fazem do \ee uma opção adequada para uma ferramenta de apoio 
+à pesquisa de auto-adaptação de composição de serviços.
+Elas (as funcionalidades) facilitam a implementação de sistemas adaptativos
+por possibilitarem que pesquisadores se foquem mais nos problemas de adaptação em
+alto nível, abstraindo detalhes altamente específicos do gerenciamento de implantação.
