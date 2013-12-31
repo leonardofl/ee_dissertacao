@@ -546,41 +546,41 @@ debe saber como se comportar na ausência de uma ou mais de suas dependências.
 De outra forma, cada serviço se tornaria um \emph{ponto de falha único} na composição,
 o que é altamente indesejável.
 
-\subsection{Scalability}
+\subsection{Escalabilidade}
 
-When deploying a large amount of services in a distributed environment, 
-it is not desirable to perform the deployment of each service sequentially.
-Since the deployment of different services are independent tasks,
-deploying them concurrently drastically increases scalability.
+Quando se implanta uma grande quantidade de serviços em um ambiente distribuído,
+não é desejável que as implantações dos diferentes serviços sejam sequenciais.
+Uma vez que a implantação de diferentes serviços são tarefas independentes,
+implanta-los concorrentemente aumenta drasticamente a escalabilidade
+do processo de implantação da composição.
 
-We say an architecture is perfectly scalable
-if it continues to yield the same performance per resource,
-albeit used on a larger problem size, as the number of
-resources increases~\cite{Quinn1994Scalability}.
-In the deployment context, it means that, ideally, the deployment
-time should remain constant when there is a proportional increase
-on the number of services to be deployed and on the number
-of available target nodes.
+Dizemos que uma arquitetura é perfeitamente escalável
+se ela continua a apresentar o mesmo desempenho por recurso,
+mesmo que usado em um problema de tamanho maior, conforme o número
+de recursos aumenta~\cite{Quinn1994Scalability}.
+No contexto de implantação, isso significa que, idealmente,
+o tempo de implantação deveria permanecer constante quando há um
+aumento proporcional no número de serviços a serem implantados e
+no número de nós alvos.
 
-Note that the number of services to be deployed increases only
-on two situations: 1) when deploying larger compositions and 2)
-when deploying a larger number of compositions simultaneously.
-The second situation may occur, for instance, when executing a battery of
-acceptance tests of a service composition.
-In such situation, it is desirable that the acceptance tests run
-in parallel, which demands concurrent deployment of multiple instances
-of the same composition.
+Note que o número de serviços a ser implantado aumenta em duas situações:
+1) quando se implanta composições maiores e 2) quando se implanta
+mais composições simultaneamente. A segunda situação pode ocorrer, por exemplo,
+quando se executa uma bateria de testes de aceitação de uma composição de serviços.
+Em tal situação, é desejável que testes de aceitação sejam executados em paralelo,
+o que requer implantação concorrente de múltiplas instâncias da mesma composição.
+\todo{obs: testes de aceitação tendem a ser demorados; ex: engloba criação de VM.}
 
-Although the required concurrent programming knowledge 
-to achieve a scalable deployment is quite simple,
-concurrent programming \textit{per se}
-is hard and error prone. Most of the time, scripting tools do not provide good
-support for concurrent programming.
-It would also imply some failure handing (Section~\ref{sec:failures}), and that
-would impact scalability, too.
-Therefore, handling concurrency and fault handling in the middleware layer
-is a significant step in facilitating the effective implementation of a scalable 
-deployment process.
+Embora o conhecimento de programação concorrente para implementar
+um processo de implantação escalável seja básico (dentro do contexto de computação concorrente),
+programação concorrente por si própria é difícil e propensa a erros.
+Muitas vezes, linguagens de scripts não oferecem um bom suporte à programação concorrente.
+Isso implicaria também algum tratamento de falhas,
+e que impactariam escalabilidade também \todo{explicar melhor... como a falta de
+tratamento de falhas afeta negativamente a escalabilidade}.
+Portanto, tratar concorrência e tratamento a falhas na camada de middlware
+é um passo significativo em facilitar a implementação efetiva de um
+processo de implantação escalável.
 
 \subsection{Extensibility}
 \label{sec:extensibility}
