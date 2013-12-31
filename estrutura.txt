@@ -1,0 +1,66 @@
+Estrutura da dissertação
+
+* Introdução
+
+* Composições de serviços web
+    Serviços web
+    Composições de serviços web // ruim sub-título com mesmo nome de título
+
+* Implantação de sistemas
+    Computação em nuvem
+    Desafios de implantação de grande escala
+
+* Trabalhos relacionados
+
+* Solução Proposta, o Enactment Engine
+    Arquitetura
+    Descrição arquitetural da coreografia
+    Ligação entre serviços
+    Interface do EE
+    Pontos de extensão
+    Aspectos gerais de implementação (necessário?)
+
+* Discussão - Vencendo os desafios de implantação de grande escala 
+
+* Avaliação
+    Adhoc vs middleware
+    Análise de desempenho e escalabilidade
+
+* Conclusões
+    Trabalhos futuros
+
+* Anexo: EE User Guide
+
+======
+
+Desafios:
+    Process
+    Third-party failures
+    Scalability
+    Heterogeneity
+    Multiple organizations // parcialmente resolvido
+    Adaptabilidade
+    Disponibilidade - replicação de dados (?) // não abordado pelo nosso trabalho
+
+Manter a simplicidade nas escolhas                                                      Process
+Automatizar o que puder                                                                 Process
+Ausência de ponto único de falha                                                        Disponibilidade
+Replicação de componentes / balancemento de carga                                       Disponibilidade / Adaptabilidade
+Uso de aglomerados                                                                      Process
+Particionamento de dados                                                                Disponibilidade
+Replicação de dados                                                                     Disponibilidade
+Ausência de estado global                                                               X
+Esperar falhas e latências                                                              Failures
+Lidar com falhas usando degradação suave                                                Failures
+Permitir períodos de inconsistências, oferecendo desculpas quando necessário            Disponibilidade
+Inconsistências temporárias são tratadas na camada da aplicação                         Disponibilidade
+Não utilizar transações distribuídas síncronas                                          ?                                
+Melhor usar componentes sem estado                                                      ?
+Melhor usar operações idempotentes e comutativas                                        ?
+Atualização dinâmica                                                                    Adaptabilidade
+Compatibilidade com versão anterior                                                     X
+Suporte a roll-back de versão                                                           Process
+
+
+
+
