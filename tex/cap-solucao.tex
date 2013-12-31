@@ -324,9 +324,19 @@ public interface CloudProvider {
 
 \todo{explicar cloud configuration?}
 
+Para facilitar o desenvolvimento de novas implementações,
+nós fornecemos uma implementação base, a classe \textsf{JCloudsCloudProvider}.
+Ela utiliza a biblioteca JClouds\footnote{\url{http://jclouds.incubator.apache.org/}},
+que já é apta a acessar uma ampla gama de provedores de infraestrutura disponíveis no mercado.
+Essa implementação base foi utilizada para a implementação das classes 
+\textsf{AmazonCloudProvider} e \textsf{OpenStackKeyStoneCloudProvider},
+que contaram, respectivamente, com 79 e 96 linhas de código-fonte.
+
 \todo{Classe base: JCloudsCloudProvider}
 
 \item [Política de seleção de nós:] a implementação da interface \textsf{NodeSelector} define uma nova política de alocação de serviços em nós da nuvem, que pode levar em conta os requisitos não-funcionais do serviço e propriedades dos nós à disposição.
+Algumas políticas já fornecidas são ``sempre cria um novo nó'' e 
+``cria novos nós até um certo limite, depois faz rodízio entre eles''.
 
 \begin{lstlisting}[frame=trbl, label=lst:node_selector, caption=Interface NodeSelector acompanhada de sua classe pai Selector.]
 /**
@@ -365,7 +375,12 @@ Formas similares dessa funcionalidade são também utilizadas em estudos já apr
 
 Para avançar em relação às limitações dos trabalhos anteriormente citados,  consideramos como requisitos principais a dinamicidade do ambiente de nuvem, que nos impede de conhecer os IPs das máquinas em tempo de configuração, bem como a flexibilidade para que cada organização determine os requisitos de distribuição dos serviços.
 
-\item [Tipos de pacotes de serviços:] um serviço pode ser distribuído por diferentes tipos de pacotes, como em um JAR ou em um WAR, por exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada serviço, pode-se escrever uma receita Chef que sabe como instalar e executar esse serviço. \todo{falar dos tokens injetados pelo EE}.
+\item [Tipos de pacotes de serviços:] um serviço pode ser distribuído por diferentes tipos de pacotes, como em um JAR ou em um WAR, por exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada novo tipo de pacote, pode-se escrever um template de um \emph{cookbook} Chef que implemente a preparação e a inicialização do serviço. \todo{falar mais dos tokens no template...}
+
+\item \emph{Package type:} the current supported types
+are JAR and WAR packages. Users may add support to a new package type
+by writing a Chef cookbook template.
+One example would be a Python web service deployment in an Nginx server.
 
 \item [Tipos de serviços:] a ligação entre serviços de uma coreografia depende da passagem de endereços que é feita do \ee para os serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação dar-se-á de forma diferente se o serviço for SOAP ou REST. A implementação da interface \textsf{ContextSender} possibilita ao EE realizar a invocação da operação \texttt{setInovcationAddress} em serviços de outras tecnologias (JMS e CORBA por exemplo). Nota-se que para cada um desses tipos de serviços adicionados pelo usuário, é preciso criar uma convenção para a assinatura sintática da operação \texttt{setInvocationAddres}.
 
@@ -601,45 +616,10 @@ deveria oferecer flexibilidade.
 %The \ee deals with heterogeneity via extensibility: although the current
 %version can deploy only SOAP services packaged as JAR or WAR files,
 
-\begin{itemize}
-
-\item \emph{Service type:} after deploying a service, the \ee invokes its
-\texttt{setInvocationAddress} operation. But this is highly dependent
-on a signature convention of a SOAP operation.
-Supporting service binding in other technologies 
-(REST, CORBA, etc.) requires new conventions
-that can be created by implementing the \textsf{ContextSender} interface.
-
-\item \emph{Package type:} the current supported types
-are JAR and WAR packages. Users may add support to a new package type
-by writing a Chef cookbook template.
-One example would be a Python web service deployment in an Nginx server.
-
-\item \emph{Cloud infrastructures:} The access to a cloud infrastructure is
-defined in the \textsf{CloudProvider} interface.
-New cloud infrastructures can be supported by implementing this interface.
-To ease the development of new implementations, we provide a base one: \textsf{JCloudsCloudProvider}. It uses
-the JClouds\footnote{\url{http://jclouds.incubator.apache.org/}} 
-library, that is already able to access a wide range of cloud infrastructures
-available on the market.
-This base implementation was used to implement our Amazon cloud provider,
-counting with only 79 lines of code, and our Openstack cloud provider,
-with 96 lines.
-
-\item \emph{Node selection policy:} current node selection policies are:
-1) \emph{always create} a new node to each service; 2) \emph{round robin} available nodes;
-and 3) \emph{limited round robin}, which first allocates a predefined number of nodes, 
-and then selects nodes in a round robin fashion.
-Users may implement new allocation policies by implementing the \textsf{NodeSelection}
-interface. New implementations can have access to non-functional service requirements
-to be considered on the node selection algorithm.
-
-\end{itemize}
-
-Such flexibility offered by the \ee
-helps to overcome current limitations of
-PaaS solutions that restrict application developers' technological choices,
-such as IaaS provider and application programming language. 
+Essa flexibilidade fornecida pelo \ee ajuda na superação
+das atuais limitações de soluções de Plataformas como um Serviço
+que restrigem as opções tecnológicas disponíveis aos desenvolvedores de aplicações,
+tais como o provedor de infraestrutura e a linguagem de programação da aplicação.
 
 \subsection{Composições inter-organizacionais}
 
