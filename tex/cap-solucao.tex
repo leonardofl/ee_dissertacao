@@ -582,17 +582,16 @@ Portanto, tratar concorrência e tratamento a falhas na camada de middlware
 é um passo significativo em facilitar a implementação efetiva de um
 processo de implantação escalável.
 
-\subsection{Extensibility}
-\label{sec:extensibility}
+\subsection{Heterogeneidade}
+\label{sec:heterogeneidade}
 
-Although web services emerged to solve heterogeneity problems among systems and
-organizations, nowadays we have more than one mechanism to implement the
-concept of services, mainly SOAP and REST, but others too. 
-Therefore, supporting heterogeneity is important to service-based systems.
-When deploying service compositions on the cloud,
-there are also other points in which the middleware should offer flexibility.
-The \ee provides this flexibility by offering the following extension points:
-
+Embora serviços web tenha surgido para resolver os problemas de heterogeneidade
+entre sistemas e organizações, hoje em dia temos mais de um mecanismo para
+implementar o conceito serviços, principalmente SOAP e REST, além de outros.
+Portanto, suportar heterogeneidade é importante para sistemas baseados em serviços.
+Quando se implanta composições de serviços na nuvem,
+há também outros pontos nos quais um middleware de implantação
+deveria oferecer flexibilidade. 
 
 %The same is true for the infrastructure cloud computing
 %layer, since the user can write new classes to communicate with new
@@ -642,21 +641,22 @@ helps to overcome current limitations of
 PaaS solutions that restrict application developers' technological choices,
 such as IaaS provider and application programming language. 
 
-\subsection{Supporting cross-organizational compositions}
+\subsection{Composições inter-organizacionais}
 
-A service composition may encompass services belonging to multiple organizations.
-The \ee has two main mechanisms to cope with this situation.
-The first uses a service specification attribute to
-define under which ``cloud account'' the service will be deployed (and billed).
+Uma composição de serviços pode conter serviços pertencentes a diferentes organizações.
+O \ee possui dois principais mecanismos para lidar com essa situação.
+O primeiro utiliza um atributo da especificação do serviço para definir
+por qual ``conta de nuvem'' o serviço será implantado (e cobrado).
 %since, usually, the service owner must be billed by the infrastructure provider.
-Each organization can also define a proper node selection policy.
+%Cada organização pode definir sua própria política de alocação de nó.
+% não é mais verdade...
 
-The second mechanism is used when an organization performs the deployment 
-of a composition encompassing both services belonging to the organization itself
-and also existing third-party services.
-This situation can be modeled in the composition specification,
-so the \ee will deploy only the services belonging to the organization
-and bind them to the existing third-party services.
+O segundo mecanismo é usado quando uma organização realiza a implantação
+de uma composição contendo tantos serviços pertencentes a própria organização,
+quanto serviços de terceiros, já disponíveis na Internet.
+Essa situação pode ser modelada na especificação da composição,
+de forma que o \ee irá implantar apenas os serviços pertencentes à organização
+e ligá-los aos já existentes serviços de terceiros.
 
 \subsection{Coping with adaptability}
 
