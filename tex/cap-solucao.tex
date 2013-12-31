@@ -658,28 +658,28 @@ Essa situação pode ser modelada na especificação da composição,
 de forma que o \ee irá implantar apenas os serviços pertencentes à organização
 e ligá-los aos já existentes serviços de terceiros.
 
-\subsection{Coping with adaptability}
+\subsection{Apoiando a adaptabilidade}
 
-The \ee does not guarantee that the service composition
-will be autonomic and self-adaptive. However, it provides support
-for the development of such systems.
+O \ee por si só não garante que uma composição será autonômica ou auto-adaptativa.
+Contudo, ele fornece suporte para o desenvolvimento de tais sistemas.
 
-Self-adaptive and autonomic systems need to be aware of and have full
-control of deployment activities. To empower such
-systems, the \choreos \ee grants information and control of the
-following functionalities:
+Sistemas auto-adaptativos e autonômicos precisam estar cientes
+e ter pleno controle das atividades de implantação.
+Para empoderar tais sistemas, o \choreos \ee fornece informação e controle
+das seguintes funcionalidades:
 
 \begin{itemize}
-\item service composition updates;
-\item service migrations;
-\item service replications;
-\item monitoring infrastructure deployment.
+\item atualização das composições;
+\item migração de serviços;
+\item replicação de serviços;
+\item implantação de infraestrutura de implantação.
 \end{itemize}
 
-Service composition updates may be necessary when the business rules
-or the non-functional requirements of the system change. The \ee
-allows the addition, removal and reconfiguration of the services and
-its associated computational resources via a REST API.
+Atualização de composições de serviços podem ser necessárias quando
+as regras de negócio ou os requisitos não-funcionais mudam.
+O \ee permite, por uma API REST, a adição, remoção e reconfiguração dos serviços
+e seus recursos computacionais associados.
+
 
 \ee's service migration control can be used to optimize the resource
 usage of the underlying platform. It can be used to group more than
