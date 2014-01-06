@@ -4,7 +4,8 @@
 
 A ``Especificação de implantação e configuração de aplicações distribuídas baseadas em componentes'' (DEPL~\cite{DEPL2006}) é um padrão da OMG. 
 A implantação é definida pelo DEPL como um \emph{processo}, que se inicia após a aquisição de um componente, e vai até o momento em que o componente está em execução, pronto para processar chamadas. 
-Embora nosso trabalho foque na implantação de serviços, os conceitos para implantação de componentes também se aplicam à implantação de serviços. No próximo capítulo discutiremos um pouco as sutis diferenças entre \emph{serviços} e \emph{componentes}.
+
+Embora nosso trabalho foque na implantação de serviços, os conceitos para implantação de componentes também se aplicam à implantação de serviços. 
 Mas no contexto de implantação, pode-se dizer que a principal diferença seja o fato de que o \emph{implantador} do serviço seja a própria organização que o desenvolveu, enquanto que o conceito de componentes está mais ligado a um suposto mercado de componentes, em que uns desenvolvem, empacotam e publicam o componente, enquanto que outros adquirem e implantam o componente.
 
 Quando possível, utilizaremos a terminologia estabelecida pelo DEPL em nosso trabalho.
@@ -21,22 +22,74 @@ sistema operacional. Existem pacotes dependentes de sistema operacional (ex: deb
 e pacotes independentes de sistema operacional (ex: jar, war).
 \end{description}
 
-O DEPL define ainda as seguintes fases do processo de implantação de um sistema:
+Ainda segundo o DEPL, o processo de implantação é composto pelas seguintes fases:
 
 \begin{description}
 \item [Instalação:] o implantador transfere o componente adquirido para sua própria infraestrutura; a instalação está relacionada ao processo de aquisição do componente, e não se trata de mover o componente para o ambiente alvo, no qual será executado. Consideramos que essa fase não se aplica à implantação de serviços, pois após o desenvolvimento e empacotamento, o serviço já é de propriedade do implantador e já se encontra em sua infraestrutura.
 \item [Configuração:] edição de arquivos de configuração para alterar o comportamento do software; exemplo: em vez de ter um sistema de cobrança flexível de acordo com o usuário, um serviço pode ter duas instâncias, uma que será configurada para cobrar um valor mais alto, e outra instância que será configurada para cobrar um valor mais baixo. 
-\item [Planejamento:] resulta em um \emph{plano de implantação}, que mapeia como os componentes serão distribuídos pelas máquinas do ambiente alvo.  
+\item [Planejamento:] resulta em um \emph{plano de implantação}, que mapeia como os componentes serão distribuídos pelos nós do ambiente alvo.  
 \item [Preparação:] procedimentos no ambiente alvo para preparar a execução do componente. Envolve configurações do sistema operacional, instalação de middlewares (e.g. Tomcat), e a transferência do componente para a máquina onde será executado. 
 \item [Inicialização:] é quando finalmente o componente é iniciado e entra em execução, podendo processar chamadas de seus clientes. A inicialização também inclui a ligação entre os componentes de uma composição, para que os componentes conheçam a localização dos componentes dos quais dependem.
 \end{description}
 
-Como já mencionado na introdução, profissionais da acadêmia e da indústria levantam a necessidade de se automatizar o processo de implantação, uma vez que o processo de implantação manual se torna moroso e propenso a erros, principalmente na implantação de sistemas distribuídos~\cite{Humble2011Continuous,Dolstra2005Configuration}. Nesse contexto, os praticantes normalmente discutem mais a automação das fases de preparação e implantação, que normalmente são realizadas com a escrita de scripts, com ou sem ferramentas específicas, como o Chef. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado nos requisitos não-funcionais do componente. Por fim, a fase de configuração é menos adequada para se automatizar, pois em geral envolve escolhas que devem ser feitas por humanos.
-% melhorar parágrafo acima
+Profissionais da acadêmia e da indústria levantam a necessidade de se automatizar o processo de implantação, uma vez que o processo de implantação manual se torna moroso e propenso a erros, principalmente na implantação de sistemas distribuídos~\cite{Humble2011Continuous,Dolstra2005Configuration}. 
+Humble e Farley~\cite{Humble2011Continuous} afirmam que isso faz com que  
+a implantação de uma nova versão do sistema se torne um grande evento nas organizações, 
+em que há muita tensão e que faz as pessoas trabalharem até mais tarde.
+A solução para esses sintomas, segundo os autores, é a automação do processo de implantação.
 
-* Continuou delivery
+Muitos problemas na implantação se dão por causa de documentação incompleta,
+contendo pressupostos não compartilhados por todo o time.
+Dessa forma é comum que a organização fique bastante dependente de uma única
+pessoa para realizar a tarefa de implantação.
+Por outro lado, um script de implantação é uma documentação completa de todos os passos
+do processo, e que deve estar sempre funcionando para que a implantação seja possível,
+ou seja, qualquer problema no script de implantação é rapidamente percebido.
 
-* DevOps
+A facilidade de se implantar o sistema com o simples pressionar de um botão
+leva a sua utilização contínua por diferentes atores.
+O time de desenvolvimento estará constantemente utilizando esse script 
+para realizar testes (integração, aceitação), e isso fará com que os testes sejam mais confiáveis
+por serem executados em um ambiente similar ao ambiente de produção,
+e o próprio script de implantação se tornará mais confiável,
+uma vez que é usado e aprimorado constantemente.
+O resultado da implantação também será mais confiável, pois o sistema
+já terá sido implantado em um ambiente similar ao de produção várias vezes.
+Outro problema na implantação manual, é que quando o sistema finalmente é testado
+no ambiente de produção, em geral é tarde de mais (i.e., muito caro) 
+realizar grandes mudanças arquiteturais.
+
+Esse casamento entre implantação rápida e confiável evitará o medo do lançamento
+de novas versões, o que favorece uma entrega mais contínua de valor ao cliente.
+Também favorece um retorno mais rápido do cliente sobre o sistema,
+o que é importante tanto do ponto de vista técnico para o aprimoramento do sistema,
+quanto do ponto de vista de negócio, pois permite um melhor aproveitamento da janela de oportunidade
+para lançar novas funcionalidades, quanto ajuda a acelerar o ciclo
+de retorno do cliente, como pregado pela técnica da startup enxuta~\cite{Ries2011Lean}.
+
+A concretização de um processo de implantação automatizado depende bastante da
+integração de diferentes papeis em uma organização, principalmente o dos desenvolvedores
+com os operadores. Essa percepção levou à criação do conceito de uma cultura 
+rotulada como DevOps~\cite{Humble2011DevOps}, na qual times inter-funcionais
+trabalham para a concretização da implantação automatizada.
+
+A automação discutida nos trabalhos de Humble, afetam mais as fases de preparação e implantação do modelo de implantação do DEPL. A automação dessas fases normalmente são realizadas com a escrita de scripts, com ou sem ferramentas específicas, como o Chef. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado nos requisitos não-funcionais do componente. Por fim, a fase de configuração é menos adequada para se automatizar, pois em geral envolve escolhas que devem ser feitas por humanos (ex: logotipo da empresa, que deve aparecer no cabeçalho do sistema).
+
+Um processo de automação pode ser implantado de várias maneiras.
+Pode-se utilizar linguagens de script de propósito geral (Python, shell script),
+ferramentas gerais voltados para o processo de implantação (ex: Chef, Capistrano),
+ou middlewares especializados em determinados tipos de artefatos implantáveis,
+entre os quais se enquadram as soluções de Plataforma como um Serviço.
+Humble e Farley recomendam a utilização de sistemas especializados, preterindo 
+a utilização de linguagens de scripts de propósito geral.
+Em nosso trabalho, estudaremos como as soluções de implantação automatizada
+apoiadas por middleware facilitam o apoio à implantação de sistemas de grande escala.
+
+Nas próximas seções falaremos sobre a computação em nuvem,
+moderna tecnologia que impacta altamente as técnicas de implantação de sistemas,
+e os desafios de implantação de sistemas de grande escala.
+
+\section{Computação em nuvem}
 
 * cloud 
 
@@ -46,5 +99,21 @@ Como já mencionado na introdução, profissionais da acadêmia e da indústria 
 
 * PaaS
 
+
+\section{Desafios na implantação de sistemas de grande escala}
+
+* Processo
+
+* Falhas de terceiros
+
+* Escalabilidade
+
+* Heterogeneidade
+
+* Múltiplas organizações
+
+* Adaptabilidade
+
+* Disponibilidade
 
 
