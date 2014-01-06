@@ -91,14 +91,25 @@ e os desafios de implantação de sistemas de grande escala.
 
 \section{Computação em nuvem}
 
-* cloud 
+O Instituto Nacional de Padrões e Tecnologias dos Estados Unidos (NIST) define computação em nuvem como um ``modelo para possibilitar acesso ubíquo, conveniente e sob demanda pela rede a um conjunto compartilhado de recursos computacionais (por exemplo: redes, servidores, discos, aplicações e serviços) que possam ser rapidamente provisionados e liberados com o mínimo de esforço gerencial ou interação com o provedor do serviço''~\cite{Nist2011Cloud}. 
 
-* IaaS
+Zhang et al.~\cite{Zhang2010Cloud} destacam as seguintes características da computação em nuvem: i) separação de responsabilidades entre o dono da infraestrutura de nuvem e o dono do serviço implantado na nuvem; ii) compartilhamento de recursos (serviços de diferentes organizações hospedados na mesma máquina, por exemplo); iii) geodistribuição e acesso aos recursos pela Internet; iv) orientação a serviço como modelo de negócio; v) provisionamento dinâmico de recursos; vi) cobrança baseada no uso de recursos, de forma análoga à conta de eletricidade.
 
-* Imagens vs configuração
+Os serviços de computação em nuvem poder ser oferecidos a clientes internos ou externos à organização administradora da plataforma de nuvem. Quando os clientes são externos dizemos que a nuvem é pública, como no caso da nuvem da Amazon; quando os clientes são internos, dizemos que a nuvem é privada, situação na qual a organização pode utilizar ambientes baseados em um middleware como o OpenStack~\cite{Zhang2010Cloud}.
 
-* PaaS
+Ao modelo de computação em nuvem é atribuído as seguintes camadas, denominadas modelos de negócio~\cite{Zhang2010Cloud} ou modelos de serviço~\cite{Nist2011Cloud}: Infraestrutura como um Serviço (IaaS), Plataforma como um Serviço (PaaS) e Software como um Serviço (SaaS). 
 
+O modelo de Infraestrutura como Serviço (IaaS) fornece acesso aos recursos virtualizados, como máquinas virtuais, de forma programática. Um dos principais fornecedores atuais de IaaS é a Amazon, com os serviços Amazon Web Services (AWS). Dentre os vários serviços fornecidos pela plataforma, destaca-se o EC2, que possibilita a criação e gerenciamento de máquinas virtuais na nuvem da Amazon. Na utilização de IaaS, uma das considerações chaves é ``tratar hospedeiros como efêmeros e dinâmicos''~\cite{Amazon2012Practices}. É preciso considerar que hospedeiros podem ficar indisponíveis e que nenhuma suposição pode ser feita sobre seus endereços IPs, o que requer um modelo de configuração flexível e que a inicialização do hospedeiro leve em conta essa natureza dinâmica da nuvem. Para que as aplicações sejam escaláveis e tolerantes a falhas, a Amazon recomenda mais do que a criação de máquinas virtuais com o serviço EC2: deve-se utilizar grupos de máquinas replicadas que compartilhem um balanceador de carga~\cite{Amazon2012Practices}. Conforme a demanda da aplicação cresce ou diminui, máquinas podem ser dinamicamente acrescentadas ou removidas desses grupos de replicação, o que proporciona escalabilidade horizontal à aplicação. Naturalmente, essa replicação depende de um prévio preparo da aplicação para esse cenário, pois se deve levar em conta a distribuição, replicação e particionamento dos dados. 
+
+\todo{link entre IaaS e Continuous Delivery}
+
+Um exemplo típico de PaaS é o Google App Engine\footnote{\url{https://developers.google.com/appengine/}}, que oferece implantação transparente a projetos em Python, Java ou Go. Nesse caso, os desenvolvedores da aplicação não precisam preocupar-se diretamente com a gerência dos recursos virtualizados ou com a configuração dos ambientes nos quais a aplicação será implantada, concentrando-se no desenvolvimento do código da aplicação. O Google App Engine também oferece escalabilidade automática de modo mais simples que os serviços de IaaS, uma vez que a configuração prévia e as alterações na infraestrutura ocorrem de modo totalmente transparente ao desenvolvedor da aplicação. Uma desvantagem presente nos serviços PaaS são as restrições de linguagens, bibliotecas e ambientes impostas aos desenvolvedores da aplicação.
+
+Como exemplo de SaaS temos o Google Docs ou qualquer outro aplicativo online que seja diretamente utilizado pelo usuário final. Uma das aplicações desse tipo é o armazenamento de dados na nuvem, como fornecido pelo Dropbox\footnote{\url{http://dropbox.com/}}. Uma confusão comum é definir o conceito de nuvem como se fosse estritamente ligado a esse tipo de serviço de armazenamento de dados.
+
+Com as vantagens aqui apresentadas, é cada vez mais comum o uso dos recursos de nuvem por empresas que desenvolvem software, pois assim seus esforços concentram-se no desenvolvimento do produto, aliviando as preocupações com infraestrutura. A computação em nuvem também possibilita que organizações evitem grandes investimentos antecipados em infraestrutura, pois os recursos virtualizados são dinamicamente acrescentados conforme a carga da aplicação requeira. Pode-se então considerar o uso da nuvem uma realidade do mercado de software atual. Dessa forma, é natural esperar que a implantação de composições de serviços também se dê no ambiente de computação em nuvem, que é a abordagem deste trabalho. 
+
+\todo{Imagens vs configuração}
 
 \section{Desafios na implantação de sistemas de grande escala}
 
