@@ -2,11 +2,10 @@ Estrutura da dissertação
 
 * Introdução
 
-* Composições de serviços web
+* Conceitos básicos
     Serviços web
-    Composições de serviços web // ruim sub-título com mesmo nome de título
-
-* Implantação de sistemas
+    Composições de serviços web 
+    Implantação de sistemas
     Computação em nuvem
     Desafios de implantação de grande escala
 
@@ -19,8 +18,7 @@ Estrutura da dissertação
     Interface do EE
     Pontos de extensão
     Aspectos gerais de implementação (necessário?)
-
-* Discussão - Vencendo os desafios de implantação de grande escala 
+    Discussão - Vencendo os desafios de implantação de grande escala 
 
 * Avaliação
     Adhoc vs middleware
