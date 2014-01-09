@@ -90,16 +90,19 @@ o código compilado do componente junto de sua configuração são os insumos pa
 
 Esse processo de implantação pode ter que ser repetido várias vezes para que o componente
 seja implantado em todas as etapas do ``\emph{pipeline de implantação}''~\cite{Humble2011Continuous},
-como testes de aceitação (automatizados ou não), ambiente de homologação, e finalmente ambiente de produção.
+como testes de aceitação (automatizados ou não), ambiente de homologação, e finalmente ambiente de produção. 
+Todo o processo que vai desde o \emph{commit} do código-fonte,
+passando pelas etapas do \emph{pipeline} de implantação, até a implantação em produção
+chamaremos de processo de \emph{lançamento} de uma determinada versão do sistema.
 
 Profissionais da acadêmia e da indústria levantam a necessidade de se automatizar o processo de implantação, uma vez que o processo de implantação manual se torna moroso e propenso a erros, principalmente na implantação de sistemas distribuídos~\cite{Humble2011Continuous,Dolstra2005Configuration}. 
 Humble e Farley~\cite{Humble2011Continuous} afirmam que o processo de implantação manual faz com que  
-a implantação de uma nova versão do sistema se torne um grande evento nas organizações, 
+o lançamento de uma nova versão do sistema se torne um grande evento nas organizações, 
 em que há muita tensão e que faz as pessoas trabalharem até mais tarde.
 A solução para esses sintomas, segundo os autores, é a automação do processo de implantação.
 Em um processo de implantação automatizado tudo o que for possível é executado de forma automatizada,
 geralmente por meio de scripts. O objetivo de um processo de implantação automatizado
-é proporcionar um processo de implantação \emph{reproduzível} e \emph{confiável}~\cite{Humble2011Continuous}.
+é proporcionar um processo de implantação \emph{reproduzível}, \emph{confiável} e \emph{fácil}~\cite{Humble2011Continuous}.
 
 A automação discutida nos trabalhos de Humble, afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente são realizadas com a escrita de scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado nos requisitos não-funcionais do componente. Por fim, a fase de configuração é menos adequada para se automatizar, pois em geral envolve escolhas que devem ser feitas por humanos (ex: logotipo da empresa, que deve aparecer no cabeçalho do sistema).
 
