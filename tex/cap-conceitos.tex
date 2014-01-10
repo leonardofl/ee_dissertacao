@@ -277,6 +277,34 @@ afetaram até 7\% das requisições de criação de nós.
 
 \item [Escalabilidade:]
 
+Quando se implanta uma grande quantidade de serviços em um ambiente distribuído,
+não é desejável que as implantações dos diferentes serviços sejam sequenciais.
+Uma vez que a implantação de diferentes serviços são tarefas independentes,
+implanta-los concorrentemente aumenta drasticamente a escalabilidade
+do processo de implantação da composição.
+
+Dizemos que uma arquitetura é perfeitamente escalável
+se ela continua a apresentar o mesmo desempenho por recurso,
+mesmo que usado em um problema de tamanho maior, conforme o número
+de recursos aumenta~\cite{Quinn1994Scalability}.
+No contexto de implantação, isso significa que, idealmente,
+o tempo de implantação deveria permanecer constante quando há um
+aumento proporcional no número de serviços a serem implantados e
+no número de nós alvos.
+
+Note que o número de serviços a ser implantado aumenta em duas situações:
+1) quando se implanta composições maiores e 2) quando se implanta
+mais composições simultaneamente. 
+A primeira situação ocorre na implantação de sistemas de grande escala.
+A segunda situação pode ocorrer, por exemplo,
+quando se executa uma bateria de testes de aceitação de uma composição de serviços.
+Note que nesse caso um teste de aceitação pode levar um tempo considerável,
+já que engloba o provisionamento de um novo nó e a preparação do sistema.
+Em tal situação, é desejável que testes de aceitação sejam executados em paralelo,
+o que requer implantação concorrente de múltiplas instâncias da mesma composição.
+Quanto maior a capacidade de paralelização desse processo,
+mais testes poderão ser admitidos na bateria de testes.
+
 \item [Heterogeneidade:]
 
 \item [Múltiplas organizações:]

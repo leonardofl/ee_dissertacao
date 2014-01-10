@@ -413,6 +413,8 @@ public interface ContextSender {
 
 \section{Aspectos gerais de implementação}
 
+\todo{falar de como lidamos com a questão das imagens}.
+
 \section{Aspectos da implementação que auxiliam na superação dos desafios de implantação de coreografias de grande escala}
 
 \subsection{Confiança no processo de implantação}
@@ -527,29 +529,6 @@ De outra forma, cada serviço se tornaria um \emph{ponto de falha único} na com
 o que é altamente indesejável.
 
 \subsection{Escalabilidade}
-
-Quando se implanta uma grande quantidade de serviços em um ambiente distribuído,
-não é desejável que as implantações dos diferentes serviços sejam sequenciais.
-Uma vez que a implantação de diferentes serviços são tarefas independentes,
-implanta-los concorrentemente aumenta drasticamente a escalabilidade
-do processo de implantação da composição.
-
-Dizemos que uma arquitetura é perfeitamente escalável
-se ela continua a apresentar o mesmo desempenho por recurso,
-mesmo que usado em um problema de tamanho maior, conforme o número
-de recursos aumenta~\cite{Quinn1994Scalability}.
-No contexto de implantação, isso significa que, idealmente,
-o tempo de implantação deveria permanecer constante quando há um
-aumento proporcional no número de serviços a serem implantados e
-no número de nós alvos.
-
-Note que o número de serviços a ser implantado aumenta em duas situações:
-1) quando se implanta composições maiores e 2) quando se implanta
-mais composições simultaneamente. A segunda situação pode ocorrer, por exemplo,
-quando se executa uma bateria de testes de aceitação de uma composição de serviços.
-Em tal situação, é desejável que testes de aceitação sejam executados em paralelo,
-o que requer implantação concorrente de múltiplas instâncias da mesma composição.
-\todo{obs: testes de aceitação tendem a ser demorados; ex: engloba criação de VM.}
 
 Embora o conhecimento de programação concorrente para implementar
 um processo de implantação escalável seja básico (dentro do contexto de computação concorrente),
