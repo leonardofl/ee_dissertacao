@@ -2,7 +2,12 @@
 \chapter{Conceitos básicos}
 \label{cap:conceitos}
 
-Neste capítulo \todo{...}
+Neste capítulo apresentaremos conceitos que são base para esta pesquisa.
+Os conceitos apresentados serão sobre serviços web e suas composições, 
+implantação de sistemas, e por fim os desafios particulares da implantação
+de sistemas de grande escala.
+
+%pra intro?
 %Em nosso trabalho, estudaremos como as soluções de implantação automatizada
 %apoiadas por middleware facilitam o apoio à implantação de sistemas de grande escala.
 
@@ -216,20 +221,71 @@ Com as vantagens aqui apresentadas, é cada vez mais comum o uso dos recursos de
 
 \section{Desafios na implantação de sistemas de grande escala}
 
-* Processo
+Na visão proposta pelo Instituto de Engenharia de Software da Universidade Carnegie Mellon, sistemas de ultra grande escala serão ultra grandes em relação a todas as dimensões possíveis: linhas de código, pessoas, dados, dispositivos, etc.~\cite{CarnegieMellon2006ULS}. O número estimado de linhas de código desses sistemas é de bilhões. Para efeito de comparação, o núcleo do sistema operacional GNU/Linux possui cerca de 15 milhões de linhas de código em sua versão 3.2, a mais recente no momento da escrita deste texto~\cite{Leemhuis2012Statistics}. Com isso, talvez o único sistema da atualidade que se assemelha aos sistemas de escala ultra grande previstos é a Internet. 
 
-* Falhas de terceiros
+A característica mais importante de um sistema de grande escala não é seu tamanho, mas o fato de ser caracterizado como um ``ecossistema sociotécnico''~\cite{CarnegieMellon2006ULS}, em que pessoas são parte integrante do sistema, interagindo com diferentes objetivos, de modo decentralizado e independente, porém seguindo restrições impostas. A analogia proposta é de que o desenvolvimento dos atuais sistemas de grande escala equipara-se a construção de prédios, enquanto que o desenvolvimento de sistemas de escala ultra grande equivaleriam a construção de cidades, o que é naturalmente um processo contínuo e decentralizado.
 
-* Escalabilidade
+Recentemente temos ainda a consolidação da computação em nuvem, que traz um conjunto de tecnologias e práticas que se relacionam com as três características de sistemas de escala ultra grande anteriormente mencionadas. Sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos decentralizadamente por várias organizações~\cite{Steen2011VeryLarge}. A virtualização, um dos aspectos centrais da computação em nuvem, é de grande auxílio no provisionamento de novos ambientes~\cite{Humble2011Continuous}, o que é importante para o processo de implantação de sistemas. A virtualização também facilita a criação de ambientes replicados, arquitetura importante para tratar falhas individuais de componentes.
 
-* Heterogeneidade
+A grande escala afeta os processos envolvidos no ciclo de vida dos sistemas.
+Estudando a literatura que aborda e discute desafios, princípios e práticas de
+sistemas de grande escala, identificamos os seguintes desafios que essa nova
+realidade traz ao processo de implantação de sistemas:
 
-* Múltiplas organizações
+\begin{description}
 
-* Adaptabilidade
+\item [Processo:]
 
-* Disponibilidade
+\item [Falhas de terceiros:] 
 
+Sistemas distribuídos de grande escala devem esperar e tratar falhas
+de componentes de terceiros~\cite{Hamilton2007InternetScale,Helland2009Quicksand,CarnegieMellon2006ULS}.
+Mesmo se a chance de falhas de cada componente é pequena,
+a grande quantidade de componentes e interações aumenta as chances de 
+falhas em algum lugar do sistema~\cite{CarnegieMellon2006ULS}.
+Mais do que ser projetado para não falhar, um componente operando em um ambiente  de grande escala deve ser projetado para tratar adequadamente situações de exceção e indisponibilidade, tanto do próprio componente, quanto de outros componentes dos quais depende.
+
+Um exemplo de falha típica em um processo de implantação automatizado
+utilizando um serviço de IaaS envolve o provisionamento de VMs.
+Quando um novo nó é requisitado para o provedor de infraestrutura,
+há uma chance de que o provisionamento falhe.
+Além disso, alguns nós podem levar um tempo muito maior que a média para ficarem prontos.
+Outras operações que podem falhar durante o processo de implantação são
+conexões SSH e a execução de scripts nos nós alvos.
+
+A Figura~\ref{fig:ec2_boxplot} mostra a distribuição por nós observada
+do tempo de criação de VMs quando se requisita concorrentemente a criação
+de 100 nós na nuvem da Amazon (isso foi repetido 10 vezes).
+Nós contamos o tempo que vai da requisição de criação do nó
+até o momento em que a VM se encontra apta a receber conexões SSH,
+que é quando ela se torna pronta para uso na prática.
+Nós observamos uma taxa de falha de 0.6\%
+quando se tenta criar concorrentemente 100 nós.
+É interessante notar que o tempo de criação tem uma mediana estável,
+mas que alguns valores altos para esse tempo são esperados quando
+se cria ao mesmo tempo uma grande quantidade de nós.
+Em nossas observações, falhas e tempos longos de provisionamento
+afetaram até 7\% das requisições de criação de nós.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{ec2_boxplot.pdf}
+\caption{Tempos de criação de instâncias EC2 observados, em segundos.}
+\label{fig:ec2_boxplot}
+\end{figure}
+
+
+\item [Escalabilidade:]
+
+\item [Heterogeneidade:]
+
+\item [Múltiplas organizações:]
+
+\item [Adaptabilidade:]
+
+\item [Disponibilidade:]
+
+\end{description}
 
 
 

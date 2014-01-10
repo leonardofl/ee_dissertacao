@@ -465,43 +465,6 @@ considerando inclusive requisitos não-funcionais do serviço.
 \subsection{Tratando falhas de terceiros}
 \label{sec:failures}
 
-Sistemas distribuídos de grande escala devem esperar e tratar falhas
-de componentes de terceiros~\cite{Hamilton2007InternetScale,Helland2009Quicksand,CarnegieMellon2006ULS}.
-Mesmo se a chance de falhas de cada componente é pequena,
-a grande quantidade de componentes e interações aumenta as chances de 
-falhas em algum lugar do sistema~\cite{CarnegieMellon2006ULS}.
-
-Um exemplo de falhas típica em um ambiente de nuvem envolve o provisionamento de VMs.
-Quando um novo nó é requisitado para o provedor de infraestrutura,
-há uma chance de que o provisionamento irá falhar.
-Além disso, alguns nós podem levar um tempo muito maior que a média para ficarem prontos.
-Outras operações que podem falhar durante o processo de implantação são
-conexões SSH e a execução de scripts nos nós alvos.
-
-A Figura~\ref{fig:ec2_boxplot} mostra a distribuição observada
-do tempo de criação de VMs quando se requisita concorrentemente a criação
-de 100 nós na nuvem da Amazon (isso foi repetido 10 vezes).
-Nós contamos o tempo que vai da requisição de criação do nó
-até o momento em que a VM se encontra apta a receber conexões SSH,
-que é quando ela se torna pronta para uso na prática.
-Nós observamos uma taxa de falha de 0.6\%
-quando se tenta criar concorrentemente 100 nós.
-É interessante notar que o tempo de criação tem uma mediana estável,
-mas que alguns valores altos para esse tempo são esperados quando
-se cria ao mesmo tempo uma grande quantidade de nós.
-Em nossas observações, falhas e tempos longos de provisionamento
-afetaram até 7\% das requisições de criação de nós.
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\linewidth]{ec2_boxplot.pdf}
-\caption{Tempos de criação de instâncias EC2 observados, em segundos.}
-\label{fig:ec2_boxplot}
-\end{figure}
-
-\todo{o q tá até aqui é problema, mover pra outro lugar... 
-daqui pra baixo é solução, q é oq deve estar aqui}
-
 Uma abordagem simples adotada pelo \ee para tratar falhas externas
 foi encapsular a lógica de invocação de sistemas externos em uma classe, 
 chamada \textsf{Invoker}, e usá-la de uma forma disciplinada pelo projeto.
@@ -509,6 +472,8 @@ Nosso \textsf{Invoker} recebe os seguintes parâmetros:
 uma \emph{tarefa}, que é uma rotina que se comunicará com algum sistema externo,
 a quantidade de \emph{tentativas} para executar a tarefa,
 o \emph{timeout} de cada tentativa, e um \emph{intervalo} entre as tentativas.
+
+\todo{falar q Invoker veio de Nygard}
 
 Uma instância do \textsf{Invoker} deve ser configurada deve ser configurada
 de acordo com sua tarefa (por exemplo, nós descobrimos que três tentativas
