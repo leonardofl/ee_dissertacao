@@ -236,6 +236,23 @@ realidade traz ao processo de implantação de sistemas:
 
 \item [Processo:]
 
+Como já foi discutido neste capítulo, a automação do processo de implantação
+vem se firmando como uma tendência crucial na capacidade
+das equipes de TI entregarem valor o mais continuamente possível,
+evitando as dificuldades e problemas presentes no processo manual de implantação.
+Tais dificuldade e problemas se tornam muito mais complicados em ambientes distribuídos
+e de grande escala. Por isso, nesse caso a automação dos processos se torna
+ainda mais fundamental.
+Hamilton~\cite{Hamilton2007InternetScale} lista uma série de boas práticas acumuladas 
+por anos de experiência no desenvolvimento de serviços de grande escala.
+Dentre elas, Hamilton destaca a automação de todos os processos de operações dos serviços,
+alegando que processos automatizados são testáveis, reparáveis e, portanto,
+mais confiáveis.
+
+\todo{rollback}
+
+\todo{idempotência (Chef valoriza isso no processo de implantação)}
+
 \item [Falhas de terceiros:] 
 
 Sistemas distribuídos de grande escala devem esperar e tratar falhas
@@ -274,6 +291,34 @@ afetaram até 7\% das requisições de criação de nós.
 \label{fig:ec2_boxplot}
 \end{figure}
 
+\item [Disponibilidade:]
+
+Embora serviços em um sistema distribuído tenham que estar preparados para lidar
+com a falha de outros serviços do sistema,
+cada serviço deve ter sua disponibilidade aumentada tanto quanto possível. 
+Para isso é preciso aplicar técnicas que
+aumentem o tempo médio entre falhas e/ou diminuam o tempo médio de reparo após uma falha.
+
+O balanceamento de carga entre réplicas de um serviço é uma das práticas mais importantes e 
+recomendados atualmente para aumentar a disponibilidade e escalabilidade de sistemas~\cite{Amazon2012Practices}.
+Com a replicação do serviço, a falha em uma réplica não implica na indisponibilidade
+do serviço. Além disso, com a utilização das tecnologias de nuvem,
+caso a quantidade de requisições aumente, pode-se requisitar um aumento na quantidade de réplicas,
+o que evitará uma indisponibilidade por incapacidade de se atender a todas as requisições.
+
+Outra prática importante para o aumento da disponibilidade é a replicação de dados~\cite{Brewer2001GiantScale}.
+No entanto, a replicação síncrona de dados é inviável para sistemas de grande escala~\cite{Helland2009Quicksand}.
+O Teorema CAP~\cite{Brewer2012Cap} prevê que um sistema não mantém os níveis de consistência e de disponibilidade na presença de particionamentos de rede. Considerando que particionamentos de rede são intrínsecos ao ambiente da Internet, o aumento no tamanho dos sistemas inviabilizou uma consistência total com tempo de resposta satisfatório. 
+Essa mudança representou uma quebra de paradigma na área de bancos de dados,
+pois agora os bancos de dados projetados para fornecer as propriedades ACID,
+que garantem consistência total, cedem lugar aos cada vez mais populares
+bancos de dados não-relacionais (NoSQL).
+Essa nova categoria sacrifica a consistência dos dados para obter maior disponibilidade ou escalabilidade~\cite{Cattell2011NoSql}.
+
+O processo de implantação deve considerar as necessidades de replicação de serviços e dados,
+para que possa configurar adequadamente as múltiplas instâncias dos serviços e das bases de dados.
+Deve ser possível também alterar em tempo de execução a quantidade de réplicas para
+a adequação à demanda observada.
 
 \item [Escalabilidade:]
 
@@ -338,8 +383,6 @@ por notificação os endereços de serviços recém implantados por outra organi
 quando esses serviços são dependências de seus próprios serviços sendo também implantados.
 
 \item [Adaptabilidade:]
-
-\item [Disponibilidade:]
 
 \end{description}
 
