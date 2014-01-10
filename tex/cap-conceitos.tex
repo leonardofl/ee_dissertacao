@@ -307,6 +307,11 @@ mais testes poderão ser admitidos na bateria de testes.
 
 \item [Heterogeneidade:]
 
+Componentes de sistemas de grande escala normalmente são construídos com diferentes tecnologias
+e hospedados em diferentes tipos de ambientes.
+Um dos principais caminhos para viabilizar a coexistência dessa pletora tecnológica
+é a Arquitetura Orientada a Serviços, incluindo as composições de serviços web.
+
 Embora serviços web tenha surgido para resolver os problemas de heterogeneidade
 entre sistemas e organizações, hoje em dia temos mais de um mecanismo para
 implementar o conceito serviços, principalmente SOAP e REST, além de outros.
@@ -315,6 +320,22 @@ A falta de flexibilidade para a escolha de tecnologia para o desenvolvimento de 
 e o provedor de infraestrutura ocorre em muitas soluções PaaS atualmente disponíveis.
 
 \item [Múltiplas organizações:]
+
+Sistemas de grande escala não possuem um único dono~\cite{Steen2011VeryLarge}, 
+sendo que seus componentes pertencem a diferentes organizações que interagem de forma coordenada. 
+O conceito de coreografias de serviços web e notações como o BPMN surgem para 
+formalizar a interação entre serviços de organizações diferentes em tempo de execução.
+
+Em uma composição inter-organizacional a coordenação do processo de implantação se torna um desafio. Normalmente não se admite que um coordenador em uma organização possa tomar decisões 
+sobre a implantação de serviços de outra organização, pois esse processo envolve
+custos, acesso a infraestrutura e acesso ao pacote do serviço.
+Dessa forma, não podemos esperar que haja um orquestrador para coordenar o processo de implantação.
+As organizações deveriam agir de forma colaborativa para que o processo de implantação
+da composição tenha sucesso.
+No entanto isso não é tão simples, pois no caso de implantação simultânea,
+é preciso haver algum protocolo de comunicação para que uma organização receba
+por notificação os endereços de serviços recém implantados por outra organização,
+quando esses serviços são dependências de seus próprios serviços sendo também implantados.
 
 \item [Adaptabilidade:]
 
