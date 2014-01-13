@@ -1,12 +1,14 @@
-\chapter{Solução Proposta}
+\chapter{Solução proposta}
 \label{cap:solucao}
 
 O CHOReOS \ee (EE) é um middleware implementado no contexto deste trabalho.
 Uma vez instanciado, ele fornece serviços que automatizam
 a implantação de composições de serviços em ambientes de computação em nuvem,
 funcionando no modelo de computação em nuvem denominado Plataforma como um Serviço (PaaS).
+O EE possui funcionalidades e características que foram projetadas para auxiliar o
+implantador na implantação de composições de grande escala.
 
-Para utilizar o EE, o usuário (implantador) deve descrever a composição a ser implantada
+Para utilizar o EE, o implantador, usuário do EE, deve descrever a composição a ser implantada
 na Linguagem de Descrição Arquitetural do EE, uma especificação de alto nível que
 diz \emph{o que} deve ser implantado, e não o \emph{como}. 
 Finalmente, o usuário deve fornecer essa descrição ao EE através de sua API remota.
@@ -14,8 +16,8 @@ Finalmente, o usuário deve fornecer essa descrição ao EE através de sua API 
 As funcionalidades fornecidas pelo \ee ao usuário são as seguintes:
 
 \begin{itemize}
+\item API para automatizar a implantação de composições de serviços em ambientes de computação em nuvem.
 \item Criação automatiza de infraestrutura virtualizada (nós na nuvem).
-\item API para automatizar a implantação de coreografias na nuvem.
 \item Implantação escalável de coreografias de grande escala.
 \item Suporte a implantação multi-nuvem.
 \item Utilização de serviços de terceiros na composição a ser implantada.
@@ -25,26 +27,23 @@ As funcionalidades fornecidas pelo \ee ao usuário são as seguintes:
 \end{itemize}
 
 Para a implementação do arcabouço Enactment Engine contribuíram Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O \ee é software livre 
-sob a Licença Pública da Mozilla 2\footnote{\url{http://www.mozilla.org/MPL/2.0/}} 
+sob a Licença Pública Mozilla 2\footnote{\url{http://www.mozilla.org/MPL/2.0/}} 
 e está disponível em \url{http://ccsl.ime.usp.br/enactmentengine}. 
 
 Neste capítulo, nós apresentamos a arquitetura e aspectos de implementação do \ee.   
 Destacamos ao final do capítulo
 como as decisões arquiteturais e de implementação auxiliam o implantador
-a superar os desafios presentes na implantação de coreografia de grande escala.
+a superar os desafios presentes na implantação de composições de grande escala.
 Alguns aspectos aqui discutidos serão o tratados em alto nível,
 priorizando o que é importante para o entendimento das contribuições
 acadêmicas deste trabalho.
 Detalhes de mais baixo nível sobre nosso middleware, principalmente do ponto de vista do
-usuário, podem ser encontrados no \userguide.
-
-Conforme já anunciado no Capítulo~\ref{cap:implantacao},
-lembramos que para as descrições que se seguem utilizaremos
-termos técnicos como definidos no DEPL~\cite{DEPL2006}.
+usuário, podem ser encontrados no \userguide (Apêndice~\ref{ape:user_guide}).
 
 \section{Arquitetura}
 
-A arquitetura do \ee é exibida na Figura~\ref{fig:arquitetura}.
+\todo{explicar q é um serviço, mas q deve ser instalado; contrapor administrador a implantador}
+A arquitetura do \ee é exibida na Figura~\ref{fig:arquitetura} e os componentes envolvidos são descritos a seguir.
 
 \begin{figure}[ht]
 \centering
@@ -55,7 +54,7 @@ A arquitetura do \ee é exibida na Figura~\ref{fig:arquitetura}.
 
 \begin{itemize}
 
-\item O \emph{Cloud Gateway} é um serviço de terceiros capaz de criar e destruir máquinas virtuais 
+\item O \emph{Provedor de infraestrutura} é um serviço de terceiros capaz de criar e destruir máquinas virtuais 
 (também chamadas de \emph{nós}), normalmente em um ambiente de computação em nuvem. 
 Atualmente o \ee suporta o Amazon EC2 e o OpenStack.
 
@@ -77,7 +76,7 @@ das chamadas REST.
 com base na especificação enviada pelo cliente.
 O processo implementado pelo \ee para efetuar a implementação
 é descrito na Figura~\ref{fig:processo}, e explicado logo em seguida. 
-\todo{explicar q é um serviço, mas q deve ser instalado}
+
 
 \end{itemize} 
 
