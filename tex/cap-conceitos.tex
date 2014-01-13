@@ -14,6 +14,8 @@ de sistemas de grande escala.
 \section{Serviços web}
 \label{sec:servicos}
 
+\todo{conceito de serviço vs instância de serviço}
+
 Serviços são entidades autônomas e independentes de plataforma, que podem ser descritas, publicadas, encontradas e compostas~\cite{Papazoglou2007State}. O conceito de serviço é oriundo do conceito de \emph{componentes}, que foram idealizados para que sistemas fossem construídos com ``blocos'' fornecidos por terceiros~\cite{McIlroy1968MassProduced}. Esses blocos teriam interfaces bem definidas e, com isso, seriam conectáveis entre si, sem que o desenvolvedor precisasse entender sobre a implementação desses blocos. Szyperski~\cite{Szyperski2003Component} define componente como uma unidade de composição, possuindo uma especificação de interface contratual e declaração explícita de suas dependências. Dessa forma, um serviço também é considerado um componente, porém com algumas características peculiares, como ser acessível pela rede e expor operações relacionadas a funcionalidades do negócio~\cite{Hewitt2009JavaSOA}. 
 
 %Um exemplo bem conhecido de padronização de sistemas baseados em componentes é o Common Object Request Broker Architecture (CORBA). A especificação CORBA~\cite{CORBA1995} define objeto como uma ``entidade encapsulada e identificável que fornece um ou mais serviços que podem ser requisitados por um cliente'', o que corresponde ao conceito de componente. Ainda na especificação CORBA, uma interface é definida como uma ``descrição do conjunto de possíveis operações que um cliente pode requisitar para um objeto por essa interface''. Uma interface de um componente CORBA é concretamente descrita utilizando-se a Interface Description Language (IDL). \fabio{Livro básico de componentes: QA754.4 S999c; Procurar CORBA componente model}
@@ -387,6 +389,29 @@ por notificação os endereços de serviços recém implantados por outra organi
 quando esses serviços são dependências de seus próprios serviços sendo também implantados.
 
 \item [Adaptabilidade:]
+
+No futuro sistemas deverão operar em um mundo altamente dinâmico,
+sendo preciso lidar com alterações imprevistas, como condições ambientais, incluindo desastres naturais, 
+adequação legal, etc.~\cite{Papazoglou2008Journey}.
+É de se esperar que em sistemas de grande escala a capacidade de agir autonomicamente 
+seja vital para manter um funcionamento adequado, uma vez que a intervenção manual
+se torna mais custosa.
+
+Quando requisitos funcionais ou não-funcionais são violados, as possíveis ações a serem tomadas são:
+1) substituição de versão de serviços; 2) aumento na quantidade de réplicas de um serviço; e
+3) migração da instância de um serviço para outro hospedeiro.
+Uma vez que todas essas ações tem relação com o processo de implantação,
+pode-se dizer que sistemas auto-adaptativos e autonômicos precisam estar cientes
+e ter pleno controle das atividades do processo de implantação.
+
+Para tomar as decisões de adaptação, um sistemas auto-adaptativo precisa monitorar
+a si próprio para coletar métricas a serem utilizadas em algum algoritmo adaptativo.
+Exemplos de métricas são utilização de CPU e memória.
+Coletar tais métricas requer a utilização de uma infraestrutura de monitoramento
+que deve ser implantada na infraestrutura alvo.
+Portanto, o processo de implantação de sistemas auto-adaptativos
+também deve considerar a implantação de sistemas auxiliares que realizam esse monitoramento.
+
 
 \end{description}
 
