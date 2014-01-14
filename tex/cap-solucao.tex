@@ -470,18 +470,17 @@ com características dos nós disponíveis.
 
 \item [Falhas de terceiros:]
 
-
-Uma abordagem simples adotada pelo \ee para tratar falhas externas
-foi encapsular a lógica de invocação de sistemas externos em uma classe, 
-chamada \textsf{Invoker}, e usá-la de uma forma disciplinada pelo projeto.
+Seguindo recomendações gerais feitas por Nygard~\cite{Nygard2009Release},
+adotamos no \ee uma abordagem simples para tratar falhas externas.
+A lógica de invocação a sistemas externos foi encapsulada em uma classe, 
+chamada \textsf{Invoker}, que foi usada de forma disciplinada pelo projeto.
+Toda vez que se deve acessar um sistema externo, utiliza-se um \emph{invoker}.
 Nosso \textsf{Invoker} recebe os seguintes parâmetros:
 uma \emph{tarefa}, que é uma rotina que se comunicará com algum sistema externo,
 a quantidade de \emph{tentativas} para executar a tarefa,
 o \emph{timeout} de cada tentativa, e um \emph{intervalo} entre as tentativas.
 
-\todo{falar q Invoker veio de Nygard}
-
-Uma instância do \textsf{Invoker} deve ser configurada deve ser configurada
+Uma instância do \textsf{Invoker} deve ser configurada 
 de acordo com sua tarefa (por exemplo, nós descobrimos que três tentativas
 não é o suficiente para transferência de arquivos por SCP).
 Em vez de ter esses valores fixados no código-fonte, eles são explicitamente
@@ -490,12 +489,13 @@ Desta forma, pode-se facilmente ajustar esses valores de acordo com
 as características do ambiente alvo.
 Portanto, essa abordagem é também uma estratégia para colaborar 
 com a heterogeneidade de plataformas e tecnologias.
-A classe \textsf{Invoker} pode ser facilmente decorada\footnote{Ver padrão de projeto \emph{decorator}} para adaptar valores de timeouts automaticamente
-baseando-se em heurísticas definidas programaticamente por engenheiros 
-da comunidade DevOps.
+A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \emph{decorator}~\cite{GoF1995Patterns}.} 
+para adaptar dinamicamente valores de timeouts 
+baseando-se em heurísticas definidas programaticamente 
+que utilizem o histórico de execução dos \emph{invokers}.
 
-O \ee adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
-Quando uma requisição chega, o \ee tenta criar um novo nó.
+O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
+Quando uma requisição chega, o EE tenta criar um novo nó.
 Se a criação falha ou demora muito, um nó já criado é recuperado de uma reserva de nós ociosos.
 Essa estratégia evita que se tenha que esperar novamente pelo tempo de se criar um novo nó.
 A capacidade inicial da reserva é definida por configuração
@@ -506,24 +506,29 @@ de se encontrar uma reserva vazia em um momento de necessidade.
 
 A abordagem da reserva impõe um custo extra de se manter algumas VMs a mais
 em execução (em um estado ocioso). Contudo, esse problema é tratado
-pelo \ee por um algoritmo de gerenciamento distribuído em cada nó:
+pelo EE por um algoritmo de gerenciamento distribuído em cada nó:
 se o nó está em um estado ocioso por $N-1$ minutos, onde $N$ é um limite
-de tempo que implica custo adicional, o nó envia ao \ee um pedido para 
-sua própria destruição. Assim, depois de um tempo de inatividade no \ee,
+de tempo que implica custo adicional, o nó envia ao EE um pedido para 
+sua própria destruição. Assim, depois de um tempo de inatividade no EE,
 a reserva se torna vazia em algum momento, sendo preenchida novamente
 somente quando chegam novas requisições de criação de nós.
 %This distributed approach alleviates the need to have the \ee periodically check
 %the status of the machines to decide whether they should be removed.
 
-\todo{na amazon vc não é cobrado por instâncias paradas!}
+Considerando que o tempo de criação de um nó é bem maior que o tempo de inicialização (\emph{boot})
+desse nó, uma melhoria a ser feita na reserva de nós ociosos é manter o nó ocioso desligado
+até o momento de uso, uma vez que provedores de infraestrutura, como a Amazon,
+costumam não cobrar por máquinas desligadas.
+Essa abordagem pode diminuir um pouco o desempenho da reserva de nós,
+mas irá economizar mais recursos.
 
 Outra prática importante relacionada a tolerância a falhas é a 
 \emph{degradação suave}~\cite{Brewer2001GiantScale,Hamilton2007InternetScale}.
 Em nosso contexto, degradação suave significa que se um serviço não foi 
 implantado apropriadamente, não é aceitável que o processo de implantação
 de toda a composição seja interrompido.
-Com o \ee, se algum serviço não é implantado, o processo de implantação continua,
-e a resposta do \ee fornece informações sobre os problemas ocorridos,
+Com o EE, se algum serviço não é implantado, o processo de implantação continua,
+e a resposta do EE fornece informações sobre os problemas ocorridos,
 possibilitando ações de recuperação.
 
 Contudo, é importante destacar que a responsabilidade pela degradação suave
