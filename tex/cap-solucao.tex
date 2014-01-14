@@ -606,7 +606,7 @@ Contudo, ele fornece suporte para o desenvolvimento de tais sistemas.
 
 Sistemas auto-adaptativos e autonômicos precisam estar cientes
 e ter pleno controle das atividades de implantação.
-Para empoderar tais sistemas, o \choreos \ee fornece informação e controle
+Para empoderar tais sistemas, o EE fornece informação e controle
 das seguintes funcionalidades:
 
 \begin{itemize}
@@ -618,35 +618,38 @@ das seguintes funcionalidades:
 
 Atualização de composições de serviços podem ser necessárias quando
 as regras de negócio ou os requisitos não-funcionais mudam.
-O \ee permite, por uma API REST, a adição, remoção e reconfiguração dos serviços
+O EE permite, por uma API REST, a adição, remoção e reconfiguração dos serviços
 e seus recursos computacionais associados.
 
-O controle de migração de serviço do EE pode ser usado para otimizar
-a utilização de recursos da plataforma subjacente.
-Isso pode ser usado para agrupar mais de um serviço em um único
+O controle de migração de serviço do EE pode ser usado para 
+agrupar mais de um serviço em um único
 recurso computacional ou para migrar o serviço para um recurso diferente
 para aumentar seu desempenho.
 
 Replicação de serviço é um tipo particular e importante de atualização de composição.
 Associado a um balanceamento de carga, é uma estratégia comum para
 a construção de sistemas escaláveis~\cite{Amazon2012Practices}.
-O \ee possibilita a replicação de serviço através da implantação de
+O EE possibilita a replicação de serviço através da implantação de
 múltiplas instâncias do serviço e informando aos seus serviços consumidores
 sobre a existência dessas réplicas durante a fase de ligação de serviços.
 A quantidade inicial de réplicas é definida por atributo na especificação
 do serviço fornecida ao EE, e, depois, pode ser redefinida dinamicamente.
+Um trabalho futuro é configurar automaticamente um balancemanto de carga
+entre réplicas de um serviço, de forma que o consumidor de um serviço
+não tenha a necessidade de saber sobre suas diversas réplicas.
 
-Para tomar suas decisões, todo sistemas auto-adaptativo precisa monitorar
-a si próprio para coletar métricas a serem utilizadas em algum algoritmo adaptativo.
-Exemplos de métricas são utilização de CPU e memória.
-Coletar tais métricas requer a implantação de uma infraestrutura de monitoramento.
-Para contribuir com essa necessidade, o EE fornece opcionalmente a implantação
-de \emph{coletores do Ganglia} nos nós alvos.
+Por fim, o EE fornece opcionalmente a implantação de uma infraestrutura de monitoramento na infraestrutura alvo.
+Utilizamos o Ganglia, que coleta métricas do sistema operacional, como consumo de CPU, por exemplo.
+As métricas coletadas são enviadas a um serviço previamente configurado no EE.
+Esse serviço de monitoramento pode então disparar ações de adaptação com base
+nos dados recebidos. Uma ação de adaptação envolve a geração de uma nova especificação
+de composição e a atualização da composição em execução de acordo com a nova especificação.
+
+Essas funcionalidades fazem do EE uma opção adequada para uma ferramenta de apoio 
+à pesquisa de auto-adaptação de composição de serviços.
+O EE facilita a implementação de sistemas adaptativos
+por possibilitar que pesquisadores se foquem mais nos problemas de adaptação em
+alto nível, abstraindo detalhes altamente específicos do gerenciamento de implantação.
 
 \end{description}
 
-Essas funcionalidades fazem do \ee uma opção adequada para uma ferramenta de apoio 
-à pesquisa de auto-adaptação de composição de serviços.
-Elas (as funcionalidades) facilitam a implementação de sistemas adaptativos
-por possibilitarem que pesquisadores se foquem mais nos problemas de adaptação em
-alto nível, abstraindo detalhes altamente específicos do gerenciamento de implantação.
