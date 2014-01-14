@@ -564,20 +564,40 @@ provedor de infraestruturas e a linguagem de programação da aplicação.
 
 \item [Múltiplas organizações:]
 
-Uma composição de serviços pode conter serviços pertencentes a diferentes organizações.
-O \ee possui dois principais mecanismos para lidar com essa situação.
-O primeiro utiliza um atributo da especificação do serviço para definir
-por qual ``conta de nuvem'' o serviço será implantado (e cobrado).
-%since, usually, the service owner must be billed by the infrastructure provider.
-%Cada organização pode definir sua própria política de alocação de nó.
-% não é mais verdade...
+O \ee possui dois principais mecanismos para implantar composições cujos serviços
+pertencem a diferentes organizações.
+O primeiro mecanismo é a definição da ``conta de nuvem'' a ser usada na implantação de um serviço.
+Essa definição é feita na especificação do serviço e deve bater com configurações
+previamente feitas pelo administrador no EE.
+Uma ``conta de nuvem'' não indica apenas a nuvem alvo (Amazon, por exemplo),
+mas também que vai pagar pela infraestrutura (qual conta da Amazon será utilizada, por exemplo).
+Uma vez que os serviços de cada organização sejam configurados para serem implantados
+nas contas de nuvem adequadas, o EE irá implantar adequadamente uma composição
+multi-organizacional.
+No entanto essa abordagem ainda apresenta limitações sérias no quesito de segurança,
+pois a configuração da conta de nuvem deve ser fornecida ao administrador do EE,
+que seria uma das organizações ou um terceiro.
+Esse e outros problemas surgem do fato que diferentes organizações teriam que
+compartilhar uma mesma instância do EE.
 
-O segundo mecanismo é usado quando uma organização realiza a implantação
-de uma composição contendo tantos serviços pertencentes a própria organização,
-quanto serviços de terceiros, já disponíveis na Internet.
-Essa situação pode ser modelada na especificação da composição,
-de forma que o \ee irá implantar apenas os serviços pertencentes à organização
-e ligá-los aos já existentes serviços de terceiros.
+O segundo mecanismo é a utilização da entidade \emph{serviço legado} na especificação da composição.
+O serviço legado é um serviço já existente e disponível na Internet, e que portanto
+não será implantado pelo EE.
+A utilidade em utilizar esse mecanismo está na fase de ligação
+entre serviços, pois o EE irá fornecer
+aos serviços implantados os endereços dos serviços legados declarados como suas dependências.
+A maior limitação dessa abordagem é a dificuldade em se lidar com a alteração de URIs
+dos serviços legados.
+Quando isso ocorre, uma nova especificação da composição deve ser feita e enviada ao EE,
+mas o problema é saber \emph{quando} isso deve ser feito.
+
+Considerando as limitações dos mecanismos até aqui implementados,
+divisamos como importante trabalho futuro uma arquitetura de federação entre instâncias do EE.
+Caso um serviço $S_A$, implantado com o EE pela organização $O_A$, dependa de um serviço legado $B$,
+também implantado com o EE, mas para a organização $O_B$, a instância do EE em $O_B$ poderia
+manter a instância do EE em $O_A$ informada sobre o estado de $S_B$.
+Para que essa funcionalidade seja implementada é preciso projetar um protocolo
+de comunicação entre instâncias do EE.
 
 \item [Adaptabilidade:]
 
