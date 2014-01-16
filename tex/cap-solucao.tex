@@ -321,20 +321,16 @@ Para lidar com as particularidades do ambiente de cada organização, o Enactmen
 Neste capítulo descreveremos os pontos de extensão de nosso middleware, 
 mostrando as interface associadas a cada um deles.
 Para mais detalhes sobre todos os passos necessários para implementar
-uma extensão, verificar o \userguide.
+uma extensão, verificar o guia do usuário (Apêndice~\ref{ape:user_guide}).
 
 \begin{description}
 
-\item [Infraestrutura de nuvem:] implementando a interface \textsf{CloudProvider} é possível o suporte a novas plataforma de computação em nuvem. Atualmente nossa implementação suporta o serviço EC2 do AWS e o OpenStack.
+\item [Provedor de infraestrutura:] implementando a interface \textsf{CloudProvider} (Listagem~\ref{lst:cloud_provider}) 
+é possível acrescentar ao EE o suporte a novos provedores de infraestrutura. 
+Atualmente o EE suporta o serviço EC2 do AWS e o OpenStack como provedores de infraestrutura.
+Cada um deles possui sua própria implementação de \textsf{CloudProvider}.
 
 \begin{lstlisting}[frame=trbl, label=lst:cloud_provider, caption=Interface CloudProvider.]
-/**
- * Provides access to cloud service functions to create nodes on the cloud.
- * 
- * Each specific provider (e.g. AmazonWS) must have an implementing class 
- * of this interface.
- * 
- */
 public interface CloudProvider {
 
     public String getCloudProviderName();
@@ -354,8 +350,24 @@ public interface CloudProvider {
 }
 \end{lstlisting}
 
-\todo{explicar cloud configuration?}
+Os métodos da interface \textsf{CloudProvider} referem-se basicamente às operações de CRUD de máquinas virtuais
+em uma infraestrutura de nuvem. Além disso, a implementação pode acessar configurações específicas 
+através do objeto \texttt{cloudConfiguration}. Tais configurações podem incluir 
+credenciais de acesso de uma conta de nuvem (quem paga pelos nós), tipo das instâncias de VMs a serem criadas (afeta preço),
+chave de acesso aos nós criados, etc. A Listagem~\ref{lst:cloud_configuration} apresenta um exemplo de configurações
+fornecidas à implementação \textsf{AmazonCloudProvider}. 
+Essas informações são definida pelo administrador em um arquivo de configuração do EE.
 
+\begin{lstlisting}[frame=trbl, label=lst:cloud_configuration, caption=Configuração do \textsf{AmazonCloudProvider}.]
+LEO_AWS_ACCOUNT.CLOUD_PROVIDER=AWS
+LEO_AWS_ACCOUNT.AMAZON_ACCESS_KEY_ID=secret!
+LEO_AWS_ACCOUNT.AMAZON_SECRET_KEY=secret_too!
+LEO_AWS_ACCOUNT.AMAZON_KEY_PAIR=leofl
+LEO_AWS_ACCOUNT.AMAZON_PRIVATE_SSH_KEY=/home/leonardo/.ssh/leoflaws.pem
+LEO_AWS_ACCOUNT.AMAZON_IMAGE_ID=us-east-1/ami-3337675a
+LEO_AWS_ACCOUNT.AMAZON_INSTANCE_TYPE=m1.medium
+\end{lstlisting}
+ 
 Para facilitar o desenvolvimento de novas implementações,
 nós fornecemos uma implementação base, a classe \textsf{JCloudsCloudProvider}.
 Ela utiliza a biblioteca JClouds\footnote{\url{http://jclouds.incubator.apache.org/}},
@@ -364,7 +376,6 @@ Essa implementação base foi utilizada para a implementação das classes
 \textsf{AmazonCloudProvider} e \textsf{OpenStackKeyStoneCloudProvider},
 que contaram, respectivamente, com 79 e 96 linhas de código-fonte.
 
-\todo{Classe base: JCloudsCloudProvider}
 
 \item [Política de seleção de nós:] a implementação da interface \textsf{NodeSelector} define uma nova política de alocação de serviços em nós da nuvem, que pode levar em conta os requisitos não-funcionais do serviço e propriedades dos nós à disposição.
 Algumas políticas já fornecidas são ``sempre cria um novo nó'' e 
