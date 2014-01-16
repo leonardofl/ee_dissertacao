@@ -409,12 +409,41 @@ por tipo de \textsf{NodeSelector}. Essa característica é importante para que p
 rodízio de nós funcionem adequadamente.
 
 
-\item [Tipos de pacotes de serviços:] um serviço pode ser distribuído por diferentes tipos de pacotes, como em um JAR ou em um WAR, por exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada novo tipo de pacote, pode-se escrever um template de um \emph{cookbook} Chef que implemente a preparação e a inicialização do serviço. \todo{falar mais dos tokens no template...}
+\item [Tipos de pacotes de serviços:] um serviço pode ser distribuído por diferentes tipos de pacotes, como em um JAR ou em um WAR, por 
+exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada novo tipo de pacote, escreve-se 
+um modelo de um \emph{cookbook} Chef que implemente a preparação e a inicialização do serviço. Um \emph{cookbook} possui vários 
+arquivos, mas os principais são os arquivos da \emph{receita}, que é o script de instalação em si, e o arquivo que define \emph
+{atributos} a serem usados nas receitas. A Listagem~\ref{lst:recipe_template} mostra a receita do \emph{cookbook} modelo
+para implantação de WARs, enquanto que a Listagem~\ref{lst:attributes_template} mostra o arquivo de atributos do mesmo \emph{cookbook}.
 
-\item \emph{Package type:} the current supported types
-are JAR and WAR packages. Users may add support to a new package type
-by writing a Chef cookbook template.
-One example would be a Python web service deployment in an Nginx server.
+\begin{lstlisting}[frame=trbl, label=lst:recipe_template, caption=Receita modelo para a implantação de WARs.]
+include_recipe "apt" 
+include_recipe "tomcat::choreos"
+
+remote_file "war_file" do
+        source "#{node['CHOReOSData']['serviceData']['$NAME']['PackageURL']}"
+        path "#{node['tomcat']['webapp_dir']}/$NAME.war"
+        mode "0755"
+        action :create_if_missing
+end
+
+file "#{node['tomcat']['webapp_dir']}/$NAME.war" do
+        action :nothing
+end
+\end{lstlisting}
+
+\begin{lstlisting}[frame=trbl, label=lst:attributes_template, caption=Arquivo modelo de atributos para a implantação de WARs.]
+default['CHOReOSData']['serviceData']['$NAME']['PackageURL'] = "$PACKAGE_URL"
+\end{lstlisting}
+
+Os arquivos listados acima são modelos não executáveis, uma vez que apenas em tempo de implantação 
+os símbolos \emph{\$NAME} e \emph{\$PACKAGE\_URL} serão substituídos por valores adequados.
+Essa substituição é feita pelo próprio EE.
+Ou seja, criar um novo modelo de \emph{cookbok} para o EE significa simplesmente criar um novo \emph{cookbok} Chef
+utilizando adequadamente os símbolos \emph{\$NAME} e \emph{\$PACKAGE\_URL}.
+O símbolo \emph{\$PACKAGE\_URL} será substituído pela URL do pacote do serviço,
+enquanto que o \emph{\$NAME} será substituído por uma identificação única dentro do EE.
+
 
 \item [Tipos de serviços:] a ligação entre serviços de uma coreografia depende da passagem de endereços que é feita do \ee para os serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação dar-se-á de forma diferente se o serviço for SOAP ou REST. A implementação da interface \textsf{ContextSender} possibilita ao EE realizar a invocação da operação \texttt{setInovcationAddress} em serviços de outras tecnologias (JMS e CORBA por exemplo). Nota-se que para cada um desses tipos de serviços adicionados pelo usuário, é preciso criar uma convenção para a assinatura sintática da operação \texttt{setInvocationAddres}.
 
