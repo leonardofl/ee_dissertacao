@@ -252,8 +252,6 @@ Dentre elas, Hamilton destaca a automação de todos os processos de operações
 alegando que processos automatizados são testáveis, reparáveis e, portanto,
 mais confiáveis.
 
-Outra automação importante é o ``\emph{roll-back}'' do sistema: se o ambiente de produção encontrar-se em algum estado inválido, é preciso uma reversão rápida e segura do sistema e do ambiente para o última estado estável~\cite{Hamilton2007InternetScale, Brewer2001GiantScale}. Nygard~\cite{Nygard2009Release} advoga que em caso de falha no sistema a prioridade deve ser a reversão imediata do sistema para a sua última versão estável, deixando para depois as investigações sobre as razões do problema, mesmo que a reversão custe a perda de eventuais pistas para o diagnóstico. 
-
 \item [Falhas de terceiros:] 
 
 Sistemas distribuídos de grande escala devem esperar e tratar falhas
@@ -326,6 +324,15 @@ O processo de implantação deve considerar as necessidades de replicação de s
 para que possa configurar adequadamente as múltiplas instâncias dos serviços e das bases de dados.
 Deve ser possível também alterar em tempo de execução a quantidade de réplicas para
 a adequação à demanda observada.
+
+Um processo que pode ser utilizado para reduzir drasticamente o tempo de reparo após uma falha
+é o ``\emph{roll-back}'' automatizado do sistema: se o ambiente de produção encontra-se em algum estado inválido, 
+é preciso uma reversão rápida e segura do sistema e do ambiente para 
+o última estado estável~\cite{Hamilton2007InternetScale, Brewer2001GiantScale}. 
+Nygard~\cite{Nygard2009Release} advoga que em caso de falha no sistema a prioridade deve ser 
+a reversão imediata do sistema para a sua última versão estável, 
+deixando para depois as investigações sobre as razões do problema, 
+mesmo que a reversão custe a perda de eventuais pistas para o diagnóstico. 
 
 \item [Escalabilidade:]
 

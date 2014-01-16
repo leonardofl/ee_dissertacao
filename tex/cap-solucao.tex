@@ -544,6 +544,19 @@ o que é altamente indesejável.
 
 \item [Disponibilidade:]
 
+A especificação de um serviço na ADL do \ee possibilita a definição da quantidade de réplicas
+de um serviço a ser implantado pelo EE.
+Essa quantidade inicial de réplicas pode ser alterada pelo implantador em tempo de execução
+com a atualização da especificação da coreografia.
+A definição da quantidade adequada de réplicas, definida pelo implantador, permite não só uma melhora
+de desempenho, mas também um aumento na disponibilidade do serviço, já que uma falha em uma réplica
+específica não afeta as outras réplicas disponíveis.
+
+Por questões de simplificação, em nosso trabalho omitimos a relação que serviços possuem com bancos de dados.
+Dessa forma, é importante que versões futuras do EE contemplem a automação da implantação de bancos de dados
+a serem utilizados pelos serviços implantados. Nesse estágio, deverá ser considerado também a replicação
+do banco de dados, e que os dados são utilizados simultaneamente por várias réplicas do serviço.
+
 \item [Escalabilidade:]
 
 Embora o conhecimento de programação concorrente para implementar
