@@ -445,25 +445,16 @@ O símbolo \emph{\$PACKAGE\_URL} será substituído pela URL do pacote do servi�
 enquanto que o \emph{\$NAME} será substituído por uma identificação única dentro do EE.
 
 
-\item [Tipos de serviços:] a ligação entre serviços de uma coreografia depende da passagem de endereços que é feita do \ee para os serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação dar-se-á de forma diferente se o serviço for SOAP ou REST. A implementação da interface \textsf{ContextSender} possibilita ao EE realizar a invocação da operação \texttt{setInovcationAddress} em serviços de outras tecnologias (JMS e CORBA por exemplo). Nota-se que para cada um desses tipos de serviços adicionados pelo usuário, é preciso criar uma convenção para a assinatura sintática da operação \texttt{setInvocationAddres}.
+\item [Tipos de serviços:] a ligação entre serviços de uma composição depende da passagem de endereços que é feita do \ee para os 
+serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação dar-se-
+á de forma diferente de acordo com o tipo de tecnologia de serviço empregada (SOAP ou REST, por exemplo). 
+A implementação da interface \textsf{ContextSender} define como a operação \texttt{setInovcationAddress} é invocada. 
+Atualmente o EE possui uma implementação de \textsf{ContextSender}, utilizada para serviços SOAP.
+Nota-se que para cada nova implementação, é preciso definir uma convenção para a assinatura sintática da operação \texttt
+{setInvocationAddres}.
 
 \begin{lstlisting}[frame=trbl, label=lst:context_sender, caption=Interface ContextSender.]
 public interface ContextSender {
-
-    /**
-     * Calls setInvokationAddress operation on service 
-     * in the serviceEndpoint.
-     * So, the service in endpoint will know that its 
-     * partner named partnerName with partnerRole is 
-     * realized by instances in partnerEndpoints.
-     * 
-     * @param serviceEndpoint
-     * @param partnerRole
-     * @param partnerName
-     * @param partnerEndpoints
-     * @throws ContextNotSentException
-     *             if context was not successfully set
-     */
     public void sendContext(String serviceEndpoint, 
                             String partnerRole, 
                             String partnerName, 
