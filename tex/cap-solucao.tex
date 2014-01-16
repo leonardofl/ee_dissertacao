@@ -157,7 +157,7 @@ são apresentados no \userguide.
 \begin{figure}[!h]
   \centering
   \includegraphics[width=.90\textwidth]{adl.pdf} 
-  \caption{Estrutura da descrição arquitetural de uma coreografia.}
+  \caption{Estrutura da descrição arquitetural de uma coreografia. \todo{atualizar}}
   \label{fig:adl} 
 \end{figure}
 
@@ -196,16 +196,46 @@ airportBusCompanySpec.addDependency(
 \section{Ligação entre serviços}
 \label{sec:ligacao}
 
+Em uma composição de serviços alguns serviços se comunicam com outros serviços para implementar o fluxo de negócio.
+Quando um serviço $A$ invoca um serviço $B$, dizemos que o serviço $A$ depende do serviço $B$. 
+Dizemos também que $A$ é \emph{dependente} de $B$, enquanto que $B$ é \emph{dependência} de $A$,
+ou ainda que $A$ é \emph{consumidor} de $B$, enquanto que $B$ é \emph{provedor} de $A$.
+Para que uma coreografia funcione, cada serviço precisa saber o endereço de suas dependências,
+e o processo pelo qual os serviços recebem os endereços de suas dependências é denominado \emph{ligação}.
+
 Segundo Dearle~\cite{Dearle2007PastPresentFuture}, componentes podem ser ligados entre si em vários momentos: compilação, montagem, configuração e execução. Em nosso contexto, a ligação deve ser efetuada necessariamente em tempo de execução, pois é somente nesse momento que teremos os endereços completos dos serviços implantados. Uma das possibilidades apontadas por Dearle para efetivação da ligação em tempo de execução é a utilização do padrão de injeção de dependência, conforme introduzido por Fowler~\cite{Fowler2004Inversion}. A injeção de dependências é utilizada em contêineres como o Springer\footnote{\url{http://www.springer.org}}, no qual o middleware passa ao componente referências de suas dependências. No entanto, Dearle ainda alega que há uma falta de arcabouços para a aplicação da injeção de dependência de forma distribuída.
 
-A solução adotada no \ee\ para possibilitar a ligação entre serviços envolve a utilização do middleware para a passagem de endereços dos serviços implantados aos seus consumidores, o que é feito com base na lista de objetos \textsf{ServiceDependency} pertencentes a um \textsf{ChorServiceSpec}. Essa solução consiste na aplicação do padrão de injeção de dependência de forma distribuída, e é similar ao que foi feito nos trabalhos sobre a linguagem Darwin~\cite{Magee1996Dynamic, Magee1994Regis}. Para que esse processo funcione, é preciso que cada serviço na coreografia que possua dependências implemente uma operação denominada \texttt{setInvocationAddress}, por nós padronizada. Essa operação recebe como argumentos as seguintes informações sobre a dependência: papel do serviço, nome do serviço no contexto da coreografia e as URIs de acesso ao serviço.  Em uma coreografia em que, por exemplo, um serviço de agência de viagem dependa do serviço de uma companhia aérea, o \ee\ poderá executar a seguinte invocação ao serviço da agência de viagens : \texttt{setInvocationAddress('Companhia Aérea', 'Nimbus Airline', [ 'http://192.168.56.107:8080/nimbus/ws/' ])}. Nessa solução, a ``inteligência'' em determinar quais serviços satisfazem as necessidades de outros serviços está na camada que produz a entrada do \ee.
+A solução adotada no \ee para possibilitar a ligação entre serviços envolve a utilização do middleware para a passagem de endereços dos serviços implantados aos seus consumidores. Essa solução consiste na aplicação do padrão de injeção de dependência de forma distribuída, e é similar ao que foi feito nos trabalhos sobre a linguagem Darwin~\cite{Magee1996Dynamic, Magee1994Regis}. 
+Note que nessa solução, a ``inteligência'' em determinar quais serviços satisfazem as necessidades de outros serviços está na camada que produz a entrada do EE.
+As dependências entre os serviços são definidas na especificação da coreografia,
+pela lista de objetos \textsf{ServiceDependency} pertencentes a um \textsf{ServiceSpec}.
+Cada serviço na coreografia que possua dependências deve implementar uma operação denominada \texttt{setInvocationAddress}. 
+Essa operação, por nós padronizada, recebe como argumentos as seguintes informações sobre a dependência: 
 
-\todo{descrever primeiro genericamente, e depois com o setInvocationAddress,
-que é apenas uma possível implementação}.
+\begin{description}
 
-\todo{explicar para que serve o nome do serviço}/
+\item [Papel:] é um nome associado a uma interface, ou seja, define as operações fornecidas por um serviço. A associação entre o nome e 
+a interface deve ser previamente acordada pelas organizações participantes da coreografia e a implementação do serviço
+deve estar ciente dos nomes e interfaces de suas dependências.
 
-Apesar dos benefícios de uma solução como essa, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação \texttt{setInvocationAddress} e conhecer os papeis de suas dependências, o que implica em conhecer a interface sintática de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e possibilita seu uso por outros middlewares que adotem a mesma convenção para o \texttt{setInvocationAddress}.
+\item [Nome:] é um nome que identifica univocamente o serviço no contexto de uma coreografia. Serve para que o serviço dependente possa 
+diferenciar serviços com o mesmo papel. Exemplo: se um serviço de pesquisa de preços utiliza serviços do papel \emph{supermercado},
+ele utilizará o nome do serviço para diferenciar os serviços de supermercados diferentes. Com essa semântica, o EE pode atualizar
+os endereços de um supermercado com uma nova chamada ao \texttt{setInvocationAddress}, sem que o serviço dependente considere
+que se trata de um novo supermercado.
+
+\item [Endereços:] são as URIs das réplicas pelas quais pode-se acessar a dependência.
+
+\end{description}
+
+Assim, em uma coreografia em que, por exemplo, um serviço de agência de viagem dependa do serviço de uma companhia aérea, o EE executará a seguinte invocação ao serviço da agência de viagens : \texttt{setInvocationAddress('Companhia Aérea', 'Nimbus Airline', [ 'http://192.168.56.107:8080/nimbus/ws/' ])}. 
+
+A descrição fornecida até aqui é abstrata e independente de tecnologia.
+A definição exata da assinatura da operação deve ser definida de acordo com a tecnologia utilizada.
+A versão atual do EE já define essa assinatura para serviços SOAP.
+Para detalhes, ver o guia do usuário (Apêndice~\ref{ape:user_guide}).
+
+Apesar dos benefícios dessa solução, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação \texttt{setInvocationAddress} e conhecer os papeis de suas dependências, o que implica em conhecer a interface sintática de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e não impede a utilização do serviço em outro middleware.
 
 \section{Interface do \ee}
 \label{sec:interface}
