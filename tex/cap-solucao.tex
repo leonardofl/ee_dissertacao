@@ -244,37 +244,38 @@ Os clientes do \ee utilizam suas funcionalidades por meio de uma API REST, que �
 Por se tratar de uma API REST, o cliente pode ser implementado em qualquer linguagem 
 e ambiente que possua alguma biblioteca HTTP. 
 Também disponibilizamos um cliente na forma de uma biblioteca na linguagem Java, 
-tornando o uso do \ee ainda mais simples para os usuários da linguagem Java, 
+tornando o uso do EE ainda mais simples para os usuários da linguagem Java, 
 atualmente uma das mais utilizadas do mercado. 
 Seguimos agora com uma descrição de alto nível de cada uma das operações disponíveis 
-na API REST do \ee. Detalhes da API, como os códigos de status HTTP retornados, 
-são fornecidos no \userguide.
+na API REST do EE. Detalhes da API, como os códigos de status HTTP retornados, 
+são fornecidos no guia do usuário (Apêndice~\ref{ape:user_guide}).
 
 \begin{description}
 
-\item [Criar coreografia:] registra a especificação de uma coreografia no \ee. 
+\item [Criar coreografia:] registra a especificação de uma coreografia no EE. 
 Essa especificação é a descrição arquitetural da coreografia, 
-estruturada de acordo com a classe \textsf{ChorSpec} (ver Seção~\ref{sec:spec}). 
+estruturada de acordo com a classe \textsf{ChorSpec} (Figura~\ref{fig:adl}). 
 Essa operação não realiza a implantação da coreografia.
 
-\item [Obter coreografia:] obtém informações sobre uma coreografia registrada no \ee. 
+\item [Obter coreografia:] obtém informações sobre uma coreografia registrada no EE. 
 Essas informações referem-se à especificação da coreografia e ao estado da implantação 
 de seus serviços, como os nós em que os serviços foram implantados, 
 no caso de a implantação já ter sido realizada.
 
-\item [Encenar coreografia:] realiza a implantação de uma coreografia já registrada no \ee. 
-Ao fim do processo, detalhes do resultado da implantação são retornados na representação XML da coreografia. 
+\item [Encenar coreografia:] realiza a implantação de uma coreografia já registrada no EE. 
+Ao fim do processo, detalhes do resultado da implantação são retornados de forma estruturada 
+de acordo com a classe \textsf{Choreography} (Figura~\ref{fig:adl}).
 A implementação dessa operação deve possuir duas importantes propriedades: 
 1) a falha na encenação de parte da coreografia não deve interromper a encenação do resto da coreografia; 
 2) a operação deve ser \emph{idempotente}, ou seja, uma nova requisição para a encenação da mesma 
-coreografia não deve tentar implantar os serviços já implantados, 
+coreografia não deve reimplantar os serviços já implantados, 
 mas somente aqueles cujas implantações falharam na última execução. 
 Para que serviços sejam atualizados, é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço.
 
-\item [Atualizar coreografia:] registra uma nova versão de uma coreografia no \ee. 
+\item [Atualizar coreografia:] registra uma nova versão de uma coreografia no EE. 
 Os serviços atualizados na nova versão da coreografia devem possuir 
 um novo número de versão em suas especificações. 
-Essa operação, assim como a criação da coreografia, não encena a nova coreografia. 
+Essa operação, assim como a criação da coreografia, não implanta a nova coreografia. 
 Para isso, é preciso invocar novamente a operação de encenação.
 
 A atualização de serviços não é o foco de nosso trabalho.
@@ -284,16 +285,16 @@ Contudo, tal procedimento pode provocar falhas na comunicação entre os serviç
 Vários trabalhos \cite{Kramer1990Philosophers, Vandewoude2007Tranquility, Xiaoxing2011VersionConsistent} 
 estudam o processo de atualização dinâmica, pelo qual as conversações correntes 
 são preservadas durante a atualização de um serviço. 
-Embora não esteja no escopo de nosso trabalho, esperamos que a arquitetura do \ee possa ser 
+Embora não esteja no escopo de nosso trabalho, esperamos que a arquitetura do EE possa ser 
 evoluída para que a operação de atualização de coreografia utilize procedimentos seguros de 
 atualização dinâmica, dentre os quais destacamos a proposta de Xiaoxing et al~\cite{Xiaoxing2011VersionConsistent}.
 
 \end{description}
 
-Na Listagem~\ref{lst:java_chor_enactment} fornecemos um exemplo de como seria
-um programa Java invocando o \ee para implantar uma coreografia.
-Nesse exemplo, a classe \textsf{MyChorSpec} está escondendo a declaração
-da especificação da coreografia.
+Na Listagem~\ref{lst:java_chor_enactment} fornecemos um exemplo de 
+um programa Java invocando o EE para implantar uma coreografia.
+Nesse exemplo, a classe \textsf{MyChorSpec} está escondendo a 
+especificação da coreografia.
 
 \begin{lstlisting}[breaklines, caption={Programa Java que invoca o \ee para implantar uma coreografia.}, label={lst:java_chor_enactment}]
 public class Enactment {
