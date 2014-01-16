@@ -1,4 +1,4 @@
-\chapter{Solução proposta}
+\chapter{Solução proposta: o \ee}
 \label{cap:solucao}
 
 O CHOReOS \ee (EE) é um middleware implementado no contexto deste trabalho.
@@ -36,7 +36,7 @@ Neste capítulo, nós apresentamos a arquitetura e aspectos de implementação d
 Destacamos ao final do capítulo
 como as decisões arquiteturais e de implementação auxiliam o implantador
 a superar os desafios presentes na implantação de composições de grande escala.
-Alguns aspectos aqui discutidos serão o tratados em alto nível,
+Alguns aspectos aqui discutidos serão tratados em alto nível,
 priorizando o que é importante para o entendimento das contribuições
 acadêmicas deste trabalho.
 Detalhes de mais baixo nível sobre nosso middleware, principalmente do ponto de vista do
@@ -82,7 +82,6 @@ das chamadas REST.
 com base na especificação enviada pelo cliente.
 O processo implementado pelo \ee para efetuar a implementação
 é descrito na Figura~\ref{fig:processo}, e explicado logo em seguida. 
-
 
 \end{itemize} 
 
@@ -137,44 +136,47 @@ dos nós alvos. O agente de monitoramento
 (Ganglia\footnote{\url{http://ganglia.sourceforge.net}})
 é implantado nos nós alvos pelo EE e
 coleta valores de uso de CPU, memória e disco dos nós.
-\todo{para onde isso é enviado?}
 
-\section{Especificação da coreografia}
+\section{Especificação da composição de serviços}
 \label{sec:spec}
 
-O Enactment Engine recebe de seus clientes a especificação da coreografia na forma 
+O \ee recebe de seus clientes a especificação da composição na forma 
 de uma descrição arquitetural com as informações necessárias e suficientes para 
-que se possa realizar a implantação da coreografia. 
-O Enactment Engine também devolve ao seu cliente informações sobre a implantação da coreografia, 
-em especial as localizações de acesso aos serviços. As descrições da coreografia e de sua 
-especificação são feitas com uma Linguagens de Descrição Arquitetural, assim como a dos trabalhos vistos no Capítulo~\ref{cap:relacionados}. 
+que se possa realizar a implantação da composição. 
+O EE também devolve ao seu cliente informações sobre o resultado da implantação, 
+em especial as localizações de acesso aos serviços. As descrições da composição e de sua 
+especificação são feitas com uma \emph{linguagens de descrição arquitetural} (ADL), 
+assim como a dos trabalhos vistos no Capítulo~\ref{cap:relacionados}. 
 A nossa ADL consiste na descrição de objetos relacionados entre si seguindo 
 a estrutura de classes apresentada na Figura~\ref{fig:adl}. 
-Em nossa implementação, essa descrição é realizada com representações em XML, 
-que são trocadas entre o Enactment Engine e seu cliente. 
+Em nossa implementação, essa descrição é concretizada com representações em XML, 
+que são trocadas entre o EE e seu cliente. 
 A descrição detalhada de cada atributo e o \emph{schema} XML da linguagem
 são apresentados no \userguide.
 
 \begin{figure}[!h]
   \centering
   \includegraphics[width=.90\textwidth]{adl.pdf} 
-  \caption{Estrutura da descrição arquitetural de uma coreografia}
+  \caption{Estrutura da descrição arquitetural de uma coreografia.}
   \label{fig:adl} 
 \end{figure}
 
-\todo{destacar q a chor spec mostra oq, e não o como}
+A especificação da coreografia fornece todas as informações para a implantação da composição,
+possibilitando que o implantador descreva em alto-nível apenas \emph{o que} deve ser implantado,
+e não os detalhes de implementação de \emph{como} deve ser implantado.
+Essa última situação, o \emph{como} detalhado, é situação típica na escrita de scripts de implantação.
 
-A especificação da coreografia fornece todas as informações para a implantação da composição.
-Para cada serviço, especifica-se de onde o pacote do serviço pode ser baixado
-e qual o tipo do pacote (WAR, JAR, etc.).
-Pode-se também especificar também para a coreografia a existência de serviços
+Em nossa ADL, para cada serviço, especifica-se de onde o pacote do serviço pode ser baixado, 
+qual o tipo do pacote (WAR, JAR, etc.), quantas réplicas devem ser implantadas, etc.
+Pode-se especificar também a existência de serviços
 de terceiros que já estão disponíveis na Internet e que devem
-ser consumidos por serviços da coreografia.
+ser consumidos por serviços da composição.
+
 O implantador pode escrever a especificação da coreografia diretamente em XML
-ou utilizar objetos Java (POJOs).
-A Listagem~\ref{lst:service_spec} apresenta um trecho da especificação de uma coreografia,
+ou utilizando objetos Java (POJOs).
+A Listagem~\ref{lst:service_spec} apresenta um trecho da especificação escrita em Java,
 no qual um dos serviços participantes é definido,
-incluindo sua dependência de outro serviço da coreografia.
+incluindo sua dependência de outro serviço participante.
 
 \lstset{
 language=Java,
@@ -187,7 +189,7 @@ airportBusCompanySpec =
 airportBusCompanySpec.setRoles(
   Collections.singletonList(AIRPORT_BUS_COMPANY));
 airportBusCompanySpec.addDependency(
-  new ServiceDependency(AIRPORT_name, AIRPORT_endpoint));
+  new ServiceDependency(AIRPORT, AIRPORT_ENDPOINT));
 \end{lstlisting}
 }
 
