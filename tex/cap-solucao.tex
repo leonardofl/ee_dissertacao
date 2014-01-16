@@ -494,6 +494,11 @@ para adaptar dinamicamente valores de timeouts
 baseando-se em heurísticas definidas programaticamente 
 que utilizem o histórico de execução dos \emph{invokers}.
 
+O EE garante a utilização correta e disciplinada dos \emph{invokers} nos momentos adequados e necessários.
+Isso fornece uma robustez mais facilmente proporcionada por sistemas de middleware,
+nos quais interesses transversais podem ser implementados sem que o desenvolvedor da aplicação 
+(o script de implantação em nosso caso) tenha que se preocupar com isso.
+
 O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
 Quando uma requisição chega, o EE tenta criar um novo nó.
 Se a criação falha ou demora muito, um nó já criado é recuperado de uma reserva de nós ociosos.
@@ -550,6 +555,7 @@ para a obtenção de um sistema escalável.
 Portanto, implementar concorrência e tratamento a falhas na camada de middlware
 é um passo significativo em facilitar a implementação efetiva de um
 processo de implantação escalável.
+No Capítulo~\ref{cap:avaliacao} avaliaremos em detalhes a escalabilidade fornecida pelo \ee.
 
 \item [Heterogeneidade:]
 
@@ -561,6 +567,13 @@ as atuais limitações de soluções de Plataformas como um Serviço
 que restrigem as opções tecnológicas disponíveis aos desenvolvedores de aplicações.
 Essas restrições normalmente se aplicam justamente sobre
 provedor de infraestruturas e a linguagem de programação da aplicação.
+
+Suportar variações de um padrão é um desafio para sistemas de middleware.
+Adequar um middleware para a particularidade de uma aplicação pode não ser fácil.
+No suporte a diferentes tecnologias, as abordagens \emph{ad-hoc} encontram realmente um espaço de importância.
+No entanto, uma vez que a adequação para uma nova tecnologia seja feita no middleware,
+pode-se aplicar mais facilmente a melhoria para diferentes aplicações utilizando essa
+mesma nova tecnologia.
 
 \item [Múltiplas organizações:]
 
@@ -598,6 +611,11 @@ também implantado com o EE, mas para a organização $O_B$, a instância do EE 
 manter a instância do EE em $O_A$ informada sobre o estado de $S_B$.
 Para que essa funcionalidade seja implementada é preciso projetar um protocolo
 de comunicação entre instâncias do EE.
+
+Nesse estágio proposto (federação dos sistemas implantadores de cada organização) uma abordagem
+orientada a middleware se torna importante por questão de padronização.
+Abordagens \emph{ad-hoc} deveriam ser desenvolvidas de forma coordenada entre as diferentes organizações,
+o que seria mais custoso do que a adoção de uma plataforma comum.
 
 \item [Adaptabilidade:]
 
@@ -650,6 +668,10 @@ Essas funcionalidades fazem do EE uma opção adequada para uma ferramenta de ap
 O EE facilita a implementação de sistemas adaptativos
 por possibilitar que pesquisadores se foquem mais nos problemas de adaptação em
 alto nível, abstraindo detalhes altamente específicos do gerenciamento de implantação.
+Diferentes pesquisadores desse campo de pesquisa podem se beneficiar ao utilizarem uma plataforma comum,
+potencializando a troca de experiência entre eles sobre o processo de implantação. 
+Essa troca de experiência é bem mais limitada se os membros da comunidade adotam cada um 
+sua própria solução \emph{ad-hoc}.
 
 \end{description}
 
