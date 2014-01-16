@@ -240,11 +240,19 @@ Apesar dos benefícios dessa solução, Dearle~\cite{Dearle2007PastPresentFuture
 \section{Mapeamento dos serviços na infraestrutura alvo}
 \label{sec:mapeamento}
 
-\todo{...}
+Em algum momento do processo de implantação é preciso definir em que nó cada instância de serviço será hospedado.
+Chamamos por \emph{mapeamento}, ou seleção de nós, essa fase do processo de implantação.
+Na forma mais simples de seleção de nó, o IP do nó alvo é definido estaticamente no script de implantação do serviço.
+O trabalho de Magee e Kramer~\cite{Magee1997Corba} apresenta a seleção de nós em função da utilização de CPUs nos nós existentes, não havendo possibilidade de utilização de outros critérios, como memória, disco, custo etc. Nos sistemas apresentados por Dolstra et al.~\cite{Dolstra2005Configuration} e Balter et al.~\cite{Balter1998Olan} é preciso que a distribuição dos serviços seja especificada com o uso dos IPs das máquinas nas quais os serviços devem ser implantados, o que não é possível em um ambiente de nuvem. Por fim, o \emph{broker} apresentado por Watson et al. é o componente que mais se assemelha ao nosso NodeSelector, pois os autores deixam claro que várias implementações diferentes são possíveis, considerando-se diferentes tipo de requisitos e diferentes fontes de monitoramento. Como a escolha é feita em tempo de execução do serviço, seria também possível uma seleção que independa de IPs estabelecidos em tempo de projeto. No entanto, os autores não explicam como os usuários de seu sistema, os provedores de infraestrutura, deveriam proceder para criar seus próprios \emph{brokers} personalizados.
 
-Formas similares dessa funcionalidade são também utilizadas em estudos já apresentados na seção de trabalhos relacionados.  O trabalho de Magee e Kramer~\cite{Magee1997Corba} apresenta a seleção de nós em função da utilização de CPUs nos nós existentes, não havendo possibilidade de utilização de outros critérios, como memória, disco, custo etc. Nos sistemas apresentados por Dolstra et al.~\cite{Dolstra2005Configuration} e Balter et al.~\cite{Balter1998Olan} é preciso que a distribuição dos serviços seja especificada com o uso dos IPs das máquinas nas quais os serviços devem ser implantados, o que não é possível em um ambiente de nuvem. Por fim, o \emph{broker} apresentado por Watson et al. é o componente que mais se assemelha ao nosso NodeSelector, pois os autores deixam claro que várias implementações diferentes são possíveis, considerando-se diferentes tipo de requisitos e diferentes fontes de monitoramento. Como a escolha é feita em tempo de execução do serviço, seria também possível uma seleção que independa de IPs estabelecidos em tempo de projeto. No entanto, os autores não explicam como os usuários de seu sistema, os provedores de infraestrutura, deveriam proceder para criar seus próprios \emph{brokers} personalizados.
-
-Para avançar em relação às limitações dos trabalhos anteriormente citados,  consideramos como requisitos principais a dinamicidade do ambiente de nuvem, que nos impede de conhecer os IPs das máquinas em tempo de configuração, bem como a flexibilidade para que cada organização determine os requisitos de distribuição dos serviços.
+Para avançar em relação às limitações dos trabalhos anteriormente citados, 
+a seleção de nós no \ee
+considera os requisitos de dinamicidade do ambiente de nuvem, que nos impede de conhecer os IPs das máquinas 
+em tempo de desenvolvimento ou configuração do script de implantação.
+O EE utiliza um seletor de nós automatizado que escolhe em tempo implantação os nós alvos para um dado serviço.
+A escolha de uma política ótima para o seletor é assunto de diversas pesquisas.
+Portanto, adotamos aqui uma abordagem extensível, com o fornecimento inicial de políticas como
+``sempre cria um novo nó'' ou ``cria nós até um limite, e depois faz rodízio entre eles''.
 
 \section{Interface do \ee}
 \label{sec:interface}
