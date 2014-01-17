@@ -475,25 +475,69 @@ public interface ContextSender {
 
 \section{Aspectos gerais de implementação}
 
-Nesta seção descreveremos alguns detalhes sobre a implementação do \ee que podem ser especialmente úteis
-a eventuais desenvolvedores de nosso middleware.
+Nesta seção descreveremos alguns detalhes sobre a implementação do \ee que 
+podem ser especialmente úteis a eventuais desenvolvedores de nosso middleware.
 
-O EE é desenvolvido com a linguagem Java 6. Durante o desenvolvimento utilizamos como ambiente de execução
+\begin{description}
+
+\item [Linguagem:] 
+
+O EE é desenvolvido com a linguagem Java 6. 
+Durante o desenvolvimento utilizamos como ambiente de execução
 a JVM OpenJDK 7. O EE é compilado com o Maven 3.
 
-CHEF-SOLO, CHEF DSL, RUBY
+\item [Chef-solo:] CHEF-SOLO, CHEF DSL, RUBY
+
+\item [Apache CXF:]
 
 Uma das principais bibliotecas utilizadas pelo EE é o Apache CXF,
 que traz uma série de utilidades para o desenvolvimento de serviços em Java,
 dentre elas a implementação do padrão JAX-RS, voltado ao desenvolvimento de serviços REST.
 
-JCLOUDS
+\item [Configuração por imagem:]
 
-IMAGENS PRÉ-MONTADAS
+Na gerência de configuração de ambientes, há duas abordagens, 
+já discutidas na Seção~\ref{sec:cloud}, sobre como configurar um ambiente:
+1) utilização de imagem de disco já contendo serviço a ser implantado
+e 2) utilização de scripts para instalação do serviço.
+Enquanto que a primeira abordagem prima pelo desempenho,
+a segunda opção oferece maior flexibilidade e facilidade de evolução.
+A abordagem padrão no EE é se utilizar a configuração por scripts (gerados pelo EE).
+Mas o EE fornece a opção de que o administrador configure qual imagem será
+utilizada para criar os nós alvos.
+Isso possibilita que o administrador configure uma imagem 
+que já contenha o middleware sobre o qual os serviços serão executados.
+Assim, se o administrador sabe que o EE será utilizado para implantar WARs,
+ele pode configurar uma imagem que já contenha o Tomcat instalado.
+Essa abordagem reduz o tempo de implantação.
 
-TESTES DE INTEGRAÇÃO, dificuldades
+\item [Testes:] 
 
-UTILIZAÇÃO DE SL
+Os testes de unidade do \ee podem ser executados com o comando \texttt{mvn test}.
+Embora o EE contenha vários testes de unidade e isso seja fundamental,
+há uma limitação considerável desses testes, já que executar comandos que
+provoquem efeitos colaterais no sistema operacional não seja adequado
+em testes de unidade. Tais ``efeitos colaterais'' são sempre provocados
+durante a execução das receitas Chef.
+
+Por isso o EE possui também vários testes de \emph{integração} automatizados,
+no qual máquinas virtuais são utilizados para a execução de testes nos
+quais o EE possa interagir com um sistema operacional.
+Esses testes incluem a implantação completa de coreografias.
+Embora esses testes sejam importantes para validar o correto funcionamento do sistema,
+eles são muito custosos, tanto em termos financeiros quanto de tempo,
+uma vez que máquinas virtuais são criadas durante esses testes.
+
+De nossa experiência neste trabalho, acreditamos que
+o desenvolvimento de tecnologias de máquinas virtuais
+voltadas para o ambiente de teste de aceitação,
+de forma que as máquinas sejam criadas mais rapidamente,
+seja uma contribuição relevante para a prática de desenvolvimento de software.
+
+\item [Software livre:] por fim, todos as bibliotecas e sub-sistemas
+utilizados pelo \ee são software livre.
+
+\end{description}
 
 \section{Discussão: auxiliando implantações em grande escala}
 
