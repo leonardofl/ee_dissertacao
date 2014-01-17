@@ -482,11 +482,33 @@ podem ser especialmente úteis a eventuais desenvolvedores de nosso middleware.
 
 \item [Linguagem:] 
 
-O EE é desenvolvido com a linguagem Java 6. 
+O \ee é desenvolvido com a linguagem Java 6. 
 Durante o desenvolvimento utilizamos como ambiente de execução
 a JVM OpenJDK 7. O EE é compilado com o Maven 3.
 
-\item [Chef-solo:] CHEF-SOLO, CHEF DSL, RUBY
+\item [Chef-solo:] 
+
+O Chef é a pedra angular sobre a qual construímos o \ee.
+De certa forma, o EE é uma camada de abstração que facilita o uso do Chef.
+A versão utilizada do Chef-Solo é a 11.8.0.
+Em versões anteriores do EE, utilizamos o Chef Server,
+mas acabamos por abandona-lo, devido ao grande gargalo na escalabilidade
+que ele gerava, além do pouco benefício funcional que ele agregava.
+As receitas Chef são escritas em uma Linguagem Específica de Domínio (DSL) 
+que permite a livre
+utilização da linguagem Ruby, mas que possui construtos
+específicos para as tarefas de implantação, visando proporcionar
+principalmente mecanismos de idempotência. Um exemplo pode ser
+observado na Listagem~\ref{lst:chef_idempotente}, no qual
+se especifica o download de um arquivo que será
+baixado somente caso ele ainda não exista no sistema alvo.
+
+\begin{lstlisting}[frame=trbl, label=lst:chef_idempotente, caption=Trecho de receita Chef que ilustra uso de idempotência.]
+remote_file "#{node['easyesb']['downloaded_file']}" do
+  source "#{node['easyesb']['url']}"
+  action :create_if_missing
+end
+\end{lstlisting}
 
 \item [Apache CXF:]
 
@@ -502,7 +524,7 @@ já discutidas na Seção~\ref{sec:cloud}, sobre como configurar um ambiente:
 e 2) utilização de scripts para instalação do serviço.
 Enquanto que a primeira abordagem prima pelo desempenho,
 a segunda opção oferece maior flexibilidade e facilidade de evolução.
-A abordagem padrão no EE é se utilizar a configuração por scripts (gerados pelo EE).
+A abordagem padrão no \ee é se utilizar a configuração por scripts (gerados pelo EE).
 Mas o EE fornece a opção de que o administrador configure qual imagem será
 utilizada para criar os nós alvos.
 Isso possibilita que o administrador configure uma imagem 
