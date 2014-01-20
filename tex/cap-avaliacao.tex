@@ -137,40 +137,41 @@ do esforço necessário para se implantar composições de serviços.
 
 \section{Análise de desempenho e escalabilidade}
 
-We conducted experiments to evaluate the performance and scalability of
-the proposed \ee in terms of its capability to deploy a significant number of
-compositions in a real-world cloud computing platform.
+Nós conduzimos experimentos para avaliar o desempenho e escalabilidade do
+Enactment Engine em função de sua capacidade de implantar um número significante
+de composições em uma plataforma de nuvem já utilizada no mercado.
 
-Our experiments use a synthetic workload modeled
-as depicted in Figure~\ref{fig:eval_composition}.
-The arrow direction is from the requester to the requested service.
-Although replies are not drawn for simplicity reasons, they are always sent back
-in a synchronous manner.
-This topology was chosen because (1) it is a representative example of the most common business process (those composed by branches -- calls to other systems -- and subsequent joints) and (2) it follows a repetitive pattern that can be used to smoothly increase the size of the composition to analyze how the performance of the \ee behaves as its workload increases.
+Nossos experimentos utilizam uma carga sintética modelada conforme ilustrado na Figure~\ref{fig:eval_composition}.
+A direção das flechas vão do serviço consumidor para o provedor.
+Embora respostar não sejam representadas por questão de simplicidade,
+elas são sempre enviadas sincronamente.
+Essa topologia foi escolhida porque 1) é um exemplo representativo de processos de negócios
+(potencialmente compostos por ramificações -- chamadas para outros sistemas -- e junções correspondentes)
+e 2) segue um padrão repetitivo que pode ser usado para aumentar suavemente o tamanho da composição,
+para que possamos analisar o desempenho do EE conforme a carga aumenta.
+
 
 \begin{figure}[h]
   \centering
-%  \includegraphics[width=.3\linewidth, angle=270]{eval_composition.pdf}
   \includegraphics[scale=0.25, angle=270]{eval_composition.pdf}
-  \caption{The topology of the compositions used in the experiments.}
+  \caption{Topologia das composições utilizadas em nossos experimentos.}
   \label{fig:eval_composition}
 \end{figure}
 
 
-Initially, we conducted a multi-variable analysis of the \ee performance by deploying service compositions
-in the following scenarios:
-1) a small set of small compositions;
-2) a small set of larger compositions;
-3) a larger set of small composition;
-4) a larger ratio of services per node.
-Table~\ref{tab:cases} quantifies each scenario.
+Inicialmente, conduzimos uma análise multi-variada do desempenho do EE implantando composições nos seguintes cenários:
+1) um pequeno conjunto de pequenas composições;
+2) um pequeno conjunto de composições maiores;
+3) um conjunto maior de pequenas composições;
+4) uma razão maior de serviços por nó.
+A Tabela~\ref{tab:cases} quantifica cada cenário.
 
 \begin{table}
 \centering
-\caption{Deployment scenario in the experiments}
+\caption{Cenários de implantação para a análise multi-variada.}
 \label{tab:cases}
 \begin{tabular}{c c c c c} \hline
-\emph{Scenario} & \emph{Compositions} & \emph{Size} & \emph{Nodes} & \emph{Serv/Node} \\ \hline
+\emph{Cenário} & \emph{Composições} & \emph{Tamanho} & \emph{Nós} & \emph{Serviços/Nós} \\ \hline
 1 &  10 &  10 &  9 & 11 or 12 \\
 2 &  10 & 100 & 90 & 11 or 12 \\
 3 & 100 &  10 & 90 & 11 or 12 \\
@@ -178,40 +179,37 @@ Table~\ref{tab:cases} quantifies each scenario.
 \hline \end{tabular}
 \end{table}
 
-In our experiments, 
-the node allocation policy was ``limited round robin'',
-in which services are distributed across the available nodes,
-and the quantity of nodes is configured before each experiment.
-If the amount of services is not divisible by the number of nodes,
-some nodes will host one additional service.
-The idle node reservoir size was five,
-and the node creation timeout was 300 seconds.
-We used Amazon EC2
-as the cloud computing service and the VMs were EC2 small instances,
-each one with 1.7 GiB of RAM, one vCPU
-with processing power equivalent to 1.0--1.2 GHz,
-and running Ubuntu GNU/Linux 12.04.
-The \ee was executed on a machine with 8 GB of
-RAM, an Intel Core i7 CPU with 2.7 GHz and GNU/Linux kernel 3.6.7.
-The \ee version used for the experiments
-and raw data retrieved from executions
-are available online\footnote{\url{http://ccsl.ime.usp.br/enactmentengine}} for reproducibility of the results.
+Em nossos experimentos, a política de alocação de nós foi o ``cria nós até um limite, e depois faz rodízio entre eles'',
+na qual a quantidade de nós utilizados é configurada antes de cada experimento.
+Se a quantidade de nós não é divisível pelo número de nós,
+alguns nós hospedarão um serviço a mais que outros nós.
+O tamanho da reserva de nós ociosos era 5,
+e o \emph{timeout} de criação de nós era 300 segundos.
+Nós utilizamos a Amazon EC2 como provedor de infraestrutura,
+com instâncias do tipo \emph{small},
+cada uma com 1.7 GiB of RAM, uma vCPU com processamento
+equivalente a 1.0--1.2 GHz, e rodando Ubuntu GNU/Linux 12.04.
+O EE foi executado em uma máquina com 8 GB de RAM,
+com processador Intel Core i7 CPU de 2.7 GHz e GNU/Linux kernel 3.6.7.
+A versão do EE utilizada nos experimentos e os dados coletados estão disponíveis 
+on-line\footnote{\url{http://ccsl.ime.usp.br/enactmentengine}}
+para garantir a reprodutibilidades dos resultados.
 
-Each scenario was executed 30 times
-and the Table~\ref{tab:results} presents, for each scenario,
-the time necessary to deploy all compositions
-plus the time to invoke them to make sure they were correctly deployed.
-The values are averages with 95\% confidence intervals.
-It also shows how many compositions and services were successfully deployed.
+Cada cenário foi executado 30 vezes e a Tabela~\ref{tab:results}
+apresenta, para cada cenário, o tempo necessário para implantar
+todas as composições mais o tempo para invocá-las, o que é feito
+para certificar que elas foram corretamente implantadas.
+Os valores são médias com intervalo de confiança de 95\%.
+A tabela também mostra quantas composições e serviços foram corretamente implantados.
 
 \begin{table}
 \centering
-\caption{Experimental results}
+\caption{Resultados experimentais.}
 \label{tab:results}
 \begin{tabular}{c r@{ $\pm$ }l r@{ $\pm$ }l r@{ $\pm$ }l} \hline
 
-\emph{Scenario} & \multicolumn{2}{c}{\emph{Time}} & \multicolumn{2}{c}{\emph{Successful}}   & \multicolumn{2}{c}{\emph{Successful}}\\
-                 & \multicolumn{2}{c}{}           & \multicolumn{2}{c}{\emph{Compositions}} & \multicolumn{2}{c}{\emph{Services}}\\
+\emph{Cenário} & \multicolumn{2}{c}{\emph{Tempo}} & \multicolumn{2}{c}{\emph{Composições}}   & \multicolumn{2}{c}{\emph{Serviços}}\\
+                 & \multicolumn{2}{c}{}           & \multicolumn{2}{c}{\emph{com sucesso}} & \multicolumn{2}{c}{\emph{com sucesso}}\\
 \hline
 1 &  467.9 &  34.8 & 10.0 & 0   & 100.0 & 0   (100\%) \\
 2 & 1477.1 & 130.0 &  9.3 & 0.3 & 999.3 & 0.4 (99.9\%)\\
@@ -220,71 +218,69 @@ It also shows how many compositions and services were successfully deployed.
 \hline \end{tabular}
 \end{table}
 
-The results show that the \ee scales well in terms of the number of
-services being deployed. Although the number of services was
-multiplied by 10, the deployed time increased only 3 times approximately
-in scenarios 2 and 3.
-This time increment was caused mainly by the fact that
-the higher the number of services, the higher the likelihood
-of a fault triggering the re-execution of some routine.
+Os resultados mostram que o EE escala bem em termos de serviços sendo implantados.
+Embora o número de serviços foi multiplicado por 10, o tempo de implantação
+cresceu aproximadamente apenas 3 vezes nos cenários 2 e 3.
+Esse incremento no tempo de implantação é causado principalmente pelo fato
+de que quanto maior a quantidade de serviços, maiores são as chances da ocorrência de falhas,
+o que dispara a re-execução de algumas rotinas.
 
-The results also show that when the number of services per node was doubled (scenario 4),
-the deployment time increased nearly 25\%. Part of this overhead was caused by
-the increase on the number of Chef scripts that must be executed (sequentially)
-on the nodes.
+Os resultados também mostram que o quando o número de serviços por nó dobrou (cenário 4),
+o tempo de implantação cresceu aproximadamente 25\%. Parte dessa sobrecarga foi causada
+pelo incremente no número de receitas Chef que devem ser executadas (sequencialmente) nos nós.
 
-During our experiments, we observed that, thanks to the \ee fault tolerance mechanisms, the amount of failures was
-low: all the services were successfully deployed in more than 75\% of the executions.
-By a failure, we mean that one service was not properly deployed.
-In scenario 1 we got no failures, 
-whereas in scenario 4 we had only one failure.
-In scenario 2, the worst situation was 3 failures out of 1,000 services.
-In scenario 3, we got one execution with 20 failures, but it was an exceptional event,
-since the second worst situation had only 3 failures.
+Durantes nossos experimentos, nós observamos que, graças aos mecanismos de tolerância a falhas do EE,
+a quantidade de falhas na implantação foi baixa: todos os serviços foram corretamente implantados em mais
+de 75\% das execuções.
+Por ``falha'' nós dizemos quando um serviço não foi corretamente implantado.
+O cenário 1 não apresentou falhas,
+enquanto que no cenário 4 houve apenas uma falha.
+No cenário 2, a pior situação foram 3 falhas dentre 1000 serviços.
+No cenário 3, houve uma execução com 20 falhas, mas esse foi um evento excepcional,
+uma vez que a segunda pior situação contou com apenas 3 falhas.
 
-Finally, we observed that 80\% of the executions did not use the node reservoir.
-When it was used, there was a maximum of six uses
-but, most of the time, there was only one use.
-We also observed that the deployment time was not significantly affected
-when the failures on the cloud environment occurred,
-because new nodes were immediately retrieved from the reservoir.
+Finalmente, nós observamos que 80\% das execuções não utilizaram a reserva de nós ociosos.
+Quando a reserva foi usada, houve um acesso máximo por execução de 6 nós,
+mas na maioria das vezes o acesso foi de apenas 1 nó.
+Nós também observamos que o tempo de implantação não foi significativamente afetado
+quando falhas no ambiente de nuvem ocorriam,
+uma vez que novos nós eram imediatamente recuperados da reserva.
+
 
 %%%
 
-We also conducted experiments to evaluate the performance and scalability of
-the \choreos \ee in terms of its capability to deploy large service compositions.
-These experiments were conducted in 5 scenarios by varying the deployed choreography size
-and the amount of nodes available on the cloud environment, whereas keeping constant the ratio of 20 deployed services per virtual machine. Each scenario was executed 10 times.
+Nós também conduzimos experimentos para avaliar o desempenho e escalabilidade do Enactment Engine
+em termos de sua capacidade de implantar grandes composições de serviços.
+Esses experimentos foram realizados em 5 cenários, nos quais se variou o tamanho das composições sendo implantadas
+e a quantidade de nós disponíveis no ambiente de nuvem, enquanto manteve-se a razão de 20 serviços implantados por nó.
+Cada cenário foi executado 10 vezes.
 
-The composition topology used was the same as before (Figure~\ref{fig:eval_composition}) and
-the environment used to run the \ee
-was a virtual machine (8 GiB of RAM and 4 vCPUs) hosted in our University infrastructure.
-The created nodes were Amazon EC2 small instances and 
-node creation timeout was set to 250 seconds. 
-The average deployment times with 95\% confidence intervals
-are shown in Figure~\ref{fig:ee_scalability}.
+A topologia utilizada na composição foi a mesma de antes (Figura~\ref{fig:eval_composition}),
+enquanto o ambiente utilizado para executar o EE foi uma máquina virtual (8 GiB de RAM e 4 vCPUs)
+hospedada na infraestrutura de nossa Universidade.
+Os nós criados eram instâncias \emph{small} da Amazon EC2 e o \emph{timeout} de criação dos nós era de 250 segundos.
+Os tempos médios de implantação, com intervalo de confiança de 95\%, são mostrados na Tabela~\ref{fig:ee_scalability}.
 
-Concerning service deployment failures,
-the worst executions of each scenario had 1, 1, 2, 2 and 4 services not successfully deployed
-out of 200, 600, 1000, 1400 and 1800 services, respectively.
+Sobre as falhas de implantação,
+as piores execuções de cada cenário tiveram 1, 1, 2, 2, e 4 serviços não implantados corretamente
+dentre, 200, 600, 1000, 1400 e 1800 serviços, respectivamente.
 
 \begin{figure}[h]
   \centering
   \includegraphics[scale=0.6]{ee_scalability-crop.pdf}
-  \caption{Average deployment times (with 95\% confidence interval) for increasingly larger compositions. The ratio between the number of services and the number of virtual machines is kept constant.}
+  \caption{Tempos médios de implantação com aumento constante na quantidade de serviços implantados, mantendo-se constante a razão serviços implantados / nós. \todo{traduzir figura}}
   \label{fig:ee_scalability}
 \end{figure}
 
-These results show a good scalability in terms of deployed services.
-Increasing 9 times the number of deployed services, the deployment time increased 3.5 times.
-In absolute numbers, each increase in 400 deployed services 
-was responsible for increasing the deployment time from 180 to 460 seconds. 
-Note that even the highest time to deploy the service composition 
-(about 35 minutes for 1,800 services) 
-may be considered low if we consider the long period that 
-such a large-scale composition is supposed to last until next update.
+Esses resultados mostram uma boa escalabilidade em termos de serviços implantados.
+Aumentando-se 9 em vezes o número de serviços implantados, o tempo de implantação aumentou 3,5 vezes.
+Em números absolutos, cada incremento em 400 serviços implantados foi responsável pelo incremento
+de 180 a 460 segundos no tempo de implantação.
+Noque que até o maior tempo de implantação (cerca de 35 minutos para 1800 serviços)
+pode ser considerado baixo se considerarmos o longo período pelo qual uma composição de serviços
+permanece sem receber atualizações.
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "ee_ccgrid.tex"
-%%% End:
+
+
+
+
