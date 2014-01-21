@@ -7,10 +7,6 @@ Os conceitos apresentados serão sobre serviços web e suas composições,
 implantação de sistemas, e por fim os desafios particulares da implantação
 de sistemas de grande escala.
 
-%pra intro?
-%Em nosso trabalho, estudaremos como as soluções de implantação automatizada
-%apoiadas por middleware facilitam o apoio à implantação de sistemas de grande escala.
-
 \section{Serviços web}
 \label{sec:servicos}
 
@@ -28,8 +24,9 @@ As características apresentadas dos objetos CORBA tem muito em comum com o conc
 interfaces bem definidas e acessíveis remotamente.
 Dessa forma, um serviço também pode ser considerado um componente, porém com algumas peculiaridades, 
 como ser acessível pela Internet e expor operações relacionadas a funcionalidades do negócio~\cite{Hewitt2009JavaSOA}.
-Outra diferença é que ao esconder a implementação das regras de negócio,
-um serviço não expõe a seus consumidores as interfaces das quais ele depende.
+Outra diferença é que um serviço web não precisa declarar explicitamente suas dependências
+a outros serviços. Essa dependência pode ser implícita por meio de chamadas a outros serviços web
+na implementação do serviço em questão. 
 
 Como muitos dos trabalhos sobre implantação de componentes são diretamente aplicáveis na implantação de serviços, trataremos os termos ``componente'' e ``serviço'' como sinônimos, assim como faz Fowler~\cite{Fowler2004Inversion}. Neste trabalho utilizaremos também os termos ``serviço'' e ``serviço web'' de forma equivalentes, assim como feito por outros autores~\cite{Watson2006Dynasoar}. Daremos preferência ao termo ``serviço web'' para evitar os significados mais gerais que a palavra ``serviço'' pode assumir. Exceção poderá haver quando estivermos descrevendo trabalhos de terceiros que utilizam o termo ``serviço'' com algum significado mais amplo que o de ``serviço web''. Um ponto de acesso (\textit{endpoint}) de um serviço web é uma entidade referenciável para a qual se envia mensagens construídas de acordo com a especificação do serviço~\cite{W3C2004Addressing}. Um ponto de acesso é referenciado por uma URI (\emph{Uniform Resource Identifier}) que possibilita o acesso a esse serviço pela Internet. Assim como Smith e Murray~\cite{Smith2010Evolution}, em geral também utilizaremos a palavra serviço como simplificação para o ponto de acesso do serviço. 
 

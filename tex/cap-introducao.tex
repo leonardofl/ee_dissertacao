@@ -2,70 +2,156 @@
 \chapter{Introdução}
 \label{cap:introducao}
 
-O processo de implantação de um software vai do momento de aquisição do software até o momento em que o software encontra-se em execução~\cite{DEPL2006}. Processos totalmente automatizados são importantes na implantação de sistemas \cite{Humble2011Continuous}. No entanto, muitas organizações ainda realizam a implantação de seus sistemas como descrito por Dolstra et al. \cite{Dolstra2005Configuration}: um processo manual, moroso, propenso a erros e não reprodutível. Ainda segundo esses autores, o problema agrava-se na implantação de sistemas distribuídos, pois o esforço de implantação cresce com a quantidade de nós do sistema. Em cenários de grande escala, um processo de implantação manual torna-se inviável. Esses cenários vem sendo discutidos academicamente e ainda não há soluções consolidadas \cite{Valerie2011FutureInternet}.
+O processo de implantação de um software vai do momento de aquisição do software até o momento em que o software encontra-se em execução~\cite{DEPL2006}. Processos totalmente automatizados são importantes na implantação de sistemas \cite{Humble2011Continuous}. No entanto, muitas organizações ainda realizam a implantação de seus sistemas como descrito por Dolstra et al. \cite{Dolstra2005Configuration}: um processo manual, moroso, propenso a erros e não reprodutível. Ainda segundo esses autores, o problema agrava-se na implantação de sistemas distribuídos, pois o esforço de implantação cresce com a quantidade de nós do sistema. 
 
-Pesquisadores acreditam que a arquitetura da Internet atual não comportará todos os requisitos dos serviços do futuro, o que leva à necessidade de criação de uma nova arquitetura, denominada Internet do Futuro \cite{Zahariadis2011FutureInternet}. Na Internet do Futuro, espera-se a existência de complexas composições de bilhões de serviços web, formando coreografias de milhões de recursos, pessoas e coisas \cite{Valerie2011FutureInternet}. No entanto, o desenvolvimento de colaborações entre serviços trazem desafios para a formulação de mecanismos que funcionem, escalem e que sejam eficientemente implementados em um ambiente distribuído de grande escala \cite{Steen2011VeryLarge}.
+Serviços web possibilitam a comunicação interoperável entre máquinas pela rede~\cite{W3C2004WS}
+e podem ser compostos para implementar sofisticados processos de negócios~\cite{Papazoglou2007State}.
+Especialistas do setor aéreo já propõe o uso de composições de serviços
+para automatizar os processos de negócios entre diferentes organizações
+que coabitam um aeroporto~\cite{Choreos2012D6.2}.
+Considerando os atuais números relativos a grandes
+aeroportos\footnote{Heathrow [\url{http://www.heathrowairport.com}] em Londres, por exemplo, 
+possui mais de 80 compahias aéreas, 190.000 passageiros por dia (picos de 230.000),
+6.000 empregados, 1.000 pousos e decolagens por dia, e 40 serviços de refeição.}
+e o crescimento futuro desses números, esperasse que
+composições de serviços possam envolver um grande número de participantes,
+como já é sugerido por pesquisadores~\cite{Valerie2011FutureInternet}.
 
-Sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos de modo descentralizado por várias organizações \cite{Steen2011VeryLarge}. A computação em nuvem possibilita o acesso a um conjunto compartilhado de recursos computacionais que podem ser providos rapidamente \cite{Nist2011Cloud}. A gerência programática desses recursos virtualizados favorece a criação de processos totalmente automatizado para a implantação de sistemas \cite{Humble2011Continuous}.   
+No cenário apresentado, chamado de \emph{grande escala},
+o processo de implantação enfrenta diversas dificuldades, 
+tais como falhas corriqueiras na infraestrutura, 
+heterogeneidade tecnológica dos componentes operados, 
+distribuição do sistema por diferentes organizações
+e atualização frequente dos componentes em operação.
+Com essas dificuldades, torna-se inviável manter a escalabilidade do processo de implantação
+sem a utilização de um processo de implantação totalmente automatizado.
 
-Steen~\cite{Steen2011VeryLarge} destaca que um sistema distribuído de grande escala normalmente não é fornecido por uma única organização e que, portanto, ninguém é responsável por ``todo o sistema''. Essa necessidade de distribuição dificulta a execução de atividades que precisam ser coordenadas entre as organizações, pois nenhuma das partes detém o controle sobre toda a infraestrutura. O aspecto interorganizacional normalmente implica também na heterogeneidade tecnológica, pois partes da aplicação mantidas por organizações diferentes costumam ser construídas com tecnologias diferentes, como por exemplo Java ou .NET. Quando essas partes do sistema precisam comunicar-se diretamente surge a necessidade de uma comunicação interoperável, o que é viabilizado por serviços web. 
+Esses desafios podem ser tratadas por soluções \emph{ad-hoc},
+nas quais um processo de implantação é automatizado tendo em vista
+uma composição de serviço específica.
+Contudo, esse caminho leva ao baixo reuso de soluções
+dentro de uma organização e entre as organizações participantes.
+Outro caminho é a utilização de soluções suportadas por \emph{middleware},
+que resolvem os problemas comuns de implantação,
+fornecendo soluções potencialmente mais sofisticadas e mais bem testadas.
+Isso ocorre pois contribuidores interessados no problema de implantação
+podem trabalhar juntos para fornecer uma infraestrutura mais robusta,
+enquanto usuários do middleware escrevem código menor e mais simples
+para automatizar o processo de implantação de composições específicas.
+Embora apresentem vantagens, sistemas suportados por middleware
+também apresentam desvantagens, principalmente no que diz respeito
+às restrições impostas no desenvolvimento da aplicação.
 
-Serviços web possibilitam a comunicação interoperável entre máquinas pela rede \cite{W3C2004WS}. Um exemplo é a consulta a um serviço do correio para verificação de preços e prazos de diferentes opções de entrega. A existência de um serviço web que forneça essa funcionalidade possibilita que uma loja, por exemplo, selecione dinamicamente a opção de entrega mais vantajosa de acordo com os requisitos de seus clientes. Serviços também são compostos para implementar processos de negócios sofisticados \cite{Papazoglou2007State}. Nessa situação, serviços web são diretamente ligados uns aos outros. Se existem supermercados que oferecem serviços web para consulta de preço e compra de produtos, pode-se elaborar um processo de negócio em que um consumidor faça uma busca automatizada em diferentes supermercados procurando o menor preço para a sua compra. A coordenação de um processo de negócio ocorre de forma centralizada ou distribuída. No caso centralizado, denominado orquestração \cite{Nanda2004Decentralizing}, há um orquestrador que determina como os outros serviços web envolvidos no processo de negócio devem se relacionar. No caso distribuído, denominado coreografia \cite{Barker2009Choreographing}, cada serviço sabe como e com quais parceiros deve interagir. 
+Nesta dissertação, estudaremos o processo de implantação automatizada suportado por middleware. 
+Nos questionamos o quanto e como essa opção
+contribui à implantação de composições de serviço de grande escala
+quando confrontada com soluções \emph{ad-hoc}.
+Para responder à questão colocada, nosso objetivo nessa dissertação é 
+projetar, implementar e avaliar
+um middleware que forneça suporte à implantação automatizada de composições de serviços web
+de grande escala.
+Esse middleware, quando comparado a soluções \emph{ad-hoc},
+deve \emph{facilitar} a automatização da implantação de uma composição específica.
+Nesse caso, \emph{facilitar} significa reduzir o tempo e/ou quantidade de trabalho
+para a codificação e/ou aplicação da solução de implantação.
+O tempo será considerado em homens*horas e a quantidade de trabalho
+em linhas de código.
+Também esperasse que a automatização do processo fornecida por esse middleware
+contribua para a escalabilidade do processo de implantação.
+Nesse caso, ser escalável significa ser capaz de implantar uma maior quantidade
+de serviços sem aumentar o tempo de implantação, dado que se aumente também,
+proporcionalmente, os servidores disponíveis para hospedar esses serviços.
 
-Para compor uma orquestração ou coreografia, é preciso que os serviços identifiquem a localização (URIs) de suas dependências. Em um processo de implantação na nuvem, não se pode fazer suposições sobre os endereços IPs dos serviços antes da implantação, o que requer um modelo de configuração flexível, considerando a natureza dinâmica da nuvem \cite{Amazon2012Practices}. Dessa forma, o processo de implantação de coreografias requer algum mecanismo dinâmico de troca de endereços entre os serviços participantes. 
-
-Embora exista uma diversidade de técnicas para aumentar a disponibilidade de aplicações e serviços, quando um sistema interage com outro independente, normalmente pertencente a outra organização, é preciso considerar uma possível indisponibilidade do sistema invocado na outra organização. Em sistemas de grande escala, tais falhas ocorrem com maior frequência. Por isso, esses sistemas precisam ser projetados para que continuem a funcionar na presença de falhas de seus componentes, mesmo que para isso tenham que continuar operando com funcionalidades reduzidas \cite{Hamilton2007InternetScale,  Helland2009Quicksand}.
-
-Considerando os desafios já colocados, a questão que guia esta pesquisa é ``\emph{como realizar a implantação automatizada de coreografias de serviços web de grande escala em ambientes distribuídos de computação em nuvem.}'' O objetivo desta dissertação é arquitetar, implementar e avaliar um arcabouço de middleware que dê suporte à implantação automatizada de coreografias de serviços web em ambientes de computação em nuvem. 
-
-Em nosso trabalho, as coreografias de serviços web enquadram-se no seguinte contexto:
-
-\begin{itemize}
-\item Uma coreografia possui serviços web de diferentes organizações.
-\item Os serviços web de uma mesma coreografia são implantáveis em diferentes infraestruturas, pertencentes a diferentes organizações.
-\item As organizações utilizarão infraestruturas de computação em nuvem.
-\item Diferentes organizações podem utilizar diferentes tecnologias de nuvem.
-\end{itemize}
-
-O arcabouço proposto deve ainda contemplar os seguintes requisitos:
-
-\begin{itemize}
-\item Com o apoio do arcabouço, o processo de implantação das coreografias deve ser totalmente automatizado.
-\item Deve-se privilegiar construções tolerantes a falha, ou seja, se um componente do sistema falha, o sistema inteiro continua a responder, mesmo que com funcionalidade reduzida.
-\item Considerando magnitudes de milhares de serviços em centenas de nós, o tempo de implantação deve ser escalável, ou seja, conforme se aumente a quantidade de serviços a serem implantados e a quantidade de nós disponíveis, o tempo de implantação deve permanecer idealmente constante. 
-\item A implantação de uma coreografia com centenas de serviços deve ocorrer com tempo na ordem de poucos minutos.
-\end{itemize}
-
-Nossa solução consiste no desenvolvimento do CHOReOS Enactment Engine, um arcabouço que fornece uma Plataforma como Serviço (PaaS) para a execução de processos automatizados de implantação de coreografias de serviços web. Para realizar a implantação das coreografias em um ambiente de nuvem, o Enactment Engine utiliza Infraestrutura como um Serviço (IaaS) de outros provedores de computação de nuvem. A arquitetura de nossa solução em termos das camadas da computação em nuvem pode ser observada na Figura~\ref{fig:camadas_nuvem}.
+O middleware desenvolvido no contexto deste trabalho é o CHOReOS \ee (EE),
+que funciona no modelo de Plataforma como um Serviço (PaaS), 
+um dos modelos de funcionamento da computação em nuvem.
+O EE fornece uma API remota para disparar o processo de implantação.
+Essa API recebe uma especificação declarativa da composição a ser implantada.
+O EE interpreta a especificação recebida e realiza as tarefas de implantação
+em um conjunto de máquinas virtuais.
+Essas máquinas virtuais são criadas por provedores de infraestrutura que funcionam
+de acordo com o modelo de computação em nuvem denominado Infraestrutura como um Serviço (IaaS).
+A arquitetura de nossa solução em função dos modelos de computação em nuvem pode ser observada na Figura~\ref{fig:modelos_nuvem}.
 
 \begin{figure}[!h]
   \centering
   \includegraphics[width=.70\textwidth]{nuvem_modelos.pdf} 
-  \caption{Modelos da computação em nuvem associadas ao CHOReOS Enactment Engine}
-  \label{fig:camadas_nuvem} 
+  \caption{Modelos da computação em nuvem associadas ao CHOReOS \ee.}
+  \label{fig:modelos_nuvem} 
 \end{figure}
 
-Os aspectos de grande escala considerados pelo arcabouço são a 1) automatização do processo de implantação, 2) consideração da natureza dinâmica do ambiente de computação em nuvem, 3) o tratamento adequado de erros de componentes de terceiros, 4) um projeto de API assíncrona e idempotente, e 5) pontos de extensão para lidar com a heterogeneidade tecnológica.
+As contribuições deste trabalho são: 
 
-Ainda como avaliação da aplicação do arcabouço em um cenário de grande escala, o mesmo será avaliado pela escalabilidade do tempo de implantação, variando-se a quantidade de serviços a serem implantados e a quantidade de nós disponíveis no ambiente computação em nuvem. O objetivo é que um aumento proporcional na carga -- serviços a serem implantados -- e nos recursos disponíveis -- máquinas virtuais -- não altere significativamente o tempo de implantação.
+\begin{itemize}
+\item Um levantamento, baseado na literatura, dos desafios para a implantação de sistemas de grande escala, bem como os caminhos de soluções apontados pela literatura.
+\item A implementação de um middleware que possibilita avaliações empíricas ligadas à implantação de composições de serviço. Esse middleware tem o potencial de auxiliar diversas outras pesquisas sobre composições de serviços.
+\item Uma comparação, baseada na literatura e em evidências empíricas, entre soluções de implantação automatizada implementadas de forma \emph{ad-hoc} e implementadas com suporte por middleware.
+\end{itemize}
 
-Esta pesquisa é feita no contexto e com financiamento dos projetos CHOReOS e Baile, que estudam a aplicação de coreografias de serviços em ambientes de grande escala. O projeto CHOReOS\footnote{http://www.choreos.eu}, financiado pela Comissão Europeia e composto por diversas instituições acadêmicas e industriais da Europa conjuntamente com o IME-USP, introduz um processo dinâmico e centrado no usuário para o desenvolvimento de coreografias em um ambiente de escala ultra grande, no qual milhares de serviços são compostos e coordenados por um middleware distribuído. O projeto Baile\footnote{http://ccsl.ime.usp.br/baile/}, uma parceria entre IME-USP e HP Brasil, estuda a solução de problemas para o desenvolvimento de coreografias, como a adoção de Desenvolvimento Guiado por Testes (TDD) no contexto de coreografias e o suporte da Computação em Nuvem à implantação de coreografias.
+Esta pesquisa é feita no contexto e com financiamento dos projetos CHOReOS e Baile, que estudaram a aplicação de composições de serviços distribuídas, chamadas \emph{coreografias} em ambientes de grande escala. O projeto CHOReOS\footnote{http://www.choreos.eu}, financiado pela Comissão Europeia e composto por diversas instituições acadêmicas e industriais da Europa conjuntamente com o IME-USP, introduz um processo dinâmico e centrado no usuário para o desenvolvimento de coreografias em um ambiente de escala ultra grande, no qual milhares de serviços são compostos e coordenados por um middleware distribuído. O projeto Baile\footnote{http://ccsl.ime.usp.br/baile/}, uma parceria entre IME-USP e HP Brasil, estudou a solução de problemas para o desenvolvimento de coreografias, como a adoção de Desenvolvimento Guiado por Testes (TDD) no contexto de coreografias e o suporte da Computação em Nuvem à implantação de coreografias.
 
-\todo{As contribuições originais desse trabalho são...}
-
-Este trabalho organiza-se da seguinte forma: as fundamentações teóricas sobre composição de serviços e computação de grande escala são apresentadas, respectivamente, no Capítulo~\ref{cap:servicos} e no Capítulo~\ref{cap:escala}. Os trabalhos relacionados, sobre implantação de sistemas, são apresentados no Capítulo~\ref{cap:relacionados}. No Capítulo~\ref{cap:solucao} apresentamos nossa solução proposta. Por fim, temos nosso plano de trabalho no Capítulo~\ref{cap:cronograma}. 
-
+Este trabalho organiza-se da seguinte forma: as fundamentações teóricas sobre composição de serviços, o processo de implantação e a computação em nuvem se encontram no Capítulo~\ref{cap:conceitos}. No Capítulo~\ref{cap:relacionados} apresentamos os trabalhos relacionados. No Capítulo~\ref{cap:solucao} apresentamos o CHOReOS \ee, discutindo como suas características arquiteturais e de implementação auxiliam na implantação de composições de grande escala. A comparação do EE com soluções \emph{ad-hoc}, bem como sua avaliação de desempenho e escalabilidade, são apresentadas no Capítulo~\ref{cap:avaliacao}. Por fim, no Capítulo~\ref{cap:conclusoes} apresentamos nossas conclusões.
 
 %% ------------------------------------------------------------------------- %%
-%\section{Considerações Preliminares}
-%\label{sec:consideracoes_preliminares}
+% Intro deve ter:
+% background
+% problema de pesquisa
+% questão de pesquisa
+% hipótese (?)
+% objetivo de pesquisa
+% contribuições
+
+
+
+%Pesquisadores acreditam que a arquitetura da Internet atual não comportará todos os requisitos dos serviços do futuro, o que leva à necessidade de criação de uma nova arquitetura, denominada Internet do Futuro \cite{Zahariadis2011FutureInternet}. Na Internet do Futuro, espera-se a existência de complexas composições de bilhões de serviços web, formando coreografias de milhões de recursos, pessoas e coisas \cite{Valerie2011FutureInternet}. No entanto, o desenvolvimento de colaborações entre serviços trazem desafios para a formulação de mecanismos que funcionem, escalem e que sejam eficientemente implementados em um ambiente distribuído de grande escala \cite{Steen2011VeryLarge}.
 %
-%\section{Objetivos}
-%\label{sec:objetivo}
+%Sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos de modo descentralizado por várias organizações \cite{Steen2011VeryLarge}. A computação em nuvem possibilita o acesso a um conjunto compartilhado de recursos computacionais que podem ser providos rapidamente \cite{Nist2011Cloud}. A gerência programática desses recursos virtualizados favorece a criação de processos totalmente automatizado para a implantação de sistemas \cite{Humble2011Continuous}.   
 %
-%\section{Contribuições}
-%\label{sec:contribucoes}
+%Steen~\cite{Steen2011VeryLarge} destaca que um sistema distribuído de grande escala normalmente não é fornecido por uma única organização e que, portanto, ninguém é responsável por ``todo o sistema''. Essa necessidade de distribuição dificulta a execução de atividades que precisam ser coordenadas entre as organizações, pois nenhuma das partes detém o controle sobre toda a infraestrutura. O aspecto interorganizacional normalmente implica também na heterogeneidade tecnológica, pois partes da aplicação mantidas por organizações diferentes costumam ser construídas com tecnologias diferentes, como por exemplo Java ou .NET. Quando essas partes do sistema precisam comunicar-se diretamente surge a necessidade de uma comunicação interoperável, o que é viabilizado por serviços web. 
 %
-%\section{Organização do Trabalho}
-%\label{sec:organizacao_trabalho}
+%Serviços web possibilitam a comunicação interoperável entre máquinas pela rede \cite{W3C2004WS}. Um exemplo é a consulta a um serviço do correio para verificação de preços e prazos de diferentes opções de entrega. A existência de um serviço web que forneça essa funcionalidade possibilita que uma loja, por exemplo, selecione dinamicamente a opção de entrega mais vantajosa de acordo com os requisitos de seus clientes. Serviços também são compostos para implementar processos de negócios sofisticados \cite{Papazoglou2007State}. Nessa situação, serviços web são diretamente ligados uns aos outros. Se existem supermercados que oferecem serviços web para consulta de preço e compra de produtos, pode-se elaborar um processo de negócio em que um consumidor faça uma busca automatizada em diferentes supermercados procurando o menor preço para a sua compra. A coordenação de um processo de negócio ocorre de forma centralizada ou distribuída. No caso centralizado, denominado orquestração \cite{Nanda2004Decentralizing}, há um orquestrador que determina como os outros serviços web envolvidos no processo de negócio devem se relacionar. No caso distribuído, denominado coreografia \cite{Barker2009Choreographing}, cada serviço sabe como e com quais parceiros deve interagir. 
 %
+%Para compor uma orquestração ou coreografia, é preciso que os serviços identifiquem a localização (URIs) de suas dependências. Em um processo de implantação na nuvem, não se pode fazer suposições sobre os endereços IPs dos serviços antes da implantação, o que requer um modelo de configuração flexível, considerando a natureza dinâmica da nuvem \cite{Amazon2012Practices}. Dessa forma, o processo de implantação de coreografias requer algum mecanismo dinâmico de troca de endereços entre os serviços participantes. 
+%
+%Embora exista uma diversidade de técnicas para aumentar a disponibilidade de aplicações e serviços, quando um sistema interage com outro independente, normalmente pertencente a outra organização, é preciso considerar uma possível indisponibilidade do sistema invocado na outra organização. Em sistemas de grande escala, tais falhas ocorrem com maior frequência. Por isso, esses sistemas precisam ser projetados para que continuem a funcionar na presença de falhas de seus componentes, mesmo que para isso tenham que continuar operando com funcionalidades reduzidas \cite{Hamilton2007InternetScale,  Helland2009Quicksand}.
+%
+%Considerando os desafios já colocados, a questão que guia esta pesquisa é ``\emph{como realizar a implantação automatizada de coreografias de serviços web de grande escala em ambientes distribuídos de computação em nuvem.}'' O objetivo desta dissertação é arquitetar, implementar e avaliar um arcabouço de middleware que dê suporte à implantação automatizada de coreografias de serviços web em ambientes de computação em nuvem. 
+%
+%Em nosso trabalho, as coreografias de serviços web enquadram-se no seguinte contexto:
+%
+%\begin{itemize}
+%\item Uma coreografia possui serviços web de diferentes organizações.
+%\item Os serviços web de uma mesma coreografia são implantáveis em diferentes infraestruturas, pertencentes a diferentes organizações.
+%\item As organizações utilizarão infraestruturas de computação em nuvem.
+%\item Diferentes organizações podem utilizar diferentes tecnologias de nuvem.
+%\end{itemize}
+%
+%O arcabouço proposto deve ainda contemplar os seguintes requisitos:
+%
+%\begin{itemize}
+%\item Com o apoio do arcabouço, o processo de implantação das coreografias deve ser totalmente automatizado.
+%\item Deve-se privilegiar construções tolerantes a falha, ou seja, se um componente do sistema falha, o sistema inteiro continua a responder, mesmo que com funcionalidade reduzida.
+%\item Considerando magnitudes de milhares de serviços em centenas de nós, o tempo de implantação deve ser escalável, ou seja, conforme se aumente a quantidade de serviços a serem implantados e a quantidade de nós disponíveis, o tempo de implantação deve permanecer idealmente constante. 
+%\item A implantação de uma coreografia com centenas de serviços deve ocorrer com tempo na ordem de poucos minutos.
+%\end{itemize}
+%
+%Nossa solução consiste no desenvolvimento do CHOReOS Enactment Engine, um arcabouço que fornece uma Plataforma como Serviço (PaaS) para a execução de processos automatizados de implantação de coreografias de serviços web. Para realizar a implantação das coreografias em um ambiente de nuvem, o Enactment Engine utiliza Infraestrutura como um Serviço (IaaS) de outros provedores de computação de nuvem. A arquitetura de nossa solução em termos das camadas da computação em nuvem pode ser observada na Figura~\ref{fig:camadas_nuvem}.
+%
+%\begin{figure}[!h]
+%  \centering
+%  \includegraphics[width=.70\textwidth]{nuvem_modelos.pdf} 
+%  \caption{Modelos da computação em nuvem associadas ao CHOReOS Enactment Engine}
+%  \label{fig:camadas_nuvem} 
+%\end{figure}
+%
+%Os aspectos de grande escala considerados pelo arcabouço são a 1) automatização do processo de implantação, 2) consideração da natureza dinâmica do ambiente de computação em nuvem, 3) o tratamento adequado de erros de componentes de terceiros, 4) um projeto de API assíncrona e idempotente, e 5) pontos de extensão para lidar com a heterogeneidade tecnológica.
+%
+%Ainda como avaliação da aplicação do arcabouço em um cenário de grande escala, o mesmo será avaliado pela escalabilidade do tempo de implantação, variando-se a quantidade de serviços a serem implantados e a quantidade de nós disponíveis no ambiente computação em nuvem. O objetivo é que um aumento proporcional na carga -- serviços a serem implantados -- e nos recursos disponíveis -- máquinas virtuais -- não altere significativamente o tempo de implantação.
+%
+%Esta pesquisa é feita no contexto e com financiamento dos projetos CHOReOS e Baile, que estudam a aplicação de coreografias de serviços em ambientes de grande escala. O projeto CHOReOS\footnote{http://www.choreos.eu}, financiado pela Comissão Europeia e composto por diversas instituições acadêmicas e industriais da Europa conjuntamente com o IME-USP, introduz um processo dinâmico e centrado no usuário para o desenvolvimento de coreografias em um ambiente de escala ultra grande, no qual milhares de serviços são compostos e coordenados por um middleware distribuído. O projeto Baile\footnote{http://ccsl.ime.usp.br/baile/}, uma parceria entre IME-USP e HP Brasil, estuda a solução de problemas para o desenvolvimento de coreografias, como a adoção de Desenvolvimento Guiado por Testes (TDD) no contexto de coreografias e o suporte da Computação em Nuvem à implantação de coreografias.
+%
+%Este trabalho organiza-se da seguinte forma: as fundamentações teóricas sobre composição de serviços e computação de grande escala são apresentadas, respectivamente, no Capítulo~\ref{cap:servicos} e no Capítulo~\ref{cap:escala}. Os trabalhos relacionados, sobre implantação de sistemas, são apresentados no Capítulo~\ref{cap:relacionados}. No Capítulo~\ref{cap:solucao} apresentamos nossa solução proposta. Por fim, temos nosso plano de trabalho no Capítulo~\ref{cap:cronograma}. 
+%
+
+
+
