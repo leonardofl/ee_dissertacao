@@ -69,9 +69,9 @@ de serviços sem aumentar o tempo de implantação, dado que se aumente também,
 proporcionalmente, a quantidade de servidores disponíveis para hospedar esses serviços.
 
 A computação em nuvem possibilita o acesso a um conjunto compartilhado de recursos computacionais que podem ser providos rapidamente \cite{Nist2011Cloud}.
-Para a implementação de nosso middleware, utilizamos os modelos de computação em nuvem,
-considerando que sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos de modo descentralizado por várias organizações \cite{Steen2011VeryLarge},
-e que a gerência programática de recursos virtualizados, fornecidos pela nuvem, favorece a criação de processos totalmente automatizado para a implantação de sistemas \cite{Humble2011Continuous} \gerosa{frase longa}.   
+A gerência programática de recursos virtualizados, fornecidos pela nuvem, favorece a criação de processos totalmente automatizado para a implantação de sistemas \cite{Humble2011Continuous}.   
+Além disso, sistemas distribuídos já estão migrando para ambientes de nuvem, onde são compostos e mantidos de modo descentralizado por várias organizações \cite{Steen2011VeryLarge}.
+Baseando-se nessas considerações, nosso middleware foi projetado em função dos modelos de computação em nuvem.
 
 O middleware desenvolvido no contexto deste trabalho é o CHOReOS \ee 
 \footnote{\url{http://ccsl.ime.usp.br/EnactmentEngine}} (EE),
@@ -104,7 +104,8 @@ As contribuições deste trabalho são:
 \item Uma comparação, baseada na literatura e em evidências empíricas, entre soluções de implantação automatizada implementadas de forma \emph{ad-hoc} e implementadas com suporte por middleware.
 \end{itemize}
 
-\Gerosa{falar dos artigos publicados, e na participação na escrita dos deliverables (citar quais).}
+Esta pesquisa resultou na publicação do artigo \emph{Um Middleware para Encenação Automatizada de Coreografias de Serviços Web em Ambientes de Computação em Nuvem}, publicado no 31º Simpósio Brasileiro de Redes de Computadores e Sistemas Distribuídos (SBRC), em coautoria com Nelson Lago, Marco Aurélio Gerosa e Fabio Kon.
+
 \Leo{cabe falar da revisão sistemática?}
 
 Este trabalho organiza-se da seguinte forma: as fundamentações teóricas sobre composição de serviços, o processo de implantação e a computação em nuvem estão no Capítulo~\ref{cap:conceitos}. No Capítulo~\ref{cap:relacionados} apresentamos os trabalhos relacionados. No Capítulo~\ref{cap:solucao} apresentamos o CHOReOS \ee, discutindo como suas características arquiteturais e de implementação auxiliam na implantação de composições de grande escala. A comparação do EE com soluções \emph{ad-hoc}, bem como sua avaliação de desempenho e escalabilidade, são apresentadas no Capítulo~\ref{cap:avaliacao}. Por fim, no Capítulo~\ref{cap:conclusoes} apresentamos nossas conclusões.
