@@ -3,17 +3,17 @@
 
 O CHOReOS \ee (EE) é um middleware implementado no contexto deste trabalho.
 Uma vez instanciado, ele fornece serviços que automatizam
-a implantação de composições de serviços\footnote{Como explicado na Seção~\ref{sec:composicoes}, usaremos os termos 
+a implantação de composições de serviços\footnote{Como explicado na Seção~\ref{sec:composicoes}, utilizamos os termos 
 ``composição de serviço'' e ``coreografia'' indistintamente.} 
 em ambientes de computação em nuvem,
-funcionando no modelo de computação em nuvem denominado Plataforma como um Serviço (PaaS).
+funcionando no modelo denominado Plataforma como um Serviço (PaaS).
 O EE possui funcionalidades e características que foram projetadas para auxiliar o
-implantador na implantação de composições de grande escala.
+implantador de composições de grande escala.
 
-Para utilizar o EE, o implantador, usuário do EE, deve descrever a composição a ser implantada
+Para utilizar o EE, o implantador, usuário do EE, descreve a composição a ser implantada
 na Linguagem de Descrição Arquitetural do EE, uma especificação de alto nível que
 diz \emph{o que} deve ser implantado, e não o \emph{como}. 
-Finalmente, o usuário deve fornecer essa descrição ao EE através de sua API remota.
+Finalmente, o usuário deve fornecer essa descrição ao EE por meio de sua API remota.
 
 As funcionalidades fornecidas pelo \ee ao usuário são as seguintes:
 
@@ -24,23 +24,23 @@ As funcionalidades fornecidas pelo \ee ao usuário são as seguintes:
 \item Suporte a implantação multi-nuvem.
 \item Utilização de serviços de terceiros na composição a ser implantada.
 \item Implantação automatizada de infraestrutura de monitoramento dos recursos utilizados.
-\item Deleção automática de recursos da nuvem não utilizados.
+\item Remoção automática de recursos da nuvem não utilizados.
 \item API para escalamento vertical e horizontal.
 \end{itemize}
 
-Para a implementação do arcabouço Enactment Engine contribuíram Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O \ee é software livre 
+Para a implementação do arcabouço Enactment Engine contribuíram os alunos de pós-graduação Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O \ee é software livre 
 sob a Licença Pública Mozilla 2\footnote{\url{http://www.mozilla.org/MPL/2.0/}} 
 e está disponível em \url{http://ccsl.ime.usp.br/enactmentengine}. 
 
-Neste capítulo, nós apresentaremos a arquitetura e aspectos de implementação do \ee.   
+Neste capítulo, apresentaremos a arquitetura e aspectos de implementação do \ee.   
 Destacamos ao final do capítulo
 como as decisões arquiteturais e de implementação auxiliam o implantador
 a superar os desafios presentes na implantação de composições de grande escala.
-Alguns aspectos aqui discutidos serão tratados em alto nível,
+Alguns aspectos aqui discutidos são tratados em alto nível,
 priorizando o que é importante para o entendimento das contribuições
 acadêmicas deste trabalho.
-Detalhes de mais baixo nível sobre nosso middleware, principalmente do ponto de vista do
-usuário, podem ser encontrados no \userguide (Apêndice~\ref{ape:user_guide}).
+Detalhes técnicos sobre o middleware, principalmente do ponto de vista do
+usuário, são encontrados no \userguide (Apêndice~\ref{ape:user_guide}).
 
 \section{Execução do \ee}
 
@@ -62,7 +62,7 @@ O ambiente de execução do EE é exibido na Figura~\ref{fig:arquitetura} e os c
 
 \item O \emph{provedor de infraestrutura} é um serviço capaz de criar e destruir máquinas virtuais 
 (também chamadas de \emph{nós}), normalmente em um ambiente de computação em nuvem. 
-Atualmente o \ee suporta o Amazon EC2 e o OpenStack.
+Atualmente o \ee oferece suporte para o Amazon EC2 e o OpenStack.
 
 \item O \emph{agente de configuração} é executado nos nós alvos
 e dispara os scripts que implementam as fases de preparação
@@ -73,14 +73,14 @@ como seu agente de configuração.
 \item O \emph{cliente do \ee} é um programa ou script desenvolvido
 pelo implantador, no qual a especificação da composição de serviços é definida.
 Esse script deve enviar a especificação da composição para o \ee
-através das operações REST fornecidas pelo \ee.
+por meio das operações REST fornecidas pelo \ee.
 Uma opção para implementar essas chamadas é utilizar
 a biblioteca Java por nós fornecida, que abstrai os detalhes
 das chamadas REST.
 
 \item O \emph{\ee} implanta os serviços de uma composição
 com base na especificação enviada pelo cliente.
-O processo implementado pelo \ee para efetuar a implementação
+O processo implementado pelo \ee para efetuar a implantação
 é descrito na Figura~\ref{fig:processo}, e explicado logo em seguida. 
 
 \end{itemize} 
@@ -131,7 +131,7 @@ O formato da resposta é descrito na Seção~\ref{sec:spec}.
 \end{enumerate}
 
 Há também alguns outros passos opcionais que não descrevemos por estarem fora
-do escopo deste trabalho. Um exemplo é a implantação da infra-estrutura de monitoramento
+do escopo deste trabalho. Um exemplo é a implantação da infraestrutura de monitoramento
 dos nós alvos. O agente de monitoramento 
 (Ganglia\footnote{\url{http://ganglia.sourceforge.net}})
 é implantado nos nós alvos pelo EE e
@@ -147,10 +147,9 @@ O EE também devolve ao seu cliente informações sobre o resultado da implanta�
 em especial as localizações de acesso aos serviços. As descrições da composição e de sua 
 especificação são feitas com uma \emph{linguagens de descrição arquitetural} (ADL), 
 assim como a dos trabalhos vistos no Capítulo~\ref{cap:relacionados}. 
-A nossa ADL consiste na descrição de objetos relacionados entre si seguindo 
-a estrutura de classes apresentada na Figura~\ref{fig:adl}. 
-Em nossa implementação, essa descrição é concretizada com representações em XML, 
-que são trocadas entre o EE e seu cliente. 
+A ADL do EE define a estrutura de classes apresentada na Figura~\ref{fig:adl}. 
+Em nossa implementação, representações de instâncias desse modelo 
+são trocadas entre o EE e seu cliente em formato XML. 
 A descrição detalhada de cada atributo e o \emph{schema} XML da linguagem
 são apresentados no \userguide.
 
@@ -164,9 +163,10 @@ são apresentados no \userguide.
 A especificação da coreografia fornece todas as informações para a implantação da composição,
 possibilitando que o implantador descreva em alto-nível apenas \emph{o que} deve ser implantado,
 e não os detalhes de implementação de \emph{como} deve ser implantado.
-Essa última situação, o \emph{como} detalhado, é situação típica na escrita de scripts de implantação.
+Assim, a escrita de uma especificação declarativa se contrapõe a escrita de um script,
+no qual normalmente se descreve os passos de \emph{como} o sistema deve ser implantado.
 
-Em nossa ADL, para cada serviço, especifica-se de onde o pacote do serviço pode ser baixado, 
+Na ADL do EE, para cada serviço, especifica-se de onde o pacote do serviço pode ser baixado, 
 qual o tipo do pacote (WAR, JAR, etc.), quantas réplicas devem ser implantadas, etc.
 Pode-se especificar também a existência de serviços
 de terceiros que já estão disponíveis na Internet e que devem
@@ -196,14 +196,14 @@ airportBusCompanySpec.addDependency(
 \section{Ligação entre serviços}
 \label{sec:ligacao}
 
-Em uma composição de serviços alguns serviços se comunicam com outros serviços para implementar o fluxo de negócio.
+Em uma composição de serviços, alguns serviços se comunicam com outros serviços para implementar o fluxo de negócio.
 Quando um serviço $A$ invoca um serviço $B$, dizemos que o serviço $A$ depende do serviço $B$. 
 Dizemos também que $A$ é \emph{dependente} de $B$, enquanto que $B$ é \emph{dependência} de $A$,
 ou ainda que $A$ é \emph{consumidor} de $B$, enquanto que $B$ é \emph{provedor} de $A$.
 Para que uma coreografia funcione, cada serviço precisa saber o endereço de suas dependências,
 e o processo pelo qual os serviços recebem os endereços de suas dependências é denominado \emph{ligação}.
 
-Segundo Dearle~\cite{Dearle2007PastPresentFuture}, componentes podem ser ligados entre si em vários momentos: compilação, montagem, configuração e execução. Em nosso contexto, a ligação deve ser efetuada necessariamente em tempo de execução, pois é somente nesse momento que teremos os endereços completos dos serviços implantados. Uma das possibilidades apontadas por Dearle para efetivação da ligação em tempo de execução é a utilização do padrão de injeção de dependência, conforme introduzido por Fowler~\cite{Fowler2004Inversion}. A injeção de dependências é utilizada em contêineres como o Springer\footnote{\url{http://www.springer.org}}, no qual o middleware passa ao componente referências de suas dependências. No entanto, Dearle ainda alega que há uma falta de arcabouços para a aplicação da injeção de dependência de forma distribuída.
+Segundo Dearle~\cite{Dearle2007PastPresentFuture}, componentes podem ser ligados entre si em vários momentos: compilação, montagem, configuração e execução. Em nosso contexto, a ligação deve ser efetuada em tempo de execução, pois é somente nesse momento que os endereços completos dos serviços implantados estão disponíveis. Uma das possibilidades apontadas por Dearle para efetivação da ligação em tempo de execução é a utilização do padrão de injeção de dependência, conforme introduzido por Fowler~\cite{Fowler2004Inversion}. A injeção de dependências é utilizada em contêineres como o Springer\footnote{\url{http://www.springer.org}}, no qual o middleware passa ao componente referências de suas dependências. No entanto, Dearle ainda alega que há uma falta de arcabouços para a aplicação da injeção de dependência de forma distribuída.
 
 A solução adotada no \ee para possibilitar a ligação entre serviços envolve a utilização do middleware para a passagem de endereços dos serviços implantados aos seus consumidores. Essa solução consiste na aplicação do padrão de injeção de dependência de forma distribuída, e é similar ao que foi feito nos trabalhos sobre a linguagem Darwin~\cite{Magee1996Dynamic, Magee1994Regis}. 
 Note que nessa solução, a ``inteligência'' em determinar quais serviços satisfazem as necessidades de outros serviços está na camada que produz a entrada do EE.
@@ -235,13 +235,13 @@ A definição exata da assinatura da operação deve ser definida de acordo com 
 A versão atual do EE já define essa assinatura para serviços SOAP.
 Para detalhes, ver o guia do usuário (Apêndice~\ref{ape:user_guide}).
 
-Apesar dos benefícios dessa solução, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação \texttt{setInvocationAddress} e conhecer os papeis de suas dependências, o que implica em conhecer a interface sintática de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e não impede a utilização do serviço em outro middleware.
+Apesar dos benefícios da solução adotada no EE, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação \texttt{setInvocationAddress} e conhecer os papéis de suas dependências, o que implica em conhecer a interface sintática de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e não impede a utilização do serviço em outro middleware.
 
 \section{Mapeamento dos serviços na infraestrutura alvo}
 \label{sec:mapeamento}
 
 Em algum momento do processo de implantação é preciso definir em que nó cada instância de serviço será hospedado.
-Chamamos por \emph{mapeamento}, ou seleção de nós, essa fase do processo de implantação.
+Chamamos de \emph{mapeamento}, ou seleção de nós, essa fase do processo de implantação.
 Na forma mais simples de seleção de nó, o IP do nó alvo é definido estaticamente no script de implantação do serviço.
 O trabalho de Magee e Kramer~\cite{Magee1997Corba} apresenta a seleção de nós em função da utilização de CPUs nos nós existentes, não havendo possibilidade de utilização de outros critérios, como memória, disco, custo etc. Nos sistemas apresentados por Dolstra et al.~\cite{Dolstra2005Configuration} e Balter et al.~\cite{Balter1998Olan} é preciso que a distribuição dos serviços seja especificada com o uso dos IPs das máquinas nas quais os serviços devem ser implantados, o que não é possível em um ambiente de nuvem. Por fim, o \emph{broker} apresentado por Watson et al. é o componente que mais se assemelha ao nosso NodeSelector, pois os autores deixam claro que várias implementações diferentes são possíveis, considerando-se diferentes tipo de requisitos e diferentes fontes de monitoramento. Como a escolha é feita em tempo de execução do serviço, seria também possível uma seleção que independa de IPs estabelecidos em tempo de projeto. No entanto, os autores não explicam como os usuários de seu sistema, os provedores de infraestrutura, deveriam proceder para criar seus próprios \emph{brokers} personalizados.
 
@@ -482,17 +482,17 @@ podem ser especialmente úteis a eventuais desenvolvedores de nosso middleware.
 
 \item [Linguagem:] 
 
-O \ee é desenvolvido com a linguagem Java 6. 
+O \ee é desenvolvido na linguagem Java 6. 
 Durante o desenvolvimento utilizamos como ambiente de execução
 a JVM OpenJDK 7. O EE é compilado com o Maven 3.
 
 \item [Chef-solo:] 
 
-O Chef é a pedra angular sobre a qual construímos o \ee.
+O Chef é o sistema voltado à implantação de sistemas sobre a qual construímos o \ee.
 De certa forma, o EE é uma camada de abstração que facilita o uso do Chef.
 A versão utilizada do Chef-Solo é a 11.8.0.
 Em versões anteriores do EE, utilizamos o Chef Server,
-mas acabamos por abandona-lo, devido ao grande gargalo na escalabilidade
+mas acabamos por abandoná-lo, devido ao gargalo na escalabilidade
 que ele gerava, além do pouco benefício funcional que ele agregava.
 As receitas Chef são escritas em uma Linguagem Específica de Domínio (DSL) 
 que permite a livre
@@ -535,10 +535,10 @@ Essa abordagem reduz o tempo de implantação.
 
 \item [Testes:] 
 
-Os testes de unidade do \ee podem ser executados com o comando \texttt{mvn test}.
+Os testes de unidade do \ee são executados com o comando \texttt{mvn test}.
 Embora o EE contenha vários testes de unidade e isso seja fundamental,
 há uma limitação considerável desses testes, já que executar comandos que
-provoquem efeitos colaterais no sistema operacional não seja adequado
+provoquem efeitos colaterais no sistema operacional não é adequado
 em testes de unidade. Tais ``efeitos colaterais'' são sempre provocados
 durante a execução das receitas Chef.
 
@@ -556,20 +556,20 @@ voltadas para o ambiente de teste de aceitação,
 de forma que as máquinas sejam criadas mais rapidamente,
 seja uma contribuição relevante para a prática de desenvolvimento de software.
 
-\item [Software livre:] por fim, todos as bibliotecas e sub-sistemas
+\item [Software livre:] por fim, todas as bibliotecas e sub-sistemas
 utilizados pelo \ee são software livre.
 
 \end{description}
 
 \section{Discussão: auxiliando implantações em grande escala}
 
-Nesta seção discutiremos como as características arquiteturais e de implementação do \ee
+Nesta seção discutimos como as características arquiteturais e de implementação do \ee
 impactam na implantação de composições de serviço de grande escala.
-Explicaremos como o EE contribui para a resolução de cada um dos desafios
+Explicamos como o EE contribui para a resolução de cada um dos desafios
 apresentados na Seção~\ref{sec:desafios}.
-Durante a discussão destacaremos como uma solução de middleware traz vantagens
+Durante a discussão, destacamos como uma solução de middleware traz vantagens
 sobre abordagens \emph{ad-hoc} de implantação em nosso contexto.
-Essa discussão, suportada pelo efetivo funcionamento do EE demonstrado por sua avaliação
+Essa discussão, apoiada pelo efetivo funcionamento do EE demonstrado por sua avaliação
 (Capítulo~\ref{cap:avaliacao}), fornece também subsídios para a implementação de novos sistemas
 de implantação de grande escala, mesmo que não voltados a composições de serviços,
 e até mesmo para soluções \emph{ad-hoc}.
@@ -605,13 +605,14 @@ Recursos virtualizados fornecidos pela nuvem potencializam
 a automação do processo de implantação~\cite{Humble2011Continuous}.
 Diferentemente dos cenários estudados em trabalhos anteriores sobre
 implantação de sistemas baseados em componentes~\cite{Balter1998Olan,Magee1996Dynamic},
-em uma infraestrutura de nuvem os nós alvos são mais dinâmicos. Não é possível conhecer os endereços IPs
+em uma infraestrutura de nuvem, os nós alvos são mais dinâmicos. 
+Não é possível conhecer os endereços IPs
 dos nós alvos quando se está escrevendo a especificação da composição a ser implantada.
-A ligação entre serviços deve ser feita em tempo de execução, o que o EE faz via \texttt{setInvocationAddress},
+A ligação entre serviços é feita em tempo de execução, o que o EE faz via \texttt{setInvocationAddress},
 e a política de alocação de nós deve ser flexível, i.e.,
 um serviço não deve ser alocado a um IP estático antes do tempo de implantação.
 O EE possibilita que políticas de alocação de nós
-escolham em tempo de implantação em que nós um serviço deve ser implantado,
+escolham, em tempo de implantação, em que nós um serviço deve ser implantado,
 considerando inclusive o casamento de requisitos não-funcionais do serviço
 com características dos nós disponíveis.
 
@@ -620,31 +621,31 @@ com características dos nós disponíveis.
 Seguindo recomendações gerais feitas por Nygard~\cite{Nygard2009Release},
 adotamos no \ee uma abordagem simples para tratar falhas externas.
 A lógica de invocação a sistemas externos foi encapsulada em uma classe, 
-chamada \textsf{Invoker}, que foi usada de forma disciplinada pelo projeto.
+chamada \textsf{Invoker}, que foi usada de forma disciplinada pelo projeto \gerosa{?}.
 Toda vez que se deve acessar um sistema externo, utiliza-se um \emph{invoker}.
-Nosso \textsf{Invoker} recebe os seguintes parâmetros:
+O \textsf{Invoker} recebe os seguintes parâmetros:
 uma \emph{tarefa}, que é uma rotina que se comunicará com algum sistema externo,
 a quantidade de \emph{tentativas} para executar a tarefa,
-o \emph{timeout} de cada tentativa, e um \emph{intervalo} entre as tentativas.
+o \emph{timeout} de cada tentativa e um \emph{intervalo} entre as tentativas.
 
 Uma instância do \textsf{Invoker} deve ser configurada 
 de acordo com sua tarefa (por exemplo, nós descobrimos que três tentativas
 não é o suficiente para transferência de arquivos por SCP).
 Em vez de ter esses valores fixados no código-fonte, eles são explicitamente
 ajustados em arquivos de configuração.
-Desta forma, pode-se facilmente ajustar esses valores de acordo com 
+Desta forma, pode-se ajustar esses valores de acordo com 
 as características do ambiente alvo.
 Portanto, essa abordagem é também uma estratégia para colaborar 
 com a heterogeneidade de plataformas e tecnologias.
 A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \emph{decorator}~\cite{GoF1995Patterns}.} 
 para adaptar dinamicamente valores de timeouts 
 baseando-se em heurísticas definidas programaticamente 
-que utilizem o histórico de execução dos \emph{invokers}.
+que utilizem o histórico de execução dos \emph{invokers} \gerosa{frase com estrutura confusa}.
 
-O EE garante a utilização correta e disciplinada dos \emph{invokers} nos momentos adequados e necessários.
+O EE utiliza os \emph{invokers} nos momentos adequados e necessários.
 Isso fornece uma robustez mais facilmente proporcionada por sistemas de middleware,
-nos quais interesses transversais podem ser implementados sem que o desenvolvedor da aplicação 
-(o script de implantação em nosso caso) tenha que se preocupar com isso.
+nos quais interesses transversais podem ser implementados sem que o implantador 
+tenha que se preocupar com isso.
 
 O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
 Quando uma requisição chega, o EE tenta criar um novo nó.
@@ -657,11 +658,11 @@ a capacidade é aumentada, de forma a tentar evitar uma situação futura
 de se encontrar uma reserva vazia em um momento de necessidade.
 
 A abordagem da reserva impõe um custo extra de se manter algumas VMs a mais
-em execução (em um estado ocioso). Contudo, esse problema é tratado
+em execução em um estado ocioso. Contudo, esse problema é tratado
 pelo EE por um algoritmo de gerenciamento distribuído em cada nó:
 se o nó está em um estado ocioso por $N-1$ minutos, onde $N$ é um limite
 de tempo que implica custo adicional, o nó envia ao EE um pedido para 
-sua própria destruição. Assim, depois de um tempo de inatividade no EE,
+sua própria finalização. Assim, depois de um tempo de inatividade no EE,
 a reserva se torna vazia em algum momento, sendo preenchida novamente
 somente quando chegam novas requisições de criação de nós.
 %This distributed approach alleviates the need to have the \ee periodically check
@@ -684,8 +685,8 @@ e a resposta do EE fornece informações sobre os problemas ocorridos,
 possibilitando ações de recuperação.
 
 Contudo, é importante destacar que a responsabilidade pela degradação suave
-debe ser compartilhada com a implementação dos serviços, uma vez que cada serviço
-debe saber como se comportar na ausência de uma ou mais de suas dependências.
+deve ser compartilhada com a implementação dos serviços, uma vez que cada serviço
+deve saber como se comportar na ausência de uma ou mais de suas dependências.
 De outra forma, cada serviço se tornaria um \emph{ponto de falha único} na composição,
 o que é altamente indesejável.
 
@@ -695,7 +696,7 @@ A especificação de um serviço na ADL do \ee possibilita a definição da quan
 de um serviço a ser implantado pelo EE.
 Essa quantidade inicial de réplicas pode ser alterada pelo implantador em tempo de execução
 com a atualização da especificação da coreografia.
-A definição da quantidade adequada de réplicas, definida pelo implantador, permite não só uma melhora
+A definição da quantidade adequada de réplicas, definida pelo implantador, possibilita não só uma melhora
 de desempenho, mas também um aumento na disponibilidade do serviço, já que uma falha em uma réplica
 específica não afeta as outras réplicas disponíveis.
 
@@ -708,31 +709,32 @@ do banco de dados, e que os dados são utilizados simultaneamente por várias r�
 
 Embora o conhecimento de programação concorrente para implementar
 um processo de implantação escalável seja básico (dentro do contexto de computação concorrente),
-programação concorrente por si própria é difícil e propensa a erros.
+programação concorrente por si própria é difícil e propensa a erros \gerosa{não entendi}.
 Muitas vezes, linguagens de scripts não oferecem um bom suporte à programação concorrente.
 O tratamento adequado de falhas de terceiros também é um requisito importante
 para a obtenção de um sistema escalável.
 Portanto, implementar concorrência e tratamento a falhas na camada de middlware
-é um passo significativo em facilitar a implementação efetiva de um
+é um passo significativo para facilitar a implementação efetiva de um
 processo de implantação escalável.
-No Capítulo~\ref{cap:avaliacao} avaliaremos em detalhes a escalabilidade fornecida pelo \ee.
+No Capítulo~\ref{cap:avaliacao} apresentamos a avaliação em detalhes da 
+escalabilidade fornecida pelo \ee.
 
 \item [Heterogeneidade:]
 
 Na Seção~\ref{sec:extensao} apresentamos os pontos de extensão do \ee,
-que permitem mais facilmente equipá-lo para diversos provedores de infraestrutura
+que possibilitam mais facilmente adaptá-lo para diversos provedores de infraestrutura
 e tecnologias de desenvolvimento e empacotamento de serviços.
 Essa flexibilidade ajuda a superar
 as atuais limitações de soluções de Plataformas como um Serviço
 que restrigem as opções tecnológicas disponíveis aos desenvolvedores de aplicações.
 Essas restrições normalmente se aplicam justamente sobre
-provedor de infraestruturas e a linguagem de programação da aplicação.
+provedor de infraestruturas e a linguagem de programação da aplicação \gerosa{?}.
 
-Suportar variações de um padrão é um desafio para sistemas de middleware.
+Oferecer suporte a variações de um padrão é um desafio para sistemas de middleware.
 Adequar um middleware para a particularidade de uma aplicação pode não ser fácil.
 No suporte a diferentes tecnologias, as abordagens \emph{ad-hoc} encontram realmente um espaço de importância.
 No entanto, uma vez que a adequação para uma nova tecnologia seja feita no middleware,
-pode-se aplicar mais facilmente a melhoria para diferentes aplicações utilizando essa
+pode-se \gerosa{aplicar mais facilmente a melhoria (?)} para diferentes aplicações utilizando essa
 mesma nova tecnologia.
 
 \item [Múltiplas organizações:]
@@ -743,7 +745,7 @@ O primeiro mecanismo é a definição da ``conta de nuvem'' a ser usada na impla
 Essa definição é feita na especificação do serviço e deve bater com configurações
 previamente feitas pelo administrador no EE.
 Uma ``conta de nuvem'' não indica apenas a nuvem alvo (Amazon, por exemplo),
-mas também que vai pagar pela infraestrutura (qual conta da Amazon será utilizada, por exemplo).
+mas também quem vai pagar pela infraestrutura (qual conta da Amazon será utilizada, por exemplo).
 Uma vez que os serviços de cada organização sejam configurados para serem implantados
 nas contas de nuvem adequadas, o EE irá implantar adequadamente uma composição
 multi-organizacional.
@@ -754,9 +756,9 @@ Esse e outros problemas surgem do fato que diferentes organizações teriam que
 compartilhar uma mesma instância do EE.
 
 O segundo mecanismo é a utilização da entidade \emph{serviço legado} na especificação da composição.
-O serviço legado é um serviço já existente e disponível na Internet, e que portanto
+O serviço legado é um serviço já existente na Internet, e que portanto
 não será implantado pelo EE.
-A utilidade em utilizar esse mecanismo está na fase de ligação
+A utilidade de utilizar esse mecanismo está na fase de ligação
 entre serviços, pois o EE irá fornecer
 aos serviços implantados os endereços dos serviços legados declarados como suas dependências.
 A maior limitação dessa abordagem é a dificuldade em se lidar com a alteração de URIs
@@ -784,7 +786,7 @@ Contudo, ele fornece suporte para o desenvolvimento de tais sistemas.
 
 Sistemas auto-adaptativos e autonômicos precisam estar cientes
 e ter pleno controle das atividades de implantação.
-Para empoderar tais sistemas, o EE fornece informação e controle
+Para empoderar \gerosa{está certo ``empoderar''?} tais sistemas, o EE fornece informação e controle
 das seguintes funcionalidades:
 
 \begin{itemize}
@@ -794,27 +796,28 @@ das seguintes funcionalidades:
 \item implantação de infraestrutura de monitoramento.
 \end{itemize}
 
-Atualização de composições de serviços podem ser necessárias quando
+Atualizações de composições de serviços podem ser necessárias quando
 as regras de negócio ou os requisitos não-funcionais mudam.
-O EE permite, por uma API REST, a adição, remoção e reconfiguração dos serviços
+O EE possibilita, por uma API REST, a adição, remoção e reconfiguração dos serviços
 e seus recursos computacionais associados.
 
 O controle de migração de serviço do EE pode ser usado para 
 agrupar mais de um serviço em um único
 recurso computacional ou para migrar o serviço para um recurso diferente
-para aumentar seu desempenho.
+para aumentar seu desempenho \gerosa{melhorar parágrafo}.
 
-Replicação de serviço é um tipo particular e importante de atualização de composição.
+Replicação de serviço é um tipo particular e importante de atualização de composição
+\gerosa{ao replicar vc altera a composição? não é a mesma composição?}.
 Associado a um balanceamento de carga, é uma estratégia comum para
 a construção de sistemas escaláveis~\cite{Amazon2012Practices}.
-O EE possibilita a replicação de serviço através da implantação de
-múltiplas instâncias do serviço e informando aos seus serviços consumidores
+O EE possibilita a replicação de serviço por meio da implantação de
+múltiplas instâncias do serviço e da notificação aos serviços consumidores
 sobre a existência dessas réplicas durante a fase de ligação de serviços.
 A quantidade inicial de réplicas é definida por atributo na especificação
 do serviço fornecida ao EE, e, depois, pode ser redefinida dinamicamente.
 Um trabalho futuro é configurar automaticamente um balancemanto de carga
 entre réplicas de um serviço, de forma que o consumidor de um serviço
-não tenha a necessidade de saber sobre suas diversas réplicas.
+não tenha necessidade de saber sobre suas diversas réplicas.
 
 Por fim, o EE fornece opcionalmente a implantação de uma infraestrutura de monitoramento na infraestrutura alvo.
 Utilizamos o Ganglia, que coleta métricas do sistema operacional, como consumo de CPU, por exemplo.
@@ -823,15 +826,15 @@ Esse serviço de monitoramento pode então disparar ações de adaptação com b
 nos dados recebidos. Uma ação de adaptação envolve a geração de uma nova especificação
 de composição e a atualização da composição em execução de acordo com a nova especificação.
 
-Essas funcionalidades fazem do EE uma opção adequada para uma ferramenta de apoio 
+Essas funcionalidades fazem do EE uma ferramenta de apoio 
 à pesquisa de auto-adaptação de composição de serviços.
 O EE facilita a implementação de sistemas adaptativos
 por possibilitar que pesquisadores se foquem mais nos problemas de adaptação em
 alto nível, abstraindo detalhes altamente específicos do gerenciamento de implantação.
 Diferentes pesquisadores desse campo de pesquisa podem se beneficiar ao utilizarem uma plataforma comum,
-potencializando a troca de experiência entre eles sobre o processo de implantação. 
-Essa troca de experiência é bem mais limitada se os membros da comunidade adotam cada um 
-sua própria solução \emph{ad-hoc}.
+potencializando a troca de experiência sobre o processo de implantação. 
+
+\gerosa{Fala no foco de pesquisadores. E practioners? Qual é o foco da ferramenta?}
 
 \end{description}
 
