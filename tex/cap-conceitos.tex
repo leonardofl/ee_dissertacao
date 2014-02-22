@@ -10,7 +10,7 @@ de sistemas de grande escala.
 \section{Serviços web}
 \label{sec:servicos}
 
-Serviços são entidades autônomas e independentes de plataforma, que podem ser descritas, publicadas, encontradas e compostas~\cite{Papazoglou2007State}. O conceito de serviço é oriundo do conceito de \emph{componentes}, que \Leo{gerosa achou que o ``que'' se referia ao ``conceito''... reescrever} foram idealizados para que sistemas fossem construídos com ``blocos'' fornecidos por terceiros~\cite{McIlroy1968MassProduced}. Esses blocos teriam interfaces bem definidas e, com isso, seriam conectáveis entre si, sem que o desenvolvedor precise entender sobre a implementação desses blocos. Szyperski~\cite{Szyperski2003Component} define componente como uma unidade de composição, possuindo uma especificação de interface contratual e declaração explícita de suas dependências. 
+Serviços são entidades autônomas e independentes de plataforma, que podem ser descritas, publicadas, encontradas e compostas~\cite{Papazoglou2007State}. O conceito de serviço possui semelhanças com o conceito de \emph{componentes}. Componentes foram idealizados para que sistemas fossem construídos com ``blocos'' fornecidos por terceiros~\cite{McIlroy1968MassProduced}. Esses blocos teriam interfaces bem definidas e, com isso, seriam conectáveis entre si, sem que o desenvolvedor precise entender sobre a implementação desses blocos. Szyperski~\cite{Szyperski2003Component} define componente como uma unidade de composição, possuindo uma especificação de interface contratual e declaração explícita de suas dependências. 
 
 Uma das utilidades fundamentais de componentes e serviços é proporcionar a ligação entre sistemas heterogêneos.
 Em busca desse objetivo, a OMG liderou esforços para a construção de uma solução para a comunicação de objetos
@@ -24,9 +24,9 @@ As características apresentadas dos objetos CORBA têm muito em comum com o con
 interfaces bem definidas e acessíveis remotamente.
 Dessa forma, um serviço também pode ser considerado um componente, porém com algumas peculiaridades, 
 como ser acessível pela Internet e expor operações relacionadas a funcionalidades do negócio~\cite{Hewitt2009JavaSOA}.
-Outra diferença é que um serviço web não precisa declarar explicitamente suas dependências
-a outros serviços. Essa dependência pode ser implícita por meio de chamadas a outros serviços web
-na implementação do serviço em questão. \Gerosa{Inconsistência entre este parágrafo e o próximo.} 
+%Outra diferença é que um serviço web não precisa declarar explicitamente suas dependências
+%a outros serviços. Essa dependência pode ser implícita por meio de chamadas a outros serviços web
+%na implementação do serviço em questão. \Gerosa{Inconsistência entre este parágrafo e o próximo.} 
 
 Como muitos dos trabalhos sobre implantação de componentes são diretamente aplicáveis na implantação de serviços, trataremos os termos ``componente'' e ``serviço'' como sinônimos, assim como faz Fowler~\cite{Fowler2004Inversion}. Neste trabalho utilizaremos também os termos ``serviço'' e ``serviço web'' de forma equivalentes, assim como feito por outros autores~\cite{Watson2006Dynasoar}. Daremos preferência ao termo ``serviço web'' para evitar os significados mais gerais que a palavra ``serviço'' pode assumir. Exceção poderá haver ao descrever trabalhos de terceiros que utilizam o termo ``serviço'' com algum significado mais amplo que o de ``serviço web''. Um ponto de acesso (\textit{endpoint}) de um serviço web é uma entidade referenciável para a qual se envia mensagens construídas de acordo com a especificação do serviço~\cite{W3C2004Addressing}. Um ponto de acesso é referenciado por uma URI (\emph{Uniform Resource Identifier}).
 Uma URI é uma sequência de caracteres que identifica um recurso, sendo que pode também ser chamada de URL (\emph{Uniform Resource Locator}) quando fornece o acesso ao recurso~\cite{rfc3986}.
@@ -95,8 +95,9 @@ Um diagrama BPMN2 de coreografia especifica passos na execução da coreografia,
 
 Serviços podem ser projetados para participarem de uma determinada composição, mas também é possível que uma composição seja projetada para utilizar serviços já existentes. No segundo caso, é necessária a criação de serviços de coordenação (\emph{coordenadores}) que fazem com que serviços já existentes, não-cientes da composição, comuniquem-se adequadamente~\cite{Autili2013Synthesis}. 
 
-Em artigos acadêmicos também é comum a modelagem de coreografias com notações mais formais, tais como álgebras de processos~\cite{Roohi2011Realizability}, redes de Petri~\cite{Cicirelli2010Dynamically} e autômatos~\cite{Rinderle2006Evolution}. Essas notações possibilitam aos autores realizarem simulações e identificarem propriedades, como a verificação da consistência da evolução dinâmica de coreografias~\cite{Cicirelli2010Dynamically}. Em nosso trabalho, como estamos preocupados em viabilizar a execução de coreografias, adotamos como modelagem de referência a notação BPMN2, que é um padrão de indústria.
-\gerosa{``modelagem de referência''??? ``padrão de indústria'': expressão estranha}
+Em artigos acadêmicos também é comum a modelagem de coreografias com notações mais formais, tais como álgebras de processos~\cite{Roohi2011Realizability}, redes de Petri~\cite{Cicirelli2010Dynamically} e autômatos~\cite{Rinderle2006Evolution}. Essas notações possibilitam aos autores realizarem simulações e identificarem propriedades, como a verificação da consistência da evolução dinâmica de coreografias~\cite{Cicirelli2010Dynamically}. 
+%Em nosso trabalho, como estamos preocupados em viabilizar a execução de coreografias, adotamos como %modelagem de referência a notação BPMN2, que é um padrão de indústria.
+%\gerosa{``modelagem de referência''??? ``padrão de indústria'': expressão estranha}
 
 Como uma orquestração é um caso particular de uma coreografia, neste trabalho utilizaremos os termos ``coreografia'' e ``composição de serviços'' indistintamente. 
 Além disso, para fins da atividade de implantação, não há diferença em implantar uma coreografia ou uma orquestração,
@@ -107,11 +108,12 @@ uma vez que orquestradores ou eventuais coordenadores são implementados como se
 
 A ``Especificação de implantação e configuração de aplicações distribuídas baseadas em componentes'' (DEPL~\cite{DEPL2006}) é um padrão da OMG (Object Management Group). 
 A implantação é definida pelo DEPL como um \emph{processo}, que se inicia após a aquisição de um componente, e vai até o momento em que o componente está em execução, pronto para processar chamadas. 
+Embora o DEPL utilize o conceito de ``componente'', suas definições são aplicáveis e úteis ao contexto de implantação de serviços.
 
-Embora nosso trabalho foque na implantação de serviços, os conceitos para implantação de componentes também se aplicam à implantação de serviços. 
-Mas no contexto de implantação, pode-se dizer que a principal diferença seja o fato de que o \emph{implantador} do serviço seja a própria organização que o desenvolveu, enquanto que o conceito de componentes está mais ligado a um suposto mercado de componentes, em que uns desenvolvem, empacotam e publicam o componente, enquanto que outros adquirem e implantam o componente. \gerosa{melhorar o texto deste parágrafo.}
+%Embora nosso trabalho foque na implantação de serviços, os conceitos para implantação de componentes também se aplicam à implantação de serviços. 
+%Mas no contexto de implantação, pode-se dizer que a principal diferença seja o fato de que o \emph{implantador} do serviço seja a própria organização que o desenvolveu, enquanto que o conceito de componentes está mais ligado a um suposto mercado de componentes, em que uns desenvolvem, empacotam e publicam o componente, enquanto que outros adquirem e implantam o componente. \gerosa{melhorar o texto deste parágrafo.}
 
-Quando possível, utilizaremos a terminologia estabelecida pelo DEPL em nosso trabalho.
+%Assim, quando possível, utilizaremos a terminologia estabelecida pelo DEPL em nosso trabalho.
 Os principais termos definidos no DEPL e utilizados neste trabalho são os seguintes:
 
 \begin{description}
@@ -133,7 +135,7 @@ desenvolvedor das composições de serviços web.
 Ainda segundo o DEPL, o processo de implantação é composto pelas seguintes fases:
 
 \begin{description}
-\item [Instalação:] o implantador transfere o componente adquirido para sua própria infraestrutura; a instalação está relacionada ao processo de aquisição do componente, e não se trata de mover o componente para o ambiente alvo, no qual será executado. Consideramos que essa fase não se aplica à implantação de serviços, pois após o desenvolvimento e empacotamento, o serviço já é de propriedade do implantador e já se encontra em sua infraestrutura. \gerosa{confuso}
+\item [Instalação:] o implantador transfere o componente adquirido para sua própria infraestrutura; a instalação está relacionada ao processo de aquisição do componente, e não se trata de mover o componente para o ambiente alvo, no qual será executado. Consideramos, portanto, que essa fase normalmente não se aplica à implantação de serviços, pois normalmente o serviço é implantado pela própria organização que o desenvolveu.
 \item [Configuração:] edição de arquivos de configuração para alterar o comportamento do software; 
 o código compilado do componente junto de sua configuração são os insumos para a produção do pacote do componente.
 \item [Planejamento:] resulta em um \emph{plano de implantação}, que mapeia como os componentes serão distribuídos pelos nós do ambiente alvo.  
@@ -141,12 +143,25 @@ o código compilado do componente junto de sua configuração são os insumos pa
 \item [Inicialização:] é quando finalmente o componente é iniciado e entra em execução, podendo processar chamadas de seus clientes. A inicialização também inclui a ligação entre os componentes de uma composição, para que os componentes conheçam a localização dos componentes dos quais dependem.
 \end{description}
 
-Esse processo de implantação pode ter que ser repetido várias vezes para que o componente
-seja implantado em todas as etapas do ``\emph{pipeline de implantação}''~\cite{Humble2011Continuous},
-como testes de aceitação (automatizados ou não), ambiente de homologação, e finalmente ambiente de produção. \Leo{aqui o Gerosa questionou se ``etapas'' não está misturando ``atividades'' (testes) com ``locais'' (homologação, produção).}
-Todo o processo que vai desde o \emph{commit} do código-fonte,
-passando pelas etapas do \emph{pipeline} de implantação, até a implantação em produção
-chamaremos de processo de \emph{lançamento} de uma determinada versão do sistema \gerosa{melhorar a estrutura da frase}.
+Todo o processo que vai desde o \emph{commit} do código-fonte até a implantação em produção
+chamaremos de processo de \emph{lançamento} de uma determinada versão do sistema.
+Esse processo de lançamento pode ser automatizado por um 
+``\emph{pipeline de implantação}''~\cite{Humble2011Continuous},
+no qual o sistema passa por uma sequência de etapas,
+sendo que em cada etapa um aspecto do sistema é testado.
+A cada etapa, mais confiança se tem sobre o sistema a ser lançado.
+Vencidas todas as etapas, o sistema pode ser implantado no ambiente de produção,
+ou em alguns casos em um ambiente de homologação.
+Um exemplo básico de pipeline de implantação pode ser visto na Figura~\ref{fig:pipeline_implantacao}.
+Para cada etapa do pipeline de implantação, o processo de implantação 
+deve ser executado de forma automatizada.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{pipeline_implantacao.pdf} 
+  \caption{Exemplo básico de pipeline de implantação.}
+  \label{fig:pipeline_implantacao} 
+\end{figure}
 
 Profissionais da acadêmia e da indústria levantam a necessidade de se automatizar o processo de implantação, uma vez que o processo de implantação manual se torna moroso e propenso a erros, principalmente na implantação de sistemas distribuídos~\cite{Humble2011Continuous,Dolstra2005Configuration}. 
 Humble e Farley~\cite{Humble2011Continuous} afirmam que o processo de implantação manual faz com que  
@@ -157,7 +172,7 @@ Em um processo de implantação automatizado tudo o que for possível é executa
 geralmente por meio de scripts. O objetivo de um processo de implantação automatizado
 é proporcionar um processo de implantação \emph{reproduzível}, \emph{confiável} e \emph{fácil}~\cite{Humble2011Continuous}.
 
-A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, a fase de configuração é menos adequada para se automatizar, pois em geral envolve escolhas que devem ser feitas por humanos (ex: logotipo da empresa, que deve aparecer no cabeçalho do sistema). \leo{gerosa não entendeu a última frase...}
+A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutiremos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
 
 Um processo de implantação pode ser automatizado de várias maneiras.
 Pode-se utilizar linguagens de script de propósito geral (Python, shell script),
@@ -186,9 +201,11 @@ Muitos problemas na implantação manual se dão por causa de documentação inc
 contendo pressupostos não compartilhados por todo o time responsável por um produto ou serviço.
 Dessa forma é comum que a organização fique bastante dependente de uma única
 pessoa para realizar a tarefa de implantação.
-Por outro lado, um script de implantação é uma documentação completa de todos os passos
-do processo e que mais dificilmente ficará defasada,
-pois nesse caso deixará de funcionar \gerosa{o que?} e a implantação não será possível.
+Por outro lado, um script de implantação é uma documentação completa e precisa de todos os passos
+do processo. Caso um script fique desatualizado, o impacto será imediato, pois
+não será possível implantar o sistema. Dessa forma, na prática,
+dificilmente tais scripts estarão desatualizados,
+diferentemente do que ocorre com a documentação convencional.
 
 A facilidade de se implantar o sistema com o simples pressionar de um botão
 leva a sua utilização contínua por diferentes atores.
@@ -254,12 +271,16 @@ Isso traz as seguintes vantagens para o processo de implantação:
 \end{itemize}
 
 Na utilização de serviços IaaS para a implantação de serviços há duas abordagens possíveis:
-1) a máquina virtual deve ser criada com base em uma imagem que já contenha
+1) a máquina virtual deve ser criada com base em uma imagem
+\footnote{\emph{Imagens} são sistemas de arquivo somente-leitura contendo um sistema operacional, aplicações e dados a serem instanciados em uma ou mais máquinas virtuais.} 
+que já contenha
 o serviço implantado, ou 2) deve ser criada com base em uma imagem contendo apenas um
 sistema operacional recém instalado, de forma que a implantação do serviço seja feita
 por scripts. O modelo de imagem pronta proporciona implantações mais rápidas,
-porém a segunda abordagem é mais flexível e ágil, pois evita-se a manutenção constante
-das imagens \gerosa{???}. Um compromisso entre as duas abordagens também é possível:
+porém a segunda abordagem é mais flexível, pois para implantar uma nova versão do sistema
+evita-se a publicação de uma nova imagem, o que é um processo demorado,
+já que imagens são arquivos com vários gigabytes.
+Um compromisso entre as duas abordagens também é possível:
 se todos os serviços implantados são WARs, por exemplo, então a imagem base
 pode conter não só o sistema operacional, mas também o ambiente de execução
 dos serviços, o Tomcat no caso.
@@ -332,7 +353,6 @@ mas que alguns valores altos para esse tempo são esperados quando
 se cria ao mesmo tempo uma grande quantidade de nós.
 Em nossas observações, falhas e tempos longos de provisionamento
 afetaram até 7\% das requisições de criação de nós.
-\gerosa{colocar data da medição e configurações (tipo de vm, data center, etc)}
 
 \begin{figure}[ht]
 \centering
@@ -340,6 +360,10 @@ afetaram até 7\% das requisições de criação de nós.
 \caption{Tempos de criação de instâncias EC2 observados, em segundos.}
 \label{fig:ec2_boxplot}
 \end{figure}
+
+Os dados utilizados para gerar a Figura~\ref{fig:ec2_boxplot}
+foram coletados em maio de 2013. As máquinas virtuais, 
+do tipo \emph{m1.small}, foram criadas na zona de disponibilidade \emph{us-east-1b}.
 
 Nygard~\cite{Nygard2009Release} apresenta vários padrões de estabilidade que são de importante aplicação em sistemas de grande escala. Em sua essência, esses padrões dizem respeito a detectar falhas e evitar sua propagação, provendo um tratamento adequado a elas. Dentre as práticas recomendas pelo autor destacam-se 1) o uso de \emph{timeouts} no cliente, que evita que um cliente fique eternamente esperando uma resposta; 2) a interrupção de tentativas do cliente quando há sintomas de indisponibilidade do provedor; 3) criação de recursos exclusivos para diferentes clientes, evitando que uma falha em um recurso compartilhado afete todos os clientes; e 4) a ``falha rápida'', que faz com que um provedor forneça uma resposta de erro tão logo quanto seja possível saber que a operação não terá sucesso. \gerosa{repetição de ``cliente'' no parágrafo}
 
@@ -372,7 +396,7 @@ bancos de dados não-relacionais (NoSQL).
 Essa nova categoria sacrifica a consistência dos dados para obter maior disponibilidade ou escalabilidade~\cite{Cattell2011NoSql}.
 
 O processo de implantação deve considerar as necessidades de replicação de serviços e dados,
-para que se possa \gerosa{quem?} configurar adequadamente as múltiplas instâncias dos serviços e das bases de dados.
+para que ele possa configurar adequadamente as múltiplas instâncias dos serviços e das bases de dados.
 Deve ser possível também alterar em tempo de execução a quantidade de réplicas para
 a adequação à demanda observada.
 
@@ -463,9 +487,9 @@ Uma vez que todas essas ações tem relação com o processo de implantação,
 pode-se dizer que sistemas auto-adaptativos e autonômicos precisam estar cientes
 e ter pleno controle das atividades do processo de implantação.
 
-Para tomar as decisões de adaptação, um sistemas auto-adaptativo precisa monitorar
+Para tomar as decisões de adaptação, um sistema auto-adaptativo precisa monitorar
 a si próprio para coletar métricas a serem utilizadas em algum algoritmo adaptativo.
-Exemplos de métricas são utilização de CPU e memória \gerosa{frase ficou estranha}.
+Exemplo de métrica a ser coletada é a taxa de utilização de CPU no hospedeiro do serviço.
 Coletar tais métricas requer a utilização de uma infraestrutura de monitoramento
 que deve ser implantada na infraestrutura alvo.
 Portanto, o processo de implantação de sistemas auto-adaptativos
