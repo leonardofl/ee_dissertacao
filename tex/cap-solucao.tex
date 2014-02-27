@@ -474,6 +474,7 @@ public interface ContextSender {
 
 
 \section{Aspectos gerais de implementação}
+\label{sec:implementacao}
 
 Nesta seção descreveremos alguns detalhes sobre a implementação do \ee que 
 podem ser especialmente úteis a eventuais desenvolvedores de nosso middleware.
@@ -555,6 +556,31 @@ o desenvolvimento de tecnologias de máquinas virtuais
 voltadas para o ambiente de teste de aceitação,
 de forma que as máquinas sejam criadas mais rapidamente,
 seja uma contribuição relevante para a prática de desenvolvimento de software.
+
+\item [Idempotência:] a implementação da operação \emph{enactment} de forma idempotente considera
+que falhas podem acontecer no processo de implantação em cada uma dessas três etapas: 
+1) preparação do nó, que consiste na seleção do nó para uma instância, 
+incluindo a transferência dos scripts de implantação para o nó selecionado;
+2) a atualização do nó, que é quando os scripts são executados;
+e 3) a ligação entre serviços.
+
+Caso a falha ocorra na \emph{preparação do nó},
+o problema poderá ser corrigido na próxima execução do \emph{enactment},
+pois o EE sempre tenta criar $n_{spec} - n_{instancias}$ instâncias do serviço, 
+onde $n_{spec}$ é a quantidade de instâncias que um serviço deve ter
+e $n_{instancias}$ é a quantidade de instâncias que um serviço possui no momento.
+
+Para tratar falhas ocorridas na \emph{atualização do nó},
+a cada execução do \emph{enactment} o processo de atualização
+é executado em todos os nós novamente.
+Nesse passo, o EE está se aproveitando da idempotência dos scripts
+de implantação gerados, que no caso são receitas Chef.
+As receitas utilizam recursos específicos da linguagem do Chef para implementar a idempotência.
+
+Por fim, falhas na \emph{ligação entre serviços} são recuperadas pois todas
+as invocações à operação \texttt{setInvocationAddress} são refeitas.
+Nesse passo a idempotência é garantida pela assinatura idempotente
+da própria operação \texttt{setInvocationAddress}.
 
 \item [Software livre:] por fim, todas as bibliotecas e sub-sistemas
 utilizados pelo \ee são software livre.
@@ -689,6 +715,16 @@ deve ser compartilhada com a implementação dos serviços, uma vez que cada ser
 deve saber como se comportar na ausência de uma ou mais de suas dependências.
 De outra forma, cada serviço se tornaria um \emph{ponto de falha único} na composição,
 o que é altamente indesejável.
+
+Por fim, a operação \emph{enactment} fornecida pelo EE foi implementada de forma idempotente. 
+Isso garante que caso a resposta à requisição 
+de implantação de coreografia não chegue ao cliente, o cliente possa repetir a requisição
+sem alterar o resultado do processo de implantação. 
+Caso a operação \emph{enactment} seja chamada pela segunda vez, o EE não implantará
+instâncias adicionais de um serviço caso ele já esteja corretamente implantado, mas 
+implantará somente as instâncias necessárias para a correta finalização da implantação 
+da coreografia.
+Mais detalhes sobre a implementação da garantia de idempotência, ver a Seção~\ref{sec:implementacao}.
 
 \item [Disponibilidade:]
 
