@@ -723,8 +723,7 @@ sem alterar o resultado do processo de implantação.
 Caso a operação \emph{enactment} seja chamada pela segunda vez, o EE não implantará
 instâncias adicionais de um serviço caso ele já esteja corretamente implantado, mas 
 implantará somente as instâncias necessárias para a correta finalização da implantação 
-da coreografia.
-Mais detalhes sobre a implementação da garantia de idempotência, ver a Seção~\ref{sec:implementacao}.
+da coreografia. Mais detalhes sobre a implementação da garantia de idempotência, ver a Seção~\ref{sec:implementacao}.
 
 \item [Disponibilidade:]
 
@@ -743,15 +742,31 @@ do banco de dados, e que os dados são utilizados simultaneamente por várias r�
 
 \item [Escalabilidade:]
 
-Embora o conhecimento de programação concorrente para implementar
-um processo de implantação escalável seja básico (dentro do contexto de computação concorrente),
-programação concorrente por si própria é difícil e propensa a erros \gerosa{não entendi}.
+Para implementar o EE, em matéria de programação concorrente, 
+não foi preciso saber muito mais que coordenar a abertura e encerramento de múltiplas \emph{threads},
+além de sincronizar o acesso a recursos compartilhados por diferentes \emph{threads}.
+Assim, depreendemos que o nível de conhecimento de programação concorrente para implementar
+um processo de implantação escalável seja básico.
+Contudo, programação concorrente por si própria é reconhecida como difícil e propensa a erros. 
 Muitas vezes, linguagens de scripts não oferecem um bom suporte à programação concorrente.
 O tratamento adequado de falhas de terceiros também é um requisito importante
 para a obtenção de um sistema escalável.
 Portanto, implementar concorrência e tratamento a falhas na camada de middlware
 é um passo significativo para facilitar a implementação efetiva de um
 processo de implantação escalável.
+
+Uma lição aprendida na prática para se atingir a escalabilidade
+foi evitar componentes que se tornem gargalos no sistema.
+Em versões anteriores do EE, o Chef Server era um ponto central
+constantemente requisitado por processos em outros nós.
+A mudança da arquitetura do EE da utilização do Chef Server
+para o Chef Solo\footnote{Na versão Chef Solo, o EE passa os scripts de implantação
+diretamente ao nó onde o script será executado. Já com o Chef Server, esses scripts eram
+primeiro armazenados no Chef Server, para depois serem acessados 
+pelos nós envolvidos na implantação.} 
+foi essencial para se obter desempenhos razoáveis
+com uma grande quantidade de serviços implantados..
+
 No Capítulo~\ref{cap:avaliacao} apresentamos a avaliação em detalhes da 
 escalabilidade fornecida pelo \ee.
 
