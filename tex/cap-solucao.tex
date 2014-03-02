@@ -647,7 +647,7 @@ com características dos nós disponíveis.
 Seguindo recomendações gerais feitas por Nygard~\cite{Nygard2009Release},
 adotamos no \ee uma abordagem simples para tratar falhas externas.
 A lógica de invocação a sistemas externos foi encapsulada em uma classe, 
-chamada \textsf{Invoker}.
+chamada \textsf{Invoker} (Figura~\ref{fig:invoker}).
 Toda vez que se deve acessar um sistema externo, o EE utiliza um \emph{invoker}.
 O \textsf{Invoker} recebe os seguintes parâmetros:
 uma \emph{tarefa}, que é uma rotina que se comunicará com algum sistema externo,
@@ -667,6 +667,13 @@ A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \emp
 para ajustar dinamicamente os valores de timeouts de cada tarefa.
 Para implementar essa adaptação, o desenvolvedor tem acesso
 ao histórico dos tempos de execução do \emph{invoker}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.6\linewidth]{invoker.pdf}
+\caption{Uma instância de \textsf{Invoker} é parametrizada com uma tarefa, uma quantidade de tentativas, um timeout por tentativa e um intervalo de tempo entre as tentativas.}
+\label{fig:invoker}
+\end{figure}
 
 O EE utiliza os \emph{invokers} nos momentos adequados e necessários.
 Isso fornece uma robustez mais facilmente proporcionada por sistemas de middleware,
