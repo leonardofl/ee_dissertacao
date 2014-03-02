@@ -28,11 +28,12 @@ como ser acessível pela Internet e expor operações relacionadas a funcionalid
 %a outros serviços. Essa dependência pode ser implícita por meio de chamadas a outros serviços web
 %na implementação do serviço em questão. \Gerosa{Inconsistência entre este parágrafo e o próximo.} 
 
-Como muitos dos trabalhos sobre implantação de componentes são diretamente aplicáveis na implantação de serviços, trataremos os termos ``componente'' e ``serviço'' como sinônimos, assim como faz Fowler~\cite{Fowler2004Inversion}. Neste trabalho utilizaremos também os termos ``serviço'' e ``serviço web'' de forma equivalente, assim como feito por outros autores~\cite{Watson2006Dynasoar}. Daremos preferência ao termo ``serviço web'' para evitar os significados mais gerais que a palavra ``serviço'' pode assumir. Exceção poderá haver ao descrever trabalhos de terceiros que utilizam o termo ``serviço'' com algum significado mais amplo que o de ``serviço web''. Um ponto de acesso (\textit{endpoint}) de um serviço web é uma entidade referenciável para a qual se envia mensagens construídas de acordo com a especificação do serviço~\cite{W3C2004Addressing}. 
+Como muitos dos trabalhos sobre implantação de componentes são diretamente aplicáveis na implantação de serviços, tratamos os termos ``componente'' e ``serviço'' como sinônimos, assim como faz Fowler~\cite{Fowler2004Inversion}. Neste trabalho utilizamos também os termos ``serviço'' e ``serviço web'' de forma equivalente, assim como feito por outros autores~\cite{Watson2006Dynasoar}. Damos preferência ao termo ``serviço web'' para evitar os significados mais gerais que a palavra ``serviço'' pode assumir. Exceção pode haver ao descrever trabalhos de terceiros que utilizam o termo ``serviço'' com algum significado mais amplo que o de ``serviço web''. 
 
+Um ponto de acesso (\textit{endpoint}) de um serviço web é uma entidade referenciável para a qual se envia mensagens construídas de acordo com a especificação do serviço~\cite{W3C2004Addressing}. 
 Um ponto de acesso é referenciado por uma URI (\emph{Uniform Resource Identifier}).
 Uma URI é uma sequência de caracteres que identifica um recurso, sendo que pode também ser chamada de URL (\emph{Uniform Resource Locator}) quando fornece o acesso ao recurso~\cite{rfc3986}.
-Assim como Smith e Murray~\cite{Smith2010Evolution}, em geral também utilizaremos a palavra serviço como simplificação para o ponto de acesso do serviço. 
+Assim como Smith e Murray~\cite{Smith2010Evolution}, em geral também utilizamos a palavra serviço como simplificação para o ponto de acesso do serviço. 
 
 Por questões de desempenho e disponibilidade, um serviço pode ter várias \emph{instâncias}, ou \emph{réplicas},
 em execução. Cada réplica possui seu próprio ponto de acesso, mas normalmente um conjunto de réplicas é apresentado
@@ -72,7 +73,7 @@ Apesar das vantagens apresentadas dos serviços REST, serviços que utilizam a t
 \section{Composições de serviços web}
 \label{sec:composicoes}
 
-Serviços são compostos para implementar processos de negócios mais sofisticados~\cite{Papazoglou2007State}. Processos de negócio são sequências bem definidas de passos computacionais executados de uma maneira coordenada~\cite{Alonso2002Atomicity}. Sistemas de gerenciamento de workflow são a principal tecnologia para a implementação de processos de negócios~\cite{Agostini2000Improving}.  Um workflow é a automação, total ou parcial, de um processo de negócio, no qual documentos, informações ou tarefas são passados de um participante (humano ou não) para outros, de acordo com um conjunto de regras de procedimento~\cite{WorkflowCoalition1999}. Segundo Casati et al.~\cite{Casati1998Workflow}, workflows são compostos de \emph{tarefas}, unidades de trabalho a serem desempenhadas por agentes humanos ou automatizados e \emph{conectores}, que definem a ordem em que as tarefas devem ser executadas, o que também é denominado \emph{fluxo de controle}. Sincronizações de execuções concorrentes também são especificadas por controladores chamados ``joins'' e ``forks''. Quando uma tarefa é desempenhada por um agente automatizado, o gerenciador de workflow normalmente realiza a invocação a um serviço web, que é esse agente automatizado que participa do processo de negócio. Um exemplo de linguagem para a criação de processos de negócio a partir da composição de serviços web é a WS-BPEL~\cite{BPEL2007}.
+Serviços são compostos para implementar processos de negócios mais sofisticados~\cite{Papazoglou2007State}. Processos de negócio são sequências bem definidas de passos computacionais executados de uma maneira coordenada~\cite{Alonso2002Atomicity}. Sistemas de gerenciamento de workflow são a principal tecnologia para a implementação de processos de negócios~\cite{Agostini2000Improving}.  Um workflow é a automação, total ou parcial, de um processo de negócio, no qual documentos, informações ou tarefas são passados de um participante (humano ou não) para outros, de acordo com um conjunto de regras de procedimento~\cite{WorkflowCoalition1999}. Segundo Casati et al.~\cite{Casati1998Workflow}, workflows são compostos de \emph{tarefas}, unidades de trabalho a serem desempenhadas por agentes humanos ou automatizados e \emph{conectores}, que definem a ordem em que as tarefas devem ser executadas, o que também é denominado \emph{fluxo de controle}. Sincronizações de execuções concorrentes também são especificadas por controladores chamados ``\emph{forks}'' e ``\emph{joins}''. Quando uma tarefa é desempenhada por um agente automatizado, o gerenciador de workflow normalmente realiza a invocação a um serviço web, que é esse agente automatizado que participa do processo de negócio. Um exemplo de linguagem para a criação de processos de negócio a partir da composição de serviços web é a WS-BPEL~\cite{BPEL2007}.
 
 O modelo de composição de serviços web que possui um coordenador central que coordena o fluxo de controle da composição é denominado \emph{orquestração}~\cite{Nanda2004Decentralizing}. O coordenador central é chamado de \emph{orquestrador}. No caso em que processos de negócios são executados por sistemas gerenciadores de workflows, o orquestrador é o próprio sistema de workflow. Outro modelo de composição de serviços web é o de \emph{coreografia}, no qual o conhecimento sobre o fluxo de controle é distribuído entre os participantes, ou seja, cada serviço envolvido na composição sabe quando executar suas operações e com quais outros serviços interagir, sem que seja preciso um controle centralizado~\cite{Barker2009Choreographing}.
 
@@ -84,9 +85,9 @@ Apesar da perspectiva global, como ressalta a especificação do BPMN2, uma core
 Embora a especificação de uma coreografia represente um modelo global de interação entre participantes,
 não é necessário que a implementação de cada participante tenha conhecimento do fluxo de negócio completo da coreografia,
 basta que ele tenha conhecimento de sua parte nesse fluxo.
-Assim, cada participante da coreografia pode ter o seu comportamento modelado por uma linguagem de orquestração, que no caso do BPMN2 corresponde a um diagrama de processo. Dessa forma, uma coreografia pode também ser modelada como um conjunto de orquestrações distribuídas que interagem entre si, de forma que apenas os orquestradores precisam estar cientes de condições impostas pela coreografia~\cite{Poulin2011Collaboration}. 
+Assim, cada participante da coreografia pode ter o seu comportamento modelado por uma linguagem de orquestração. Dessa forma, uma coreografia pode também ser modelada como um conjunto de orquestrações distribuídas que interagem entre si, de forma que apenas os orquestradores precisam estar cientes de condições impostas pela coreografia~\cite{Poulin2011Collaboration}. 
 
-Um diagrama BPMN2 de coreografia especifica passos na execução da coreografia, que são denominados \emph{atividades}, e que consistem na troca de mensagens entre \emph{participantes}~\cite{BPMN2011}. Uma atividade pode ocorrer entre entidades participantes (ex: Magalhães Viagens realiza compra de passagem aérea da Nimbus Airline) ou entre \emph{papéis} de participantes (ex: uma Agência de Viagem realiza compra de passagem de uma Companhia Aérea). Dizemos que dois serviços desempenham o mesmo papel se fornecem funcionalidades equivalentes. O BPMN2 distingue um dos participantes de uma atividade como o participante iniciador, que é aquele que envia a mensagem ao outro participante. O participante iniciador é também denominado cliente ou consumidor, enquanto o outro participante é denominado provedor. O diagrama BPMN da Figura~\ref{fig:bpmn1} ilustra os elementos explicados em um exemplo de uma pequena coreografia com apenas dois serviços.
+Um diagrama BPMN2 de coreografia especifica passos na execução da coreografia, que são denominados \emph{atividades}, e que consistem na troca de mensagens entre \emph{participantes}~\cite{BPMN2011}. Uma atividade pode ocorrer entre entidades participantes (ex: Magalhães Viagens realiza compra de passagem aérea da Nimbus Airline) ou entre \emph{papéis} de participantes (ex: uma Agência de Viagem realiza compra de passagem de uma Companhia Aérea). Dizemos que dois serviços desempenham o mesmo papel se fornecem funcionalidades equivalentes. O BPMN2 distingue um dos participantes de uma atividade como o participante iniciador, que é aquele que envia a mensagem ao outro participante. O participante iniciador é também denominado cliente ou consumidor, enquanto o outro participante é denominado provedor. O diagrama BPMN2 da Figura~\ref{fig:bpmn1} ilustra os elementos explicados em um exemplo de uma pequena coreografia com apenas dois serviços.
 
 \begin{figure}[!h]
   \centering
@@ -101,7 +102,7 @@ Em artigos acadêmicos também é comum a modelagem de coreografias com notaçõ
 %Em nosso trabalho, como estamos preocupados em viabilizar a execução de coreografias, adotamos como %modelagem de referência a notação BPMN2, que é um padrão de indústria.
 %\gerosa{``modelagem de referência''??? ``padrão de indústria'': expressão estranha}
 
-Como uma orquestração é um caso particular de uma coreografia, neste trabalho utilizaremos os termos ``coreografia'' e ``composição de serviços'' indistintamente. 
+Como uma orquestração é um caso particular de uma coreografia, neste trabalho utilizamos os termos ``coreografia'' e ``composição de serviços'' indistintamente. 
 Além disso, para fins da atividade de implantação, não há diferença em implantar uma coreografia ou uma orquestração,
 uma vez que orquestradores ou eventuais coordenadores são implementados como serviços web.
 
@@ -131,7 +132,7 @@ e pacotes independentes de sistema operacional (ex: jar, war).
 
 No caso de um processo de implantação automatizado, o \emph{implantador}
 é o responsável por desenvolver os scripts de implantação.
-Em contrapartida, utilizamos o termo \textbf{desenvolvedor} para se referir ao
+Em contrapartida, utilizamos o termo \emph{desenvolvedor} para se referir ao
 desenvolvedor das composições de serviços web.
 
 Ainda segundo o DEPL, o processo de implantação é composto pelas seguintes fases:
@@ -155,7 +156,7 @@ A cada etapa, mais confiança se tem sobre o sistema a ser lançado.
 Vencidas todas as etapas, o sistema pode ser implantado no ambiente de produção,
 ou em alguns casos em um ambiente de homologação.
 Um exemplo básico de pipeline de implantação pode ser visto na Figura~\ref{fig:pipeline_implantacao}.
-Para cada etapa do pipeline de implantação, o processo de implantação 
+Para cada etapa do pipeline, o processo de implantação 
 deve ser executado de forma automatizada.
 
 \begin{figure}[!h]
@@ -174,7 +175,7 @@ Em um processo de implantação automatizado tudo o que for possível é executa
 geralmente por meio de scripts. O objetivo de um processo de implantação automatizado
 é proporcionar um processo de implantação \emph{reproduzível}, \emph{confiável} e \emph{fácil}~\cite{Humble2011Continuous}.
 
-A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutiremos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
+A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutimos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
 
 Um processo de implantação pode ser automatizado de várias maneiras.
 Pode-se utilizar linguagens de script de propósito geral (Python, shell script),
@@ -182,7 +183,7 @@ ferramentas gerais voltados para o processo de implantação (ex:
 Chef\footnote{\url{http://www.getchef.com/}}, Capistrano\footnote{\url{https://github.com/capistrano/capistrano}})
 ou middlewares especializados em determinados tipos de artefatos implantáveis,
 entre os quais se enquadram as soluções de Plataforma como um Serviço,
-sobre as quais discutiremos na Seção~\ref{sec:cloud}.
+sobre as quais discutimos na Seção~\ref{sec:cloud}.
 Humble e Farley recomendam a utilização de sistemas especializados, preterindo 
 a utilização de linguagens de scripts de propósito geral.
 
@@ -197,8 +198,6 @@ trabalham para a concretização da implantação automatizada.
 A discussão a seguir sobre as vantagens do processo de implantação automatizado
 são baseadas no livro ``\emph{Continuous Delivery}''~\cite{Humble2011Continuous}.
 
-\gerosa{Rever no geral os tempos verbais}
-
 Muitos problemas na implantação manual se dão por causa de documentação incompleta,
 contendo pressupostos não compartilhados por todo o time responsável por um produto ou serviço.
 Dessa forma é comum que a organização fique bastante dependente de uma única
@@ -209,7 +208,7 @@ não será possível implantar o sistema. Dessa forma, na prática,
 dificilmente tais scripts estarão desatualizados,
 diferentemente do que ocorre com a documentação convencional.
 
-A facilidade de se implantar o sistema com o simples pressionar de um botão
+A facilidade de se implantar o sistema com um simples comando
 leva a sua utilização contínua por diferentes atores.
 O time de desenvolvimento estará constantemente utilizando esse script 
 para realizar testes de integração e aceitação. 
@@ -240,7 +239,7 @@ Esse \emph{feedback} é importante tanto do ponto de vista técnico para o aprim
 quanto do ponto de vista de negócio, pois é ele que ajuda o time a saber se está construindo
 \emph{a coisa certa}.
 O encurtamento do tempo entre desenvolvimento e \emph{feedback} do cliente
-é uma prática pregada pelo movimento da \emph{lean startup}~\cite{Ries2011Lean}.
+é uma prática pregada pelo movimento \emph{lean startup}~\cite{Ries2011Lean}.
 
 Na próxima seção falamos sobre a computação em nuvem,
 moderna tecnologia que impacta altamente as técnicas de implantação de sistemas.
@@ -268,13 +267,13 @@ Isso traz as seguintes vantagens para o processo de implantação:
 
 \begin{itemize}
 \item Evita-se a burocracia e custos necessários para o provisionamento de novo hardware.
-\item A implantação reprodutível facilmente no mesmo ambiente, não é preciso reinstalar o sistema operacional ou limpar as configurações do sistema para se obter uma nova implantação do serviço.
+\item A implantação se torna facilmente reprodutível no mesmo ambiente, não é preciso reinstalar o sistema operacional ou limpar as configurações do sistema para se obter uma nova implantação do serviço.
 \item Se executados em diferentes máquinas virtuais, dois serviços podem dividir um mesmo servidor físico sem que a implantação e execução de um serviço afete a execução do outro serviço anteriormente implantado.
 \end{itemize}
 
 Na utilização de serviços IaaS para a implantação de serviços há duas abordagens possíveis:
-1) a máquina virtual deve ser criada com base em uma imagem
-\footnote{\emph{Imagens} são sistemas de arquivo somente-leitura contendo um sistema operacional, aplicações e dados a serem instanciados em uma ou mais máquinas virtuais.} 
+1) a máquina virtual deve ser criada com base em uma 
+imagem\footnote{\emph{Imagens} são sistemas de arquivo somente-leitura contendo um sistema operacional, aplicações e dados a serem instanciados em uma ou mais máquinas virtuais.} 
 que já contenha
 o serviço implantado, ou 2) deve ser criada com base em uma imagem contendo apenas um
 sistema operacional recém instalado, de forma que a implantação do serviço seja feita

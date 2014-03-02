@@ -32,7 +32,7 @@ Para a implementação do arcabouço Enactment Engine contribuíram os alunos de
 sob a Licença Pública Mozilla 2\footnote{\url{http://www.mozilla.org/MPL/2.0/}} 
 e está disponível em \url{http://ccsl.ime.usp.br/enactmentengine}. 
 
-Neste capítulo, apresentaremos a arquitetura e aspectos de implementação do \ee.   
+Neste capítulo, apresentamos a arquitetura e aspectos de implementação do \ee.   
 Destacamos ao final do capítulo
 como as decisões arquiteturais e de implementação auxiliam o implantador
 a superar os desafios presentes na implantação de composições de grande escala.
@@ -228,7 +228,7 @@ que se trata de um novo supermercado.
 
 \end{description}
 
-Assim, em uma coreografia em que, por exemplo, um serviço de agência de viagem dependa do serviço de uma companhia aérea, o EE executará a seguinte invocação ao serviço da agência de viagens : \texttt{setInvocationAddress('Companhia Aérea', 'Nimbus Airline', [ 'http://192.168.56.107:8080/nimbus/ws/' ])}. 
+Assim, em uma coreografia em que, por exemplo, um serviço de agência de viagem dependa do serviço de uma companhia aérea, o EE executa a seguinte invocação ao serviço da agência de viagens : \texttt{setInvocationAddress('Companhia Aérea', 'Nimbus Airline', [ 'http://192.168.56.107:8080/nimbus/ws/' ])}. 
 
 A descrição fornecida até aqui é abstrata e independente de tecnologia.
 A definição exata da assinatura da operação deve ser definida de acordo com a tecnologia utilizada.
@@ -476,14 +476,14 @@ public interface ContextSender {
 \section{Aspectos gerais de implementação}
 \label{sec:implementacao}
 
-Nesta seção descreveremos alguns detalhes sobre a implementação do \ee que 
+Nesta seção descrevemos alguns detalhes sobre a implementação do \ee que 
 podem ser especialmente úteis a eventuais desenvolvedores de nosso middleware.
 
 \begin{description}
 
 \item [Linguagem:] 
 
-O \ee é desenvolvido na linguagem Java 6. 
+O EE é desenvolvido na linguagem Java 6. 
 Durante o desenvolvimento utilizamos como ambiente de execução
 a JVM OpenJDK 7. O EE é compilado com o Maven 3.
 
@@ -582,8 +582,8 @@ as invocações à operação \texttt{setInvocationAddress} são refeitas.
 Nesse passo a idempotência é garantida pela assinatura idempotente
 da própria operação \texttt{setInvocationAddress}.
 
-\item [Software livre:] por fim, todas as bibliotecas e sub-sistemas
-utilizados pelo \ee são software livre.
+\item [Software livre:] por fim, todas as bibliotecas 
+utilizadas pelo \ee são software livre.
 
 \end{description}
 
