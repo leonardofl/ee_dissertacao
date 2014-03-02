@@ -647,8 +647,8 @@ com características dos nós disponíveis.
 Seguindo recomendações gerais feitas por Nygard~\cite{Nygard2009Release},
 adotamos no \ee uma abordagem simples para tratar falhas externas.
 A lógica de invocação a sistemas externos foi encapsulada em uma classe, 
-chamada \textsf{Invoker}, que foi usada de forma disciplinada pelo projeto \gerosa{?}.
-Toda vez que se deve acessar um sistema externo, utiliza-se um \emph{invoker}.
+chamada \textsf{Invoker}.
+Toda vez que se deve acessar um sistema externo, o EE utiliza um \emph{invoker}.
 O \textsf{Invoker} recebe os seguintes parâmetros:
 uma \emph{tarefa}, que é uma rotina que se comunicará com algum sistema externo,
 a quantidade de \emph{tentativas} para executar a tarefa,
@@ -664,9 +664,9 @@ as características do ambiente alvo.
 Portanto, essa abordagem é também uma estratégia para colaborar 
 com a heterogeneidade de plataformas e tecnologias.
 A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \emph{decorator}~\cite{GoF1995Patterns}.} 
-para adaptar dinamicamente valores de timeouts 
-baseando-se em heurísticas definidas programaticamente 
-que utilizem o histórico de execução dos \emph{invokers} \gerosa{frase com estrutura confusa}.
+para ajustar dinamicamente os valores de timeouts de cada tarefa.
+Para implementar essa adaptação, o desenvolvedor tem acesso
+ao histórico dos tempos de execução do \emph{invoker}.
 
 O EE utiliza os \emph{invokers} nos momentos adequados e necessários.
 Isso fornece uma robustez mais facilmente proporcionada por sistemas de middleware,
@@ -779,14 +779,17 @@ Essa flexibilidade ajuda a superar
 as atuais limitações de soluções de Plataformas como um Serviço
 que restrigem as opções tecnológicas disponíveis aos desenvolvedores de aplicações.
 Essas restrições normalmente se aplicam justamente sobre
-provedor de infraestruturas e a linguagem de programação da aplicação \gerosa{?}.
+provedor de infraestruturas e a linguagem de programação da aplicação.
+Exemplos: para utilizar o PaaS da Amazon (Elastic Beanstalk) é preciso utilizar
+o IaaS da Amazon, enquanto que para utilizar o PaaS do Google (App Engine)
+é preciso escolher entre as linguagens Java, Pyhton, PHP ou Go.
 
 Oferecer suporte a variações de um padrão é um desafio para sistemas de middleware.
 Adequar um middleware para a particularidade de uma aplicação pode não ser fácil.
 No suporte a diferentes tecnologias, as abordagens \emph{ad-hoc} encontram realmente um espaço de importância.
 No entanto, uma vez que a adequação para uma nova tecnologia seja feita no middleware,
-pode-se \gerosa{aplicar mais facilmente a melhoria (?)} para diferentes aplicações utilizando essa
-mesma nova tecnologia.
+o esforço para o desenvolvimento de futuras aplicações utilizando a mesma tecnologia
+se torna menor.
 
 \item [Múltiplas organizações:]
 
@@ -837,7 +840,7 @@ Contudo, ele fornece suporte para o desenvolvimento de tais sistemas.
 
 Sistemas auto-adaptativos e autonômicos precisam estar cientes
 e ter pleno controle das atividades de implantação.
-Para empoderar \gerosa{está certo ``empoderar''?} tais sistemas, o EE fornece informação e controle
+Para equipar tais sistemas, o EE fornece informação e controle
 das seguintes funcionalidades:
 
 \begin{itemize}
@@ -852,21 +855,18 @@ as regras de negócio ou os requisitos não-funcionais mudam.
 O EE possibilita, por uma API REST, a adição, remoção e reconfiguração dos serviços
 e seus recursos computacionais associados.
 
-O controle de migração de serviço do EE pode ser usado para 
-agrupar mais de um serviço em um único
-recurso computacional ou para migrar o serviço para um recurso diferente
-para aumentar seu desempenho \gerosa{melhorar parágrafo}.
+A migração de um serviço para um nó com mais recursos computacionais
+é uma funcionalidade oferecida pelo EE chamada de \emph{escalamento vertical}~\cite{Pritchett2008Base}.
+No entanto, para a construção de sistemas escaláveis se recomenda 
+a replicação de serviços associada ao balanceamento de carga~\cite{Amazon2012Practices},
+o que é conhecido como \emph{escalamento horizontal}~\cite{Pritchett2008Base}.
 
-Replicação de serviço é um tipo particular e importante de atualização de composição
-\gerosa{ao replicar vc altera a composição? não é a mesma composição?}.
-Associado a um balanceamento de carga, é uma estratégia comum para
-a construção de sistemas escaláveis~\cite{Amazon2012Practices}.
 O EE possibilita a replicação de serviço por meio da implantação de
 múltiplas instâncias do serviço e da notificação aos serviços consumidores
 sobre a existência dessas réplicas durante a fase de ligação de serviços.
 A quantidade inicial de réplicas é definida por atributo na especificação
 do serviço fornecida ao EE, e, depois, pode ser redefinida dinamicamente.
-Um trabalho futuro é configurar automaticamente um balancemanto de carga
+Um trabalho futuro é configurar automaticamente um balanceamento de carga
 entre réplicas de um serviço, de forma que o consumidor de um serviço
 não tenha necessidade de saber sobre suas diversas réplicas.
 
@@ -877,15 +877,15 @@ Esse serviço de monitoramento pode então disparar ações de adaptação com b
 nos dados recebidos. Uma ação de adaptação envolve a geração de uma nova especificação
 de composição e a atualização da composição em execução de acordo com a nova especificação.
 
-Essas funcionalidades fazem do EE uma ferramenta de apoio 
-à pesquisa de auto-adaptação de composição de serviços.
+O CHOReOS \ee é uma ferramenta útil a praticantes e pesquisadores para
+a implantação de composições de serviços, especialmente no contexto de grande escala.
+Mas as funcionalidades relacionadas à adaptação são de especial interesse
+aos pesquisadores que trabalham com a auto-adaptação de composições de serviços.
 O EE facilita a implementação de sistemas adaptativos
 por possibilitar que pesquisadores se foquem mais nos problemas de adaptação em
 alto nível, abstraindo detalhes altamente específicos do gerenciamento de implantação.
 Diferentes pesquisadores desse campo de pesquisa podem se beneficiar ao utilizarem uma plataforma comum,
 potencializando a troca de experiência sobre o processo de implantação. 
-
-\gerosa{Fala no foco de pesquisadores. E practioners? Qual é o foco da ferramenta?}
 
 \end{description}
 
