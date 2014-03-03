@@ -279,12 +279,12 @@ Essas informações referem-se à especificação da coreografia e ao estado da 
 de seus serviços, como os nós em que os serviços foram implantados, 
 no caso de a implantação já ter sido realizada.
 
-\item [Encenar coreografia:] realiza a implantação de uma coreografia já registrada no EE. 
+\item [Implantar coreografia:] realiza a implantação de uma coreografia já registrada no EE. 
 Ao fim do processo, detalhes do resultado da implantação são retornados de forma estruturada 
 de acordo com a classe \textsf{Choreography} (Figura~\ref{fig:adl}).
 A implementação dessa operação deve possuir duas importantes propriedades: 
-1) a falha na encenação de parte da coreografia não deve interromper a encenação do resto da coreografia; 
-2) a operação deve ser \emph{idempotente}, ou seja, uma nova requisição para a encenação da mesma 
+1) a falha na implantação de parte da coreografia não deve interromper a implantação do resto da coreografia; 
+2) a operação deve ser \emph{idempotente}, ou seja, uma nova requisição para a implantação da mesma 
 coreografia não deve reimplantar os serviços já implantados, 
 mas somente aqueles cujas implantações falharam na última execução. 
 Para que serviços sejam atualizados, é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço.
@@ -293,7 +293,7 @@ Para que serviços sejam atualizados, é preciso utilizar um novo valor no atrib
 Os serviços atualizados na nova versão da coreografia devem possuir 
 um novo número de versão em suas especificações. 
 Essa operação, assim como a criação da coreografia, não implanta a nova coreografia. 
-Para isso, é preciso invocar novamente a operação de encenação.
+Para isso, é preciso invocar novamente a operação de implantação.
 
 A atualização de serviços não é o foco de nosso trabalho.
 Dessa forma, em nosso trabalho a atualização dos serviços será feita da forma mais simples possível: 
@@ -314,16 +314,16 @@ Nesse exemplo, a classe \textsf{MyChorSpec} está escondendo a
 especificação da coreografia.
 
 \begin{lstlisting}[breaklines, caption={Programa Java que invoca o \ee para implantar uma coreografia.}, label={lst:java_chor_enactment}]
-public class Enactment {
+public class Deployment {
 
-    public static void main(String[] args) throws EnactmentException, ChoreographyNotFoundException {
+    public static void main(String[] args) throws DeploymentException, ChoreographyNotFoundException {
 
         final String EE_URI = "http://localhost:9102/enactmentengine";
         EnactmentEngine ee = new EnactmentEngineClient(EE_URI);
         ChoreographySpec chorSpec = MyChorSpec.getChorSpec();
 
         String chorId = ee.createChoreography(chorSpec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
 
         System.out.println(chor); // vamos ver o que aconteceu...
     }
@@ -557,7 +557,7 @@ voltadas para o ambiente de teste de aceitação,
 de forma que as máquinas sejam criadas mais rapidamente,
 seja uma contribuição relevante para a prática de desenvolvimento de software.
 
-\item [Idempotência:] a implementação da operação \emph{enactment} de forma idempotente considera
+\item [Idempotência:] a implementação da operação implantação de forma idempotente considera
 que falhas podem acontecer no processo de implantação em cada uma dessas três etapas: 
 1) preparação do nó, que consiste na seleção do nó para uma instância, 
 incluindo a transferência dos scripts de implantação para o nó selecionado;
@@ -565,13 +565,13 @@ incluindo a transferência dos scripts de implantação para o nó selecionado;
 e 3) a ligação entre serviços.
 
 Caso a falha ocorra na \emph{preparação do nó},
-o problema poderá ser corrigido na próxima execução do \emph{enactment},
+o problema poderá ser corrigido na próxima execução da implantação,
 pois o EE sempre tenta criar $n_{spec} - n_{instancias}$ instâncias do serviço, 
 onde $n_{spec}$ é a quantidade de instâncias que um serviço deve ter
 e $n_{instancias}$ é a quantidade de instâncias que um serviço possui no momento.
 
 Para tratar falhas ocorridas na \emph{atualização do nó},
-a cada execução do \emph{enactment} o processo de atualização
+a cada execução da implantação o processo de atualização
 é executado em todos os nós novamente.
 Nesse passo, o EE está se aproveitando da idempotência dos scripts
 de implantação gerados, que no caso são receitas Chef.
@@ -723,11 +723,11 @@ deve saber como se comportar na ausência de uma ou mais de suas dependências.
 De outra forma, cada serviço se tornaria um \emph{ponto de falha único} na composição,
 o que é altamente indesejável.
 
-Por fim, a operação \emph{enactment} fornecida pelo EE foi implementada de forma idempotente. 
+Por fim, a operação de implantação fornecida pelo EE foi implementada de forma idempotente. 
 Isso garante que caso a resposta à requisição 
 de implantação de coreografia não chegue ao cliente, o cliente possa repetir a requisição
 sem alterar o resultado do processo de implantação. 
-Caso a operação \emph{enactment} seja chamada pela segunda vez, o EE não implantará
+Caso a operação de implantação seja chamada pela segunda vez, o EE não implantará
 instâncias adicionais de um serviço caso ele já esteja corretamente implantado, mas 
 implantará somente as instâncias necessárias para a correta finalização da implantação 
 da coreografia. Mais detalhes sobre a implementação da garantia de idempotência, ver a Seção~\ref{sec:implementacao}.
