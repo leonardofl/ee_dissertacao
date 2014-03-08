@@ -15,7 +15,18 @@ A abordagem procedimental, com scripts, fornece uma grande
 flexibilidade para especificar a implantação de sistemas, 
 mas normalmente requer especialização de seus usuários, 
 pois todos os detalhes do processo devem ser especificados. 
-Esses scripts de implantação também deveriam ser desenvolvidos com o mesmo rigor do código da aplicação, inclusive com o uso de testes automatizados~\cite{Humble2011Continuous}. O descumprimento dessa recomendação torna o processo de implantação pouco robusto e até mesmo não confiável. Uma alternativa que evita essa sobrecarga no processo de desenvolvimento é o uso de sistemas especializados na implantação de determinados tipos de aplicações e que recebam, como entrada, uma simples especificação declarativa do sistema a ser implantado.
+Wettinger et al.~\cite{Wettinger2013ExtensiblePaaS} 
+afirmam que ferramentas como Chef são usadas
+para a criação de planos de implantação específicos para cada aplicação,
+promovendo pouca reusabilidade.
+Esses scripts de implantação também deveriam ser desenvolvidos 
+com o mesmo rigor do código da aplicação, inclusive com o uso 
+de testes automatizados~\cite{Humble2011Continuous}. 
+O descumprimento dessa recomendação torna o processo de implantação 
+pouco robusto e até mesmo não confiável. Uma alternativa que evita 
+essa sobrecarga no processo de desenvolvimento é o uso de sistemas 
+especializados na implantação de determinados tipos de aplicações e que recebam, 
+como entrada, uma simples especificação declarativa do sistema a ser implantado.
 
 Um exemplo de abordagem declarativa é o uso de Linguagens de Descrição Arquitetural (ADLs), como a Darwin~\cite{Magee1996Dynamic}. ADLs são uma evolução do conceito de Linguagens de Interconexão de Módulo (MILs)~\cite{DeRemer1976Programming}, que descrevem a interconexão entre módulos de um sistema. A motivação dos autores da MIL era contribuir com novas formas de se produzir software de grande porte, diferenciando essa atividade da programação de pequenos algoritmos. De forma similar, a linguagem Darwin concentra-se nos aspectos estruturais de sistemas distribuídos, descrevendo a conexão entre os módulos do sistema, mas sem descrever implementações ou sequências de interações entre os módulos. Em nosso trabalho, também descrevemos o sistema a ser implantado por meio de sua descrição estrutural, uma vez que é esse o aspecto necessário para que se possa automatizar o processo de implantação. Magee e Kramer demonstraram a utilidade prática da linguagem Darwin ao utilizá-la de forma integrada a componentes CORBA~\cite{Magee1997Corba}, padrão de interoperabilidade de sistemas distribuídos dominante no mercado à época. Darwin possui também um ambiente de execução, Regis~\cite{Magee1994Regis}, que realiza a implantação dos sistemas descritos em Darwin. Regis possui duas políticas de distribuição de programas por estações de trabalho. A primeira política é o mapeamento definido pelo usuário de forma estática, abordagem não apropriada para ambientes de computação em nuvem. A segunda opção de política é a alocação automática em função da carga na CPU das estações de trabalho, não havendo flexibilidade para a consideração de outros recursos, como espaço em disco ou memória, por exemplo. Uma similaridade entre Regis e o \ee\ desenvolvido em nossa pesquisa é o uso do middleware para o envio de mensagens contendo referências remotas dos componentes implantados para que eles possam estabelecer ligações dinâmicas entre si.
 
@@ -26,7 +37,10 @@ Hoje, há novos  desafios e requisitos que precisam ser considerados na constru�
 
 O trabalho de Akkerman et al.~\cite{Akkerman2005J2EE} concentra-se na implantação distribuída de componentes da plataforma J2EE, oferecendo ligações entre os componentes e suas dependências, especificados por uma ADL, e replicação dos componentes para fins de escalabilidade. No entanto, a solução apresentada para o gerenciamento do processo de implantação baseia-se numa aplicação de interface gráfica, o que dificulta a automação completa do processo. Outros trabalhos, como o de Lan et al.~\cite{Lan2005Architecture}, também tratam o processo de implantação como realizado manualmente por um operador humano, enquanto que nosso objetivo é de que o operador inicie o processo de implantação com apenas um comando, conforme advogado por Humble e Farley \cite{Humble2011Continuous}.
 
-O estudo de Quéma et al.~\cite{quema2004hierarchical} é o único encontrado a realizar avaliações empíricas sobre desempenho e escalabilidade do processo de implantação de componentes, além de oferecer tolerância a falhas no processo de implantação. Os autores apresentam uma solução na qual agentes executam de forma distribuída o processo de implantação, comunicando-se de forma assíncrona e hierárquica conforme a estrutura da composição de componentes sendo implantada, que é descrita por uma ADL. Essa estrutura hierárquica, no entanto, é apenas um caso particular das possibilidades na topologia de uma coreografia de serviços, o que impossibilita que essa solução seja diretamente adotada em nosso contexto. Os agentes também possuem propriedades transacionais que garantem a tolerância a falhas do processo de implantação, mas isso não é avaliado no texto. Os autores avaliam o desempenho e escalabilidade do processo de implantação variando a quantidade de componentes, a topologia da composição de componentes e a quantidade de máquinas. Embora o objetivo do método proposto seja a escalabilidade, os autores contentam-se com um crescimento linear no tempo de implantação mesmo quando se aumenta na mesma proporção o número de máquinas disponíveis (o ideal seria que o tempo fosse constante). Os autores explicam que há uma sobrecarga na manutenção das sessões de comunicação entre os agentes, o que impede que o número de agentes seja muito grande. Esses resultados evidenciam a necessidade de novos processos de implantação que sejam escaláveis e ao mesmo tempo tolerantes a falhas. Além disso, o ambiente utilizado para a implantação é um aglomerado, e não uma nuvem.
+O estudo de Quéma et al.~\cite{quema2004hierarchical} é o único encontrado a realizar avaliações empíricas sobre desempenho e escalabilidade do processo de implantação de componentes, além de oferecer tolerância a falhas no processo de implantação. Os autores apresentam uma solução na qual agentes executam de forma distribuída o processo de implantação, comunicando-se de forma assíncrona e hierárquica conforme a estrutura da composição de componentes sendo implantada, que é descrita por uma ADL. Os agentes também possuem propriedades transacionais que garantem a tolerância a falhas do processo de implantação, mas isso não é avaliado no texto. 
+Os autores avaliam o desempenho e escalabilidade do processo de implantação variando a quantidade de componentes, a topologia da composição de componentes e a quantidade de máquinas. O resultado é um crescimento linear no tempo de implantação quando se aumenta na mesma proporção o número de máquinas disponíveis (o ideal seria que o tempo fosse constante). Os autores explicam que há uma sobrecarga na manutenção das sessões de comunicação entre os agentes, o que impede que o número de agentes seja muito grande. 
+
+A principal limitação do trabalho de Quéma et al. é a restrição de que a composição de componentes deve se organizar em uma estrutura hierárquica. Essa estrutura hierárquica, no entanto, é apenas um caso particular das possibilidades na topologia de uma coreografia de serviços, sendo que nossa solução, o CHOReOS \ee, não impõe essa restrição. Além disso, o ambiente utilizado para a implantação no trabalho de Quéma et al. é um aglomerado, enquanto que nosso estudo é realizado em ambientes de nuvem.
 
 Os trabalhos anteriores apresentam abordagens simples para o problema da distribuição dos componentes implantados pelas máquinas disponíveis. Já o trabalho de Watson et al., apresenta uma abordagem mais completa para esse problema com o uso de grades computacionais~\cite{Watson2006Dynasoar}. O foco dessa solução está em escolher dinamicamente o provedor de infraestrutura e a máquina em que um serviço web deve ser implantado considerando os requisitos não-funcionais do serviço web. Isso é realizado não somente para a primeira implantação do serviço web, mas também para as replicações que ocorrem quando as instâncias existentes não conseguem mais atender aos requisitos não-funcionais. Uma desvantagem dessa abordagem é a carga adicional gerada pela análise dos requisitos não-funcionais a cada troca de mensagens efetuada pelos serviços implantados. 
 
@@ -42,7 +56,47 @@ O Cloud Foundry tem como objetivo facilitar a implantação de aplicações web,
 
 \todo{outras ferramentas de cloud: vagrant, Amazon Simple Workflow Service, Force.com Visual Process Manager} 
 
-\todo{Juju, TOSCA}
+TOSCA (Topology and Orchestration Specification for Cloud Applications)
+é um padrão OASIS que utiliza a abordagem de orientação a modelos para
+o gerenciamento de recursos e serviços na nuvem~\cite{Wettinger2013Tosca}.
+Ao utilizar o TOSCA, seu usuário define um ``modelo de serviço'' (\emph{service template})
+para especificar, em alto nível, como os serviços são implantados e conectados a outros serviços.
+Contudo, artefatos de implementação ainda são necessários
+para implementar as operação definidas nos modelos.
+A ênfase dada nos trabalhos sobre o TOSCA é na portabilidade
+para que a implantação de um serviço possa utilizar diferentes
+componentes de middleware~\cite{Wettinger2013ExtensiblePaaS} 
+ou diferentes gerenciadores de configuração~\cite{Wettinger2013Tosca}.
+Essa abordagem torna o TOSCA um sistema altamente flexível e portável,
+mas obriga o desenvolvedor a definir os
+artefatos de implementação e a descrever como eles se
+relacionam às operações definidas no modelo.
+Com o CHOReOS \ee, o ambiente de execução e a gerência de configuração são
+abstraídos de forma que os usuários não precisam se preocupar
+com os componentes de middleware utilizados para executar os serviços,
+e nem sequer precisam saber que o Chef é o gerenciados de configuração
+utilizado pelo EE.
+
+Juju\footnote{\url{https://juju.ubuntu.com/}} é uma ferramenta 
+de configuração e implantação de serviços criada pela Canonical.
+Os conceitos utilizados no Juju se assemelham muito ao TOSCA.
+``\emph{Charms}'' encapsulam as configurações da aplicação,
+definem como serviços são implantados, como serviços
+são conectados uns aos outros e como eles escalam.
+A cada operação definida para um serviço na \emph{charm}
+também deve ser associado um artefato que implemente a operação,
+normalmente um \emph{shell script}.
+Uma das limitações apontadas para o Juju é o fato
+de a ferramenta e suas \emph{charms} serem altamente acopladas ao
+sistema operacional Ubuntu.
+Embora a versão atual do nosso CHOReOS \ee também utilize o Ubuntu
+como sistema operacional dos nós alvos,
+a utilização do Chef como gerenciador de configuração
+facilita a eventual utilização de outros sistemas operacionais,
+uma vez que as receitas Chef abstraem algumas peculiaridades
+do sistema operacional utilizado.
+
+\todo{open knowledge}
 
 A Tabela~\ref{tab:relacionados} realiza uma comparação entre os estudos e ferramentas apresentados nesta seção em relação a características presentes em nossa solução, o \ee. Os símbolos na tabela possuem os seguintes significados: ``\checkmark{}'' para ``possui a característica'', espaço vazio para ``não possui a característica'', ``+/-'' para ``não possui a característica de forma totalmente satisfatória'' e ``-'' para quando a característica não se aplica ou não foi possível determinar \gerosa{melhor separar o caso ``não foi possível determinar'', usando um ``?'' para isso}. As características, que formam as colunas da tabela, são listadas a seguir:
 
