@@ -8,7 +8,7 @@ O processo de implantação de um software vai do momento de aquisição do soft
 
 Serviços web possibilitam a comunicação interoperável entre máquinas pela rede~\cite{W3C2004WS}
 e podem ser compostos para implementar sofisticados processos de negócios~\cite{Papazoglou2007State}.
-Especialistas do setor aéreo já propõe o uso de composições de serviços
+Especialistas do setor aéreo, por exemplo, já propõe o uso de composições de serviços
 para automatizar os processos de negócios entre diferentes organizações
 que coabitam um aeroporto~\cite{Choreos2012D6.2}.
 Considerando os atuais números relativos a grandes
@@ -37,22 +37,22 @@ nas quais um processo de implantação é automatizado tendo em vista
 uma composição de serviço específica.
 Contudo, esse caminho leva ao baixo reúso de soluções
 dentro de uma organização e entre as organizações participantes.
-Outro caminho é a utilização de soluções suportadas por \emph{middleware},
+Outro caminho é a utilização de soluções baseadas em um \emph{middleware},
 que resolvem os problemas comuns de implantação,
 fornecendo soluções potencialmente mais sofisticadas e mais bem testadas.
 Isso ocorre pois contribuidores interessados no problema de implantação
-trabalhem juntos para fornecer uma infraestrutura mais robusta,
+trabalham juntos para fornecer uma infraestrutura mais robusta,
 enquanto usuários do middleware escrevem código menor e mais simples
 para automatizar o processo de implantação de composições específicas.
 Embora apresentem vantagens, sistemas apoiados por middleware
 também apresentam desvantagens, principalmente no que diz respeito
 às restrições impostas ao desenvolvimento da aplicação.
 
-Nesta dissertação, estudamos o processo de implantação automatizada suportado por middleware. 
+Nesta dissertação, estudamos o processo de implantação automatizada baseado em um middleware. 
 Investigamos o quanto e como essa opção
 contribui à implantação de composições de serviço de grande escala
 quando confrontada com soluções \emph{ad-hoc}.
-Para responder à questão colocada, nosso objetivo nessa dissertação é 
+Para responder à questão colocada, nosso objetivo nesta dissertação é 
 projetar, implementar e avaliar
 um middleware que forneça suporte à implantação automatizada de composições de serviços web
 de grande escala.
@@ -69,7 +69,7 @@ de serviços sem aumentar o tempo de implantação, dado que se aumente também,
 proporcionalmente, a quantidade de servidores disponíveis para hospedar esses serviços.
 
 A computação em nuvem possibilita o acesso a um conjunto compartilhado de recursos computacionais que podem ser providos rapidamente \cite{Nist2011Cloud}.
-A gerência programática de recursos virtualizados, fornecidos pela nuvem, favorece a criação de processos totalmente automatizado para a implantação de sistemas \cite{Humble2011Continuous}.   
+A gerência programática de recursos virtualizados, fornecidos pela nuvem, favorece a criação de processos totalmente automatizados para a implantação de sistemas \cite{Humble2011Continuous}.   
 Além disso, sistemas distribuídos já estão migrando para ambientes de nuvem, onde são compostos e mantidos de modo descentralizado por várias organizações \cite{Steen2011VeryLarge}.
 Baseando-se nessas considerações, nosso middleware foi projetado em função dos modelos de computação em nuvem.
 
@@ -85,7 +85,7 @@ Essas máquinas virtuais são criadas por provedores de infraestrutura que funci
 de acordo com o modelo de computação em nuvem denominado Infraestrutura como um Serviço (IaaS).
 Ao fim da implantação, as composições de serviços estão disponíveis para serem consumidas
 por usuários, operando no modelo de Software como um Serviço (SaaS).
-A arquitetura de nossa solução em função dos modelos de computação em nuvem pode ser observada na Figura~\ref{fig:modelos_nuvem}.
+A arquitetura de nossa solução em função dos modelos de computação em nuvem pode ser observada na Figura~\ref{fig:modelos_nuvem}. \fabio{essa figura não mostra a arquitetura de nossa solução, ela mostra outra coisa.}
 
 \begin{figure}[!h]
   \centering
@@ -100,7 +100,7 @@ As contribuições deste trabalho são:
 
 \begin{itemize}
 \item A implementação de um middleware que possibilita a implantação automatizada de composições de serviços. Para além da utilização direta por praticantes, nosso middlware facilita a condução de
-avaliações empíricas ligadas à implantação de composições de serviço, tendo assim potencial para alavancar diversas outras pesquisas sobre composições de serviços.
+avaliações empíricas ligadas à implantação de composições de serviço, tendo assim potencial para alavancar diversas outras pesquisas sobre composições de serviços. \leo{fabio achou estranho o "para além" e o "praticantes"}
 \item Uma comparação, baseada na literatura e em evidências empíricas, entre soluções de implantação automatizada implementadas de forma \emph{ad-hoc} e implementadas com suporte por middleware.
 \end{itemize}
 
@@ -123,7 +123,7 @@ Leonardo Leite, Gustavo Oliva, Guilherme Nogueira, Marco Aurélio Gerosa, Fabio 
 \end{shadowblock}
 
 
-Este trabalho organiza-se da seguinte forma: as fundamentações teóricas sobre composição de serviços, o processo de implantação e a computação em nuvem estão no Capítulo~\ref{cap:conceitos}. No Capítulo~\ref{cap:relacionados} apresentamos os trabalhos relacionados. No Capítulo~\ref{cap:solucao} apresentamos o CHOReOS \ee, discutindo como suas características arquiteturais e de implementação auxiliam na implantação de composições de grande escala. A comparação do EE com soluções \emph{ad-hoc}, bem como sua avaliação de desempenho e escalabilidade, são apresentadas no Capítulo~\ref{cap:avaliacao}. Por fim, no Capítulo~\ref{cap:conclusoes} apresentamos nossas conclusões.
+Esta dissertação organiza-se da seguinte forma: as fundamentações teóricas sobre composição de serviços, o processo de implantação e a computação em nuvem são apresentadas no Capítulo~\ref{cap:conceitos}. No Capítulo~\ref{cap:relacionados}, apresentamos os trabalhos relacionados. No Capítulo~\ref{cap:solucao}, apresentamos o CHOReOS \ee, discutindo como suas características arquiteturais e de implementação auxiliam na implantação de composições de grande escala. A comparação do EE com soluções \emph{ad-hoc}, bem como sua avaliação de desempenho e escalabilidade, são apresentadas no Capítulo~\ref{cap:avaliacao}. Por fim, no Capítulo~\ref{cap:conclusoes}, apresentamos nossas conclusões.
 
 %% ------------------------------------------------------------------------- %%
 % Intro deve ter:
