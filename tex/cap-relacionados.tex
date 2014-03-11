@@ -96,7 +96,25 @@ facilita a eventual utilização de outros sistemas operacionais,
 uma vez que as receitas Chef abstraem algumas peculiaridades
 do sistema operacional utilizado.
 
-\todo{open knowledge}
+Um arcabouço voltado especificamente para a implantação e encenação
+de coreografias é o Open Knowledge~\cite{Besana2008OpenKnowledge,Siebes2007OK}.
+Nesse arcabouço, o projetista da coreografia define o fluxo global
+de troca de mensagens entre os serviços em uma notação formal
+(\emph{Lightweight Coordination Calculus}).
+A partir dessa descrição, o arcabouço gera \emph{coordenadores}
+para cada participante, decentralizando a lógica de coordenação.
+Assim, o desenvolvedor do serviço implementa apenas a lógica de negócio,
+uma vez que a lógica de coordenação está desacoplada da implementação do serviço.
+O arcabouço Open Knowledge possui uma ênfase no problema
+da descoberta dinâmica de pares que satisfaçam os requisitos
+da interação projetada. Uma desvantagem, porém,
+é o forte acoplamento necessário na implementação dos serviços participantes
+ao arcabouço para que a lógica de coordenação possa ser fornecida ao serviço.
+Uma consequência desse forte acoplamento é que os serviços que
+utilizam o Open Knowledge devem necessariamente ser escritos em Java.
+Outra limitação, do ponto de vista da automação do processo de implantação,
+é que a infraestrutura do Open Knowledge deve já estar disponível
+antes da implantação dos serviços, pois a implantação é realizada nessa infraestrutura.
 
 A Tabela~\ref{tab:relacionados} realiza uma comparação entre os estudos e ferramentas apresentados nesta seção em relação a características presentes em nossa solução, o \ee. Os símbolos na tabela possuem os seguintes significados: ``\checkmark{}'' para ``possui a característica'', espaço vazio para ``não possui a característica'', ``+/-'' para ``não possui a característica de forma totalmente satisfatória'' e ``-'' para quando a característica não se aplica ou não foi possível determinar \gerosa{melhor separar o caso ``não foi possível determinar'', usando um ``?'' para isso}. As características, que formam as colunas da tabela, são listadas a seguir:
 
