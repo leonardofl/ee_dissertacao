@@ -9,16 +9,6 @@ Um dos aspectos fundamentais de um processo de implantação automatizado é a l
 
 Antes de instalar um serviço é preciso configurar adequadamente o sistema operacional e a plataforma na qual o serviço será implantado. Para utilizar ferramentas como Chef\footnote{\url{http://www.opscode.com/chef}}, Capistrano\footnote{\url{https://github.com/capistrano}} e Nix~\cite{Dolstra2005Configuration}, os usuários devem escrever scripts que realizem a configuração do ambiente e a implantação do serviço. No caso do Chef, um script configura a máquina na qual o serviço é instalado, enquanto que o Capistrano possibilita a coordenação da implantação de serviços em diferentes nós. Com as expressões do Nix, é possível também unificar a especificação da implantação com o \textit{build} da aplicação em um único script, possibilitando a edição parametrizada de arquivos de configuração da aplicação em função do local de implantação. 
 
-Taktuk~\cite{Claudel2009Taktuk} é uma ferramenta software livre desenvolvida para executar
-tarefas interativas em paralelas (tais como administração de aglomerados ou
-depuração de aplicações paralelas) em um conjunto potencialmente grande
-de máquinas remotas. O Taktuk é capaz de se espalhar usando um algoritmo adaptativo
-e estabelecer uma rede de interconexão para transportar comandos
-e efetuar multiplexação/demultiplexação de I/O.
-O Taktuk fornece adaptação dinâmica para alterações no desempenho, carga
-e/ou contenção de rede das máquinas usando um algoritmo reativo
-que combina paralelização local e distribuição de trabalho.
-
 A abordagem procedimental, com scripts, fornece uma grande 
 flexibilidade para especificar a implantação de sistemas, 
 mas normalmente requer especialização de seus usuários, 
@@ -55,8 +45,6 @@ Os trabalhos anteriores apresentam abordagens simples para o problema da distrib
 Outro trabalho sobre implantação de componentes em um ambiente de grade é o de Lacour et al.~\cite{Lacour2004Corba}, no qual a escolha do nó de implantação é feita dinamicamente de acordo com alguns requisitos do componente. Uma desvantagem desse trabalho é o desenvolvimento específico para componentes CORBA, além de não haver preocupação com falhas no sistema distribuído.
 
 Embora os trabalhos de Watson et al. e Lacour et al. avancem na problemática da distribuição dos serviços, nenhum dos trabalhos analisados considera as potencialidades e desafios dos ambientes de computação em nuvem~\cite{Amazon2012Practices}, que oferecem serviços de infraestrutura para a gerência de recursos virtualizados. Portanto, em nossa pesquisa, procuramos dar um passo além ao explorar como o ambiente de computação em nuvem pode trazer benefícios ao processo de implantação, bem como ao considerar as restrições que esses ambientes impõem, como a falta de previsibilidade dos endereços das máquinas em tempo de configuração do serviço e as falhas da própria plataforma de nuvem.
-
-\todo{kadeploy, grid 5000}
 
 Uma tendência recente para se atingir os objetivos de uma implantação simples, rápida, automatizada e escalável é a utilização de serviços de computação em nuvem que oferecem Plataforma como um Serviço (PaaS), que se encarregam não só da implantação da aplicação, como também do processo de criação e configuração do ambiente. O Cloud Foundry\footnote{\url{http://www.cloudfoundry.com/}} é um PaaS de código aberto, podendo ser instalado na infraestrutura de uma organização para a oferta de serviços a clientes internos ou externos. O Cloud Foundry suporta uma grande diversidade de linguagens, arcabouços e bancos de dados a serem utilizados pela aplicação. Operadores do Cloud Foundry podem configurá-lo para utilizar diferentes provedores de Infraestrutura como um Serviço (IaaS), desacoplando as escolhas de IaaS e PaaS, o que é também adotado no \ee. 
 
