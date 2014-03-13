@@ -112,38 +112,52 @@ Outra limitação, do ponto de vista da automação do processo de implantação
 é que a infraestrutura do Open Knowledge deve já estar disponível
 antes da implantação dos serviços, pois a implantação é realizada nessa infraestrutura.
 
-A Tabela~\ref{tab:relacionados} realiza uma comparação entre os estudos e ferramentas apresentados nesta seção em relação a características presentes em nossa solução, o \ee. Os símbolos na tabela possuem os seguintes significados: ``\checkmark{}'' para ``possui a característica'', espaço vazio para ``não possui a característica'', ``+/-'' para ``não possui a característica de forma totalmente satisfatória'' e ``-'' para quando a característica não se aplica ou não foi possível determinar \gerosa{melhor separar o caso ``não foi possível determinar'', usando um ``?'' para isso}. As características, que formam as colunas da tabela, são listadas a seguir:
+A Tabela~\ref{tab:relacionados} realiza uma comparação entre os estudos e ferramentas apresentados nesta seção em relação a características presentes em nossa solução, o \ee. 
+As características, que formam as colunas da tabela, são as seguintes:
 
 \begin{description}
 \item [Automatizado:] processo de implantação automatizado;
-\item [ADL:] especificação da implantação feita de forma simples e declarativa;
+\item [ADL:] especificação da implantação feita de forma simples e declarativa, sem que seja necessário definir scripts de implantação;
 \item [Escala:] implantação escalável e capaz de lidar com os problemas típicos de sistemas de grande escala, principalmente com a falha de componentes de terceiros;
 \item [Composições:] solução voltada para a implantação de composições de serviços, ou componentes; a principal implicação desse item é a realização da ligação entre os serviços implantados;
 \item [Nuvem:] consideração das potencialidades e desafios trazidos por ambientes de computação em nuvem.
+\item [Heterogeneidade:] a solução possibilita a implantação de serviços desenvolvidos com diferentes tecnologias.
+\end{description}
+
+Os símbolos na tabela possuem os seguintes significados: 
+
+\begin{description}
+\item [\checkmark{}]: possui a característica, 
+\item [x]: não possui a característica, 
+\item [+/-]: não possui a característica de forma totalmente satisfatória, 
+\item [-]: a característica não se aplica e 
+\item [?]: não foi possível determinar. 
 \end{description}
 
 \begin{table}[!t]
 \begin{center}
-    \begin{tabular}{l c c c c c c}
+    \begin{tabular}{l c c c c c c c}
 	 \hline
-	 \itshape{Trabalho} & \itshape{Automatizado} & \itshape{ADL} & \itshape{Escala} & \itshape{Composições} & \itshape{Nuvem}  \\ \hline
-    \cite{Magee1994Regis, Magee1996Dynamic} & - & \checkmark  &  & \checkmark &  \\
-    \cite{Balter1998Olan}   & - & \checkmark &  & \checkmark &  \\
-    \cite{quema2004hierarchical}  & \checkmark & \checkmark & +/- & \checkmark &  \\
-    \cite{Akkerman2005J2EE}   & +/- & \checkmark & - & \checkmark & - \\
-    \cite{Lacour2004Corba} & \checkmark & - &  & \checkmark &  \\
-    \cite{Dolstra2005Configuration}   & \checkmark &  & - & - &  \\
-    \cite{Watson2006Dynasoar}   & \checkmark & - & +/- & \checkmark &  \\
-    Chef   & \checkmark &  & - & - & - \\
-    Capistrano   & \checkmark &  & - & - & - \\
-    Cloud Foundry   & \checkmark & - & \checkmark &  & \checkmark \\
-    \ee   & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+	 \itshape{Trabalho} & \itshape{Automatizado} & \itshape{ADL} & \itshape{Escala} & \itshape{Composições} & \itshape{Nuvem} & \itshape{Heterog.} \\ \hline
+    Darwin/Regis \cite{Magee1994Regis} & x & \checkmark  & x & \checkmark & x & x \\
+    Olan \cite{Balter1998Olan}   & \checkmark & \checkmark & x & \checkmark & x & x  \\
+    \cite{quema2004hierarchical}  & \checkmark & \checkmark & \checkmark & \checkmark & x & x \\
+    \cite{Akkerman2005J2EE}   & +/- & \checkmark & x & \checkmark & x & x \\
+    \cite{Lacour2004Corba} & \checkmark & ? & x & \checkmark & x & x \\
+    Nix \cite{Dolstra2005Configuration}   & \checkmark &  & - & - &  & \\
+    Dynasoar \cite{Watson2006Dynasoar}   & \checkmark & - & +/- & \checkmark &  & \\
+    Open Knowledge \cite{Besana2008OpenKnowledge} & & & & & & \\
+    TOSCA \cite{Wettinger2013Tosca} & & & & & & \\
+    Chef   & \checkmark &  & - & - & - & \\
+    Capistrano   & \checkmark &  & - & - & - & \\
+    Cloud Foundry   & \checkmark & - & \checkmark &  & \checkmark & \\
+	Juju & \checkmark & x & x & x & \checkmark & \checkmark \\
+    \ee   & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
     \end{tabular}
   \caption{Tabela comparativa com os trabalhos relacionados}
    \label{tab:relacionados}
 \end{center}
 \end{table}
 
-No próximo capítulo prosseguimos mostrando como o \ee\ implementa as características descritas. Também mostraremos os resultados de uma avaliação preliminar da escalabilidade do processo de implantação  automatizado pelo \ee.
 
 
