@@ -3,3 +3,69 @@
 \label{cap:conclusoes}
 
 Fim :)
+
+\section{Trabalhos futuros}
+
+Listamos agora alguns possíveis trabalhos futuros envolvendo o \ee:
+
+\begin{description}
+
+\item[Análise da influência dos tratamentos de falhas na escalabilidade.] 
+Ao analisar a escalabilidade fornecida pelo \ee ao processo de implantação,
+não determinamos o quanto dessa escalabilidade se deve graças aos mecanismos 
+presentes no EE que tratam falhas de terceiros.
+Um experimento a se fazer nesse sentido seria replicar o experimento 
+de escalabilidade (Figura~\ref{fig:ee_scalability})
+primeiramente desativando a reserva de nós ociosos e posteriormente
+desativando também os \emph{invokers}.
+Dessa forma poderíamos comparar três curvas em um mesmo plano
+a fim de determinar o quanto que os mecanismos de tratamento de falhas
+do EE melhoram a escalabilidade do processo de implantação de composições de serviços.
+
+\item[Análise multivariável de fatores que influenciam a escalabilidade.] 
+Outro experimento para melhor entender o desempenho e escalabilidade do EE
+seria aplicar uma análise multivariável para determinar o quanto
+que o tempo de implantação é influenciado por fatores como a quantidade de composições
+sendo implantada, a quantidade de serviços em cada composição e a quantidade
+de nós disponíveis.
+Nesse sentido, começamos a realizar esse experimento utilizando a análise fatorial $2^k$
+com replicação~\cite{Jain20002kr}, mas dificuldades com a distribuição dos dados e o alto custo
+para se obter novas amostras dificultaram a conclusão desse experimento.
+
+\item[Experimentos com desenvolvedores.] 
+Na Seção~\ref{sec:avaliacao_eng_sw} realizamos uma avaliação qualitativa para
+ajudar a expandir nosso entendimento sobre o valor que o EE agrega ao processo de implantação.
+Dada as limitações de nosso experimento, seria interessante expandi-lo
+com a participação de diversos desenvolvedores de software
+e administradores de sistemas assumindo o papel de implantadores de uma composição de serviços.
+Nesse caso, a ideia seria utilizar uma abordagem mais rigorosa,
+dentro das possibilidades de experimentos de engenharia de software.
+Comparações com outros arcabouços de implantação também poderiam ser realizadas.
+
+\item[Algoritmos adaptativos para tratamento de falhas.] 
+Acreditamos que os algoritmos do EE que tratam falhas de terceiros podem ser melhorados.
+Tanto a reserva de nós ociosos quanto o \emph{invoker} são adequados 
+para utilizarem algoritmos adaptativos que aprendem com o histórico de
+execuções. Assim, a reserva de nós ociosos poderia alterar seu tamanho dinamicamente,
+evitando desperdícios de VMs extras. Da mesma forma, o \emph{invoker}
+poderia utilizar valores de \emph{timeout} mais adequados, evitando longas
+esperas desnecessárias ou desistindo de tarefas que logo estariam prontas.
+Um desafio interessante para a adaptação dinâmica do \emph{invoker} é
+considerar a alteração dinâmica de suas três propriedades:
+\emph{timeout}, quantidade de tentativas e tempo de pausa entre as tentativas.
+
+\item[Federação de instâncias do EE.]
+
+\item[Utilização de um balanceador de carga.]
+
+\item[Utilização de um \emph{Enterprise Service Bus}.]
+
+\item[Atualização dinâmica de composições de serviços.]
+
+\end{description}
+
+
+
+
+
+
