@@ -347,11 +347,14 @@ Valeu galera \verb!\o/!
 %no máximo 500 palavras e ser seguido dos termos representativos do conteúdo do
 %trabalho (palavras-chave). 
 
-\fabio{a primeira frase está estranha pois começa falando de automatizada e depois muda para sistematizada, que são coisas diferentes.}
-
-A implantação automatizada é uma necessidade no ciclo de vida de um sistema de grande escala, mas muitas organizações ainda realizam a implantação de seus sistemas de forma não-sistematizada, tornando o processo de implantação moroso, propenso a erros e não-reprodutível. Esses problemas agravam-se ao implantar um sistema distribuído, como é o caso de coreografias de serviços web, que implementam processos de negócios distribuídos entre várias organizações. A implantação de uma coreografia deve ser coordenada, pois os serviços de uma coreografia precisam conhecer a localização dos outros serviços, informação possivelmente disponível apenas em tempo de implantação. Coreografias de grande escala são mantidas de forma distribuída por várias organizações e a presença de falhas na comunicação entre seus serviços torna-se corriqueira. Considerando as vantagens da virtualização na gerência de ambientes, o crescente uso da computação em nuvem pelas organizações e os requisitos de sistemas de grande escala, investigamos o uso da computação em nuvem na implantação de coreografias de serviços web. Para isso, desenvolvemos o CHOReOS Enactment Engine, um sistema de middleware que possibilita a implantação distribuída e automatizada de coreografias de serviços web, operando como um provedor de computação em nuvem na camada de Plataforma como um Serviço. O middleware desenvolvido será avaliado pela sua escalabilidade em relação ao tempo de implantação das coreografias, operação para a qual a quantidade de serviços a ser implantada é considerada como carga do sistema, enquanto que a quantidade de máquinas virtuais acessíveis são os recursos do sistema. No atual estágio de implementação do Enactment Engine, experimentos preliminares de escalabilidade foram realizados, mostrando que um aumento de 50 vezes no número de serviços implantados provocou um aumento de cerca de apenas duas vezes no tempo de implantação quando os recursos do sistemas eram aumentados na mesma proporção que a carga aplicada, o que consideramos um resultado preliminar muito satisfatório.\\
-
-\fabio{Esse resumo está longo e detalhado demais. Seria melhor algo entre 10 e 15 linhas concentrando-se no que é mais importante no trabalho e suas contribuições.}
+A implantação de composições de serviços web de grande escala apresentam vários desafios,
+tais como falhas corriqueiras na infraestrutura, 
+heterogeneidade tecnológica dos componentes operados, 
+distribuição do sistema por diferentes organizações
+e atualização frequente dos serviços em operação.
+Nesta dissertação, estudamos como a implantação automatizada baseada em middleware
+pode auxiliar na superação de tais desafios.
+Para isso, desenvolvemos o CHOReOS Enactment Engine, um sistema de middleware que possibilita a implantação distribuída e automatizada de composições de serviços web em uma infraestrutura virtualizada, operando no modelo de computação em nuvem denominado Plataforma como um Serviço. O middleware desenvolvido é avaliado qualitativamente em comparação a abordagens de implantação \emph{ad-hoc} e quantitativamente pela sua escalabilidade em relação ao tempo de implantação das composições de serviços. \\
 
 \noindent \textbf{Palavras-chave:} implantação de software, coreografias, serviços web, computação em nuvem, grande escala.
 
