@@ -6,7 +6,7 @@ Fim :)
 
 \section{Trabalhos futuros}
 
-Listamos agora alguns possíveis trabalhos futuros envolvendo o \ee:
+Listamos agora alguns possíveis trabalhos futuros envolvendo o \ee.
 
 \begin{description}
 
@@ -54,15 +54,60 @@ Um desafio interessante para a adaptação dinâmica do \emph{invoker} é
 considerar a alteração dinâmica de suas três propriedades:
 \emph{timeout}, quantidade de tentativas e tempo de pausa entre as tentativas.
 
-\item[Federação de instâncias do EE.]
+\item[Federação de instâncias do EE.] Uma instância do EE realiza a implantação
+de serviços pertencentes a uma dada organização. Se algum dos serviços implantados
+depende de um serviço pertencente a outra organização, o implantador
+pode modelar esse serviço de terceiros como um \emph{serviço legado}
+na modelagem da composição. O problema é que mudanças nos serviços de
+terceiros, como mudança de URI, podem causar impactos na composição implantada.
+Além disso, se serviços interdependentes de diferentes organizações são implantados em paralelo,
+torna-se difícil utilizar o recurso de \emph{serviço legado},
+uma vez que o implantador de uma organização ainda não dispões das URIs 
+dos serviços sendo implantados pela outra organização.
+Para tornar a implantação de composições inter-organizacionais mais dinâmica,
+um caminho promissor é a federação de instâncias do EE.
+Assim, uma instância pertencente a uma organização $A$ pode avisar a
+uma outra instância pertencente a uma organização $B$ sobre mudanças 
+nas coreografias de $A$ que possam impactar as coreografias pertencentes a $B$.
 
-\item[Utilização de um balanceador de carga.]
+\item[Utilização de um balanceador de carga.] Na atual implementação do EE,
+quando um serviço é replicado em várias instâncias, seus clientes
+recebem as URIs de todas as instâncias disponíveis do serviço.
+Assim, cabe a cada cliente distribuir a carga pelas diferentes réplicas disponíveis.
+No entanto, melhor seria que o EE implantasse um balanceador de carga 
+que distribuísse as requisições entre as diferentes instâncias do serviço.
+Assim, os clientes receberiam apenas uma URI, que seria a URI
+do balanceador de carga.
 
-\item[Utilização de um \emph{Enterprise Service Bus}.]
+\item[Utilização de um barramento de serviços.] Caso um serviço dependa
+de outro serviço com um protocolo de comunicação diferente, o EE assume que é de
+responsabilidade do serviço cliente conhecer o protocolo do serviço provedor.
+Contudo, para facilitar a implementação dos serviços, a conversão entre
+diferentes protocolos de comunicação poderia ser tratada por um barramento de serviços.
+Assim, uma possibilidade seria de que o EE implantasse automaticamente instâncias
+de um barramento de serviços para interligar serviços de protocolos diferentes.
+No entanto, para essa tarefa é necessário a utilização de um barramento de serviços
+que considere a natureza dinâmica de ambientes de computação em nuvem,
+onde serviços são replicados e passam a possuir múltiplas URIs.
 
-\item[Atualização dinâmica de composições de serviços.]
+\item[Atualização dinâmica de composições de serviços.] Na atual implementação do EE,
+a atualização de coreografias pode ocasionar falhas em transações correntes,
+o que ocorre mesmo com serviços sem estado.
+Vários trabalhos \cite{Kramer1990Philosophers, Vandewoude2007Tranquility, Xiaoxing2011VersionConsistent} 
+estudam o processo de atualização dinâmica, pelo qual as transações correntes 
+são preservadas durante a atualização de um serviço. 
+Acreditamos que seria muito interessante possibilitar ao administrador do EE
+a definição de políticas e algoritmos de atualização para 
+tratar da adequada finalização das transações correntes.
+Dessa forma, o EE poderia se tornar uma plataforma de apoio
+à comparação empírica entre diferentes estratégias presentes na literatura.
 
 \end{description}
+
+Outras pendências menores estão registradas na página de \emph{issues} 
+do \ee\footnote{\url{https://github.com/choreos/enactment_engine/issues?state=open}}.
+Colaborações técnicas e de pesquisa sobre as possibilidades levantadas
+são bem vindas.
 
 
 
