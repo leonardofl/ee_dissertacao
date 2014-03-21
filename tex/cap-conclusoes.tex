@@ -2,9 +2,57 @@
 \chapter{Conclusões}
 \label{cap:conclusoes}
 
-Fim :)
+\leo{conclusões em andamento...}
 
-\section{Trabalhos futuros}
+Nesta dissertação, nós introduzimos o CHOReOS \ee,
+um novo sistema de middleware que facilita a implantação de composições
+de serviços de grande escala em um ambiente de computação em nuvem.
+
+Embora a automação do processo de implantação de composições de serviços
+possa ser implementado de maneiras \emph{ad-hoc},
+esse tipo de solução normalmente requer de implantador
+uma grande gama de conhecimentos técnicos.
+Por meio de experimentos, procuramos evidenciar como
+uma abordagem baseada em middleware, como o EE,
+reduz o tempo de trabalho necessário para a automação
+do processo de implantação, considerando tanto o tempo
+de desenvolvimento de soluções de implantação,
+quanto o tempo de implantação de cada composição.
+Procuramos mostrar também qualitativamente como
+o uso de uma solução baseada em middleware
+melhora a qualidade final do processo de implantação,
+uma vez que diversas complicações são tratadas
+na camada do middleware, tais como concorrência
+e tratamento de falhas de terceiros.
+
+Ao revisar a literatura identificamos várias necessidades e soluções
+para sistemas de grande escala, dentre as quais procuramos aplicar
+aquelas adequadas ao contexto de implantação de sistemas.
+\todo{falar mais da seção de discussão}
+
+Ao conduzir experimentos de grande escala,
+tal prática se mostrou recompensadora.
+Resultados experimentais evidenciam a aplicabilidade da arquitetura proposta
+e que desempenho e escalabilidade satisfatórios podem ser obtidos.
+\todo{falar mais da seção de avaliação de escalabilidade}
+
+Acreditamos no potencial do \ee em apoiar outras pesquisas
+sobre composições de serviços, e acreditamos que as lições aprendidas
+ao se implantar o \ee e os princípios arquiteturais aplicados
+podem auxiliar no desenvolvimento de outras soluções baseadas
+em middleware no contexto de computação de grande escala.
+
+Como lições aprendidas durante o desenvolvimento do EE e desta dissertação podemos destacar:
+
+\begin{itemize}
+\item gargalo do chef server. filas (rabbit), tidas como escaláveis, ajudam com vazão, mas não com tempo de resposta. mas o q atrapalhou mesmo foi a grande quantidade de req para esse componente altamente central no sistema.
+\item desenvolvimento iterativo foi bom, mas um certo up-front design modular mais atrapalhou, e no fim o design foi simplificado sucessivamente.
+\end{itemize}
+
+
+
+
+\section{Sugestões para trabalhos futuros}
 
 Listamos agora alguns possíveis trabalhos futuros envolvendo o \ee.
 
@@ -110,7 +158,25 @@ Colaborações técnicas e de pesquisa sobre as possibilidades levantadas
 são bem vindas.
 
 
+\section{Palavras finais}
 
+
+algo sobre continous delivery, espírito ágil (se expandindo, design think, lean): iteratividade... 
+tudo q ajude a acelerar o ciclos de iterações em todos os níveis
+(codificação, implantação, negócio) é importante.
+
+importância disso para sistema de grande escala, onde up front design é mt mais difícil.
+importância da grande escala, especialmente para composição de serviços...
+posso citar integração de fluxos de negócios empresariais,
+mas tb integração governamental para uma maior inteligência a serviço da sociedade
+(uma composição que envolvesse todos os municípios já seria bem grande).
+
+algo sobre computação em nuvem como importante apoiador dessa transformação,
+permitindo q o princípio de iteratividade se aplique mais facilmente
+às atividades de implantação.
+
+No futuro... maior automação e integração não só dos serviços,
+mas do próprio processo de desenvolvimento de SW.
 
 
 
