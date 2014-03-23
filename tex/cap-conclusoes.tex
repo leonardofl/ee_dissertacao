@@ -2,54 +2,119 @@
 \chapter{Conclusões}
 \label{cap:conclusoes}
 
-\leo{conclusões em andamento...}
-
 Nesta dissertação, nós introduzimos o CHOReOS \ee,
 um novo sistema de middleware que facilita a implantação de composições
 de serviços de grande escala em um ambiente de computação em nuvem.
 
 Embora a automação do processo de implantação de composições de serviços
-possa ser implementado de maneiras \emph{ad-hoc},
-esse tipo de solução normalmente requer de implantador
+possa ser implementada de maneiras \emph{ad-hoc},
+esse tipo de solução normalmente requer do implantador
 uma grande gama de conhecimentos técnicos.
 Por meio de experimentos, procuramos evidenciar como
 uma abordagem baseada em middleware, como o EE,
 reduz o tempo de trabalho necessário para a automação
 do processo de implantação, considerando tanto o tempo
-de desenvolvimento de soluções de implantação,
+de desenvolvimento da solução de implantação,
 quanto o tempo de implantação de cada composição.
-Procuramos mostrar também qualitativamente como
-o uso de uma solução baseada em middleware
-melhora a qualidade final do processo de implantação,
-uma vez que diversas complicações são tratadas
-na camada do middleware, tais como concorrência
-e tratamento de falhas de terceiros.
 
-Ao revisar a literatura identificamos várias necessidades e soluções
-para sistemas de grande escala, dentre as quais procuramos aplicar
-aquelas adequadas ao contexto de implantação de sistemas.
-\todo{falar mais da seção de discussão}
-
-Ao conduzir experimentos de grande escala,
-tal prática se mostrou recompensadora.
-Resultados experimentais evidenciam a aplicabilidade da arquitetura proposta
-e que desempenho e escalabilidade satisfatórios podem ser obtidos.
-\todo{falar mais da seção de avaliação de escalabilidade}
-
-Acreditamos no potencial do \ee em apoiar outras pesquisas
-sobre composições de serviços, e acreditamos que as lições aprendidas
-ao se implantar o \ee e os princípios arquiteturais aplicados
-podem auxiliar no desenvolvimento de outras soluções baseadas
-em middleware no contexto de computação de grande escala.
-
-Como lições aprendidas durante o desenvolvimento do EE e desta dissertação podemos destacar:
+Ao revisar a literatura identificamos desafios na implantação
+de sistemas de grande escala. 
+Procuramos atender tais desafios ao aplicar no EE
+técnicas e soluções espalhadas na literatura,
+bem como refinar tais soluções com base em 
+nossas experimentações empíricas.
+Listamos a seguir considerações sobre os desafios na
+implantação de sistemas de grande escala
+e sobre como o uso de uma solução de implantação
+baseadas em middleware contribui para a superação
+de tais desafios.
 
 \begin{itemize}
-\item gargalo do chef server. filas (rabbit), tidas como escaláveis, ajudam com vazão, mas não com tempo de resposta. mas o q atrapalhou mesmo foi a grande quantidade de req para esse componente altamente central no sistema.
-\item desenvolvimento iterativo foi bom, mas um certo up-front design modular mais atrapalhou, e no fim o design foi simplificado sucessivamente.
+
+\item Identificamos que a automação é essencial
+para a implantação de sistemas de grande escala.
+Para isso é importante que o middleware de implantação
+forneça uma API remota para disparar as implantações.
+Nesse sentido, também contribui a especificação das
+composições por meio de descrições declarativas de
+suas arquiteturas.
+
+\item Ao se tratar de software distribuído de grande escala,
+falhas nas interações com componentes e serviços de terceiros
+se tornam comum. Implementar estratégias de tratamento
+de falhas de terceiros na camada do middleware é um
+grande auxílio no desenvolvimento de uma solução robusta 
+e escalável.
+
+\item Não só o tratamento de falhas de terceiros,
+mas o tratamento de concorrência pelo middleware é importante também
+para a obtenção de um resultado robusto e escalável,
+sem que o implantador tenha que entender a fundo essas
+questões complicadas.
+
+\item Soluções \emph{ad-hoc} levam vantagem na questão de suportar soluções heterogêneas.
+Contudo, soluções baseadas em middleware podem oferecer
+suporte pronto para as tecnologias mais utilizadas do mercado.
+Além disso, uma arquitetura extensível auxilia no desenvolvimento
+de suporte a novas tecnologias, de forma que o resultado
+de cada nova extensão é compartilhável por todos os usuários do middleware.
+
+\item Composições de serviços podem ser compostos por serviços
+de diferentes organizações. Um middleware de implantação deve considerar
+a colaboração dos serviços por ele implantado com serviços já existentes.
+
+\item A evolução auto-adaptativa de composições de serviços é assunto bastante estudado.
+A implantação automatizada, robusta e escalável é necessária para o
+desenvolvimento de composições de serviços auto-adaptativas.
+Assim, mesmo que um middleare de implantação não forneça mecanismos
+de evolução auto-adaptativos para suas implantações, ele é peça importante
+que pode facilitar o desenvolvimento de novos sistemas adaptativos.
+
 \end{itemize}
 
+Para evidenciar os benefícios das técnicas aplicadas,
+realizamos avaliações empíricas do desempenho e escalabilidade
+da implantação de composições de serviços de grande escala
+operada pelo EE.
+Os resultados experimentais evidenciam a aplicabilidade da arquitetura proposta
+e que desempenho e escalabilidade satisfatórios podem ser obtidos.
 
+Acreditamos que as conclusões já listadas e mais algumas lições aprendidas
+no desenvolvimento do EE e desta dissertação
+possam auxiliar no desenvolvimento de outras soluções baseadas
+em middleware no contexto de computação de grande escala.
+Listamos agora algumas dessas lições aprendidas:
+
+\begin{itemize}
+
+\item Arquiteturas escaláveis não devem depender de um ponto central de processamento.
+Em versões anteriores do EE a utilização do Chef Server impunha grandes
+restrições à escalabilidade do processo de implantação.
+Em um estágio mais anterior de nossa pesquisa acreditávamos que o Chef Server
+não seria um problema, pois para cada requisição seu trabalho era extremamente simples
+e rápido. Mas vários detalhes mostraram o contrário, como 1) a grande
+quantidade de requisições feitas ao Chef Server, vindas do EE e dos nós alvos;
+2) a quantidade de memória RAM gasta no EE para se invocar o Chef Server,
+uma vez que pra cada requisição criávamos uma nova instância de um programa
+Ruby (o \emph{knife}); e 3) o sistema de filas utilizado pelo Chef Server
+para receber suas requisições prejudicava o tempo de resposta dessas requisições.
+
+\item Embora defendida pela literatura~\cite{Hamilton2007InternetScale}
+e considerada um valor em nosso grupo,
+a \emph{simplicidade} é difícil de por em prática.
+Desenvolvimento iterativo que a cada iteração procure fornecer \emph{a coisa mais simples que funcione}
+é importante também no desenvolvimento de sistemas de grande escala.
+No caso do EE, o projeto inicial previa a divisão do EE em três módulos
+que se comunicariam por serviços. Com o passar do tempo vimos que esse desenho
+impunha diversas complicações, e em um primeiro momento passamos de três para dois
+módulos, e em um estágio mais final do desenvolvimento reduzimos os dois módulos
+a apenas um. Uma das dificuldades da divisão anterior era a da sincronia
+entre estruturas de dados replicadas em diferentes módulos.
+No fim, essa simplificação arquitetural não impediu a aplicação de um bom projeto
+de classes, e nem impede, no futuro, a possibilidade de se replicar as instâncias
+do EE para que se suporte uma carga maior de requisições.
+
+\end{itemize}
 
 
 \section{Sugestões para trabalhos futuros}
@@ -160,6 +225,7 @@ são bem vindas.
 
 \section{Palavras finais}
 
+\leo{conclusões em andamento...}
 
 algo sobre continous delivery, espírito ágil (se expandindo, design think, lean): iteratividade... 
 tudo q ajude a acelerar o ciclos de iterações em todos os níveis
@@ -178,5 +244,7 @@ permitindo q o princípio de iteratividade se aplique mais facilmente
 No futuro... maior automação e integração não só dos serviços,
 mas do próprio processo de desenvolvimento de SW.
 
+Acreditamos no potencial do \ee em apoiar outras pesquisas
+sobre composições de serviços,
 
 
