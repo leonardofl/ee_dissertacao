@@ -2,9 +2,24 @@
 \chapter{Introdução}
 \label{cap:introducao}
 
-O processo de implantação de um software vai do momento de aquisição do software até o momento em que o software encontra-se em execução~\cite{DEPL2006}. Processos totalmente automatizados são importantes na implantação de sistemas \cite{Humble2011Continuous}. No entanto, muitas organizações ainda realizam a implantação de seus sistemas como descrito por Dolstra et al. \cite{Dolstra2005Configuration}: um processo manual, moroso, propenso a erros e não reprodutível. Ainda segundo esses autores, o problema agrava-se na implantação de sistemas distribuídos, pois o esforço de implantação cresce com a quantidade de nós do sistema. 
+Princípios que ganharam destaque com os métodos ágeis de desenvolvimento
+de software vêm expandindo suas fronteiras e se aderindo a outros aspectos
+do desenvolvimento de um produto. A importância da \emph{iteratividade}
+é um desses princípios que se tornam evidentes em abordagens modernas de
+desenvolvimento de produtos, como o \emph{design thinking}~\cite{Brown2009DesignThinking},
+ou em abordagens de modelos de negócios, como o \emph{lean startup}~\cite{Ries2011Lean}.
+Um dos benefícios em se acelerar o ciclo de iterações é o aumento
+de \emph{feed back} recebido, o que pode ser usado
+para se redirecionar e refinar tanto o \emph{o que fazer}, 
+quanto o \emph{como fazer}.
 
-\gerosa{Está começando fraco. A 1a frase precisa ser mais impactante.}
+No problema de implantação de sistemas, o princípio de iteratividade
+ganhou força com as ideias de entrega contínua de software~\cite{Humble2011Continuous},
+o que é uma evolução da prática de integração contínua, já utilizada em métodos ágeis.
+Entregar software continuamente significa que normalmente cada \emph{commit}
+no código-fonte corresponde a uma versão potencialmente implantável.
+E a capacidade de se implantar software continuamente é passo fundamental
+para o lançamento constante de novas versões de um sistema.
 
 Serviços web possibilitam a comunicação interoperável entre máquinas pela rede~\cite{W3C2004WS}
 e podem ser compostos para implementar sofisticados processos de negócios~\cite{Papazoglou2007State}.
@@ -30,7 +45,10 @@ heterogeneidade tecnológica dos componentes operados,
 distribuição do sistema por diferentes organizações
 e atualização frequente dos serviços em operação.
 Com essas dificuldades, torna-se inviável manter a escalabilidade do processo de implantação
-sem a utilização de um processo de implantação totalmente automatizado.
+sem a utilização de um processo de implantação totalmente automatizado,
+uma vez que processos de implantação manuais tendem a ser
+morosos, propensos a erros e não reprodutíveis, principalmente
+na implantação de sistemas distribuídos~\cite{Dolstra2005Configuration}.
 
 Esses desafios podem ser tratados por soluções \emph{ad-hoc},
 nas quais um processo de implantação é automatizado tendo em vista
