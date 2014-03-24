@@ -2,7 +2,7 @@
 \chapter{Conceitos básicos}
 \label{cap:conceitos}
 
-Neste capítulo apresentaremos conceitos que são a base para esta pesquisa.
+Neste capítulo apresentaremos conceitos que fundamentam esta pesquisa.
 Os conceitos apresentados abordam serviços web e suas composições, 
 implantação de sistemas e, por fim, os desafios particulares da implantação
 de sistemas de grande escala.
@@ -10,7 +10,7 @@ de sistemas de grande escala.
 \section{Serviços web}
 \label{sec:servicos}
 
-Serviços são entidades autônomas e independentes de plataforma, que podem ser descritas, publicadas, encontradas e compostas~\cite{Papazoglou2007State}. O conceito de serviço possui semelhanças com o conceito de \emph{componentes}. Componentes foram idealizados para que sistemas fossem construídos com ``blocos'' fornecidos por terceiros~\cite{McIlroy1968MassProduced}. Esses blocos teriam interfaces bem definidas e, com isso, seriam conectáveis entre si, sem que o desenvolvedor precise entender sobre a implementação desses blocos. Szyperski~\cite{Szyperski2003Component} define componente como uma unidade de composição, possuindo uma especificação de interface contratual e declaração explícita de suas dependências. 
+Serviços são entidades autônomas e independentes de plataforma, que podem ser descritas, publicadas, encontradas e compostas~\cite{Papazoglou2007State}. O conceito de serviço possui semelhanças com o conceito de \emph{componentes}. Componentes foram idealizados para que sistemas fossem construídos com ``blocos'' fornecidos por terceiros~\cite{McIlroy1968MassProduced}. Esses blocos teriam interfaces bem definidas e, com isso, seriam conectáveis entre si, sem que o desenvolvedor precise entender sobre a implementação desses blocos. Szyperski~\cite{Szyperski2003Component} define componente como uma unidade de composição, possuindo uma especificação contratual de interface e declaração explícita de suas dependências. 
 
 Uma das utilidades fundamentais de componentes e serviços é proporcionar a ligação entre sistemas heterogêneos.
 Em busca desse objetivo, a OMG liderou esforços para a construção de uma solução para a comunicação de objetos
@@ -28,7 +28,7 @@ como ser acessível pela Internet e expor operações relacionadas a funcionalid
 %a outros serviços. Essa dependência pode ser implícita por meio de chamadas a outros serviços web
 %na implementação do serviço em questão. \Gerosa{Inconsistência entre este parágrafo e o próximo.} 
 
-Como muitos dos trabalhos sobre implantação de componentes são diretamente aplicáveis na implantação de serviços, tratamos os termos ``componente'' e ``serviço'' como sinônimos, assim como faz Fowler~\cite{Fowler2004Inversion}. Neste trabalho utilizamos também os termos ``serviço'' e ``serviço web'' de forma equivalente, assim como feito por outros autores~\cite{Watson2006Dynasoar}. Damos preferência ao termo ``serviço web'' para evitar os significados mais gerais que a palavra ``serviço'' pode assumir. Exceção pode haver ao descrever trabalhos de terceiros que utilizam o termo ``serviço'' com algum significado mais amplo que o de ``serviço web''. 
+Como muitos dos trabalhos sobre implantação de componentes são diretamente aplicáveis na implantação de serviços, tratamos os termos ``componente'' e ``serviço'' como sinônimos, assim como Fowler~\cite{Fowler2004Inversion}. Neste trabalho utilizamos também os termos ``serviço'' e ``serviço web'' de forma equivalente, assim como feito por outros autores~\cite{Watson2006Dynasoar}. Damos preferência ao termo ``serviço web'' para evitar os significados mais gerais que a palavra ``serviço'' pode assumir. Exceção pode haver ao descrever trabalhos de terceiros que utilizam o termo ``serviço'' com algum significado mais amplo que o de ``serviço web''. 
 
 Um ponto de acesso (\textit{endpoint}) de um serviço web é uma entidade referenciável para a qual se envia mensagens construídas de acordo com a especificação do serviço~\cite{W3C2004Addressing}. 
 Um ponto de acesso é referenciado por uma URI (\emph{Uniform Resource Identifier}).
