@@ -488,18 +488,19 @@ adequação legal, etc.~\cite{Papazoglou2008Journey}.
 seja vital para manter um funcionamento adequado, uma vez que a intervenção manual
 se torna mais custosa.
 
-Quando requisitos funcionais ou não-funcionais são violados, as possíveis ações a serem tomadas são:
+Quando requisitos funcionais ou não-funcionais são violados, 
+algumas das possíveis ações a serem tomadas são:
 1) substituição de versão de serviços; 2) aumento na quantidade de réplicas de um serviço; e
 3) migração da instância de um serviço para outro hospedeiro.
 Uma vez que todas essas ações tem relação com o processo de implantação,
-pode-se dizer que sistemas auto-adaptativos e autonômicos precisam estar cientes
+pode-se dizer que sistemas auto-adaptativos precisam estar cientes
 e ter pleno controle das atividades do processo de implantação.
 
 Para tomar as decisões de adaptação, um sistema auto-adaptativo precisa monitorar
-a si próprio para coletar métricas a serem utilizadas em algum algoritmo adaptativo.
-Exemplo de métrica a ser coletada é a taxa de utilização de CPU no hospedeiro do serviço.
-Coletar tais métricas requer a utilização de uma infraestrutura de monitoramento
-que deve ser implantada na infraestrutura alvo.
+a si próprio para coletar métricas a serem utilizadas por algum algoritmo adaptativo.
+Um exemplo de métrica a ser coletada é a taxa de utilização de CPU no hospedeiro do serviço.
+Coletar tais métricas requer a utilização de um sistema de monitoramento
+que deve ser implantado na infraestrutura alvo.
 Portanto, o processo de implantação de sistemas auto-adaptativos
 também deve considerar a implantação de sistemas auxiliares que realizam esse monitoramento.
 

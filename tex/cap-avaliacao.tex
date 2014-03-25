@@ -2,7 +2,7 @@
 \chapter{Avaliação}
 \label{cap:avaliacao}
 
-Neste capítulo apresentamos experimentos realizados com o Enactment Engine com objetivo de avaliar
+Neste capítulo, apresentamos experimentos realizados com o Enactment Engine com objetivo de avaliar
 seu uso, contrastando com soluções \emph{ad-hoc} de implantação automatizada.
 Também avaliamos seu desempenho e escalabilidade para verificar a viabilidade de seu uso
 no contexto de composições de serviços de grande escala.
@@ -27,7 +27,8 @@ contendo 162 linhas de código (LoC), uma média de 11 linhas por serviço.
 O autor dessa especificação foi um aluno de doutorado, já acostumado ao conceito
 de coreografias de serviços web, e que contribuiu com o código do EE.
 O programa cliente, a classe \texttt{AirportEnact}, utiliza a API Java do EE,
-tem apenas 22 linhas de código, e foi escrito pelo autor desta dissertação.
+tem apenas 22 linhas de código, e foi escrito pelo autor desta dissertação
+em menos de 5 minutos.
 Depois que essas classes foram escritas, a implantação da coreografia em
 três nós, utilizando o EE, levou apenas 4 minutos.
 
@@ -38,10 +39,11 @@ serviços por três nós alvos.
 Essa solução precisou da escrita de 
 100 LoC de shell scripts, 220 LoC de Java, and 85 LoC de Ruby (para o Chef). 
 
-No restante dessa seção, descreveremos o processo de criação e execução
+No restante desta seção, descreveremos o processo de criação e execução
 da solução \emph{ad-hoc}. Destacaremos as dificuldades no processo
 que o implantador encontra sem o uso do EE.
 
+\paragraph{Implementação da solução ad hoc}
 A implantação de cada serviço é executada por uma receita Chef contida em um \emph{cookbook}.
 Nós escrevemos um \emph{cookbook} modelo, para implantar pacotes JARs,
 e o usamos para gerar \emph{cookbooks} para os 15 serviços participantes.
@@ -51,7 +53,7 @@ As URLs dos pacotes dos serviços tiveram que ser manualmente inseridas nos
 \emph{cookbooks} depois da execução da script \texttt{generate}.
 
 Para implementar a ligação entre serviços,
-desenvolvemos um pequeno mas não trivial programa Java, chamado called \texttt{context\_sender}. 
+desenvolvemos um pequeno mas não trivial programa Java, chamado \texttt{context\_sender}. 
 Ele é responsável por invocar a operação \texttt{setInvocationAddress} de um dado serviço.
 Implementamos o \texttt{context\_sender} como um programa Java para
 aproveitar a API SOAP fornecida pelo ambiente Java SE.
@@ -64,20 +66,20 @@ que devem ser manualmente preenchidas com os IPs dos serviços implantados.
 
 A execução da solução \emph{ad-hoc} possui vários passos,
 inclusive alguns manuais.
-Para cada nó alvo, o implantador deve se conectar ao nó (SSH),
+Para cada nó alvo, o implantador deve se conectar ao nó (via SSH),
 instalar o git, baixar os \emph{cookbooks}, executar o script \texttt{install\_chef} 
 para instalar o Chef, editar alguns arquivos de configuração para definir
 quais serviços serão implantados no nó, e executar o Chef-Solo.
 Após implantar os serviços, o implantador deve editar o script
-\texttt{bind\_services} com os IPs dos serviços implantados,
-e finalmente executar o script \texttt{bind\_services}.
+\texttt{bind\_services} com os IPs dos serviços implantados
+e, finalmente, executar o script \texttt{bind\_services}.
 Alguns dos problemas dessa solução \emph{ad-hoc} são:
 
 \begin{itemize}
 
 \item Três diferentes tecnologias são utilizadas:
 shell script, Java e Chef.
-Expertise em linha de comando também foi necessária em alguns passos,
+Conhecimento de linha de comando também foi necessária em alguns passos,
 como utilizar o editor \emph{vim} ou o comando \texttt{ps} para verificar
 o estado dos processos dos serviços implantados.
 Isso sugere que se requer uma ampla gama de habilidades técnicas
@@ -94,7 +96,7 @@ e realizar a edição manual também.
 Contudo, as edição manuais mencionadas
 poderiam ser evitadas com um script mais complexo.
 Replicação de código poderia também ter sido evitada com a criação de um
-``LWRP'' (light weight resource provider) do Chef,
+``LWRP'' (\emph{light weight resource provider}) do Chef,
 mas isso seria uma tarefa para usuários avançados do Chef.
 
 \item Para cada nó alvo, o implantador deve realizar alguns passos manuais
@@ -165,7 +167,8 @@ para que possamos analisar o desempenho do EE conforme a carga aumenta.
 \end{figure}
 
 
-Inicialmente, conduzimos uma análise multi-variada do desempenho do EE implantando composições nos seguintes cenários:
+Inicialmente, conduzimos uma análise multi-variada \fabio{ref}
+do desempenho do EE implantando composições nos seguintes cenários:
 1) um pequeno conjunto de pequenas composições;
 2) um pequeno conjunto de composições maiores;
 3) um conjunto maior de pequenas composições;
@@ -194,7 +197,7 @@ e o \emph{timeout} de criação de nós era 300 segundos.
 Utilizamos a Amazon EC2 como provedor de infraestrutura,
 com instâncias do tipo \emph{small},
 cada uma com 1.7 GiB of RAM, uma vCPU com processamento
-equivalente a 1.0--1.2 GHz, e rodando Ubuntu GNU/Linux 12.04.
+equivalente a 1.0--1.2 GHz, e executando Ubuntu GNU/Linux 12.04.
 O EE foi executado em uma máquina com 8 GB de RAM,
 com processador Intel Core i7 CPU de 2.7 GHz e GNU/Linux kernel 3.6.7.
 A versão do EE utilizada nos experimentos e os dados coletados estão disponíveis 
@@ -224,14 +227,17 @@ A tabela também mostra quantas composições e serviços foram corretamente imp
 \hline \end{tabular}
 \end{table}
 
-Os resultados mostram que o EE escala bem em termos de serviços sendo implantados.
+\fabio{não tínhamos uma tabela mais informativa no artigo do CCGrid??}
+
+Os resultados mostram que o EE escala relativamente bem em termos de serviços sendo implantados.
 Embora o número de serviços foi multiplicado por 10, o tempo de implantação
-cresceu aproximadamente apenas 3 vezes nos cenários 2 e 3.
+cresceu aproximadamente apenas 3 vezes nos cenários 2 e 3 \fabio{não entendi. onde está mostrado isso???}.
 Esse incremento no tempo de implantação é causado principalmente pelo fato
 de que quanto maior a quantidade de serviços, maiores são as chances da ocorrência de falhas,
-o que dispara a re-execução de algumas rotinas.
+o que dispara a re-execução de algumas rotinas. \fabio{explicação confusa e incompleta}
 
-Os resultados também mostram que o quando o número de serviços por nó dobrou (cenário 4),
+Os resultados também mostram que o quando o número de serviços por nó dobrou (cenário 4)
+\fabio{dobrou em relação a o que??? não dá prá entender.},
 o tempo de implantação cresceu aproximadamente 25\%. Parte dessa sobrecarga foi causada
 pelo incremente no número de receitas Chef que devem ser executadas (sequencialmente) nos nós.
 
@@ -244,6 +250,8 @@ enquanto que no cenário 4 houve apenas uma falha.
 No cenário 2, a pior situação, foram 3 falhas dentre 1000 serviços.
 No cenário 3, houve uma execução com 20 falhas, mas esse foi um evento excepcional,
 uma vez que a segunda pior situação contou com apenas 3 falhas.
+
+\fabio{quantas seriam as falhas se não tivéssemos o mecanismo de tolerância?}
 
 Finalmente, observamos que 80\% das execuções não utilizaram a reserva de nós ociosos.
 Quando a reserva foi usada, houve um acesso máximo por execução de 6 nós,

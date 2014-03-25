@@ -48,7 +48,7 @@ O \ee é um sistema de middleware de código aberto que primeiramente deve ser i
 Uma vez em execução, a instância do EE fornece serviços que podem ser consumidos por algum sistema cliente, desenvolvido
 e operado pela figura do \emph{implantador}. O administrador e o implantador podem pertencer à mesma organização,
 mas é possível que o administrador forneça o EE como um serviço (SaaS) a terceiros, cobrando por sua utilização.
-Para esses terceiros a vantagem seria evitar o trabalho de instalação e configuração do EE.
+Para esses terceiros, a vantagem seria evitar o trabalho de instalação e configuração do EE.
 O ambiente de execução do EE é exibido na Figura~\ref{fig:arquitetura} e os componentes envolvidos são descritos a seguir.
 
 \begin{figure}[ht]
@@ -62,7 +62,7 @@ O ambiente de execução do EE é exibido na Figura~\ref{fig:arquitetura} e os c
 
 \item O \emph{provedor de infraestrutura} é um serviço capaz de criar e destruir máquinas virtuais 
 (também chamadas de \emph{nós}), normalmente em um ambiente de computação em nuvem. 
-Atualmente o \ee oferece suporte para o Amazon EC2 e o OpenStack.
+Atualmente, o \ee oferece suporte para o Amazon EC2 e o OpenStack.
 
 \item O \emph{agente de configuração} é executado nos nós alvos
 e dispara os scripts que implementam as fases de preparação
@@ -72,7 +72,7 @@ como seu agente de configuração.
 
 \item O \emph{cliente do \ee} é um programa ou script desenvolvido
 pelo implantador, no qual a especificação da composição de serviços é definida.
-Esse script deve enviar a especificação da composição para o \ee
+Esse programa deve enviar a especificação da composição para o \ee
 por meio das operações REST fornecidas pelo \ee.
 Uma opção para implementar essas chamadas é utilizar
 a biblioteca Java por nós fornecida, que abstrai os detalhes
@@ -118,9 +118,9 @@ de preparação e inicialização dos serviços atribuídos ao nó.
 Dessa forma, os serviços entram em estado de execução na infraestrutura alvo.
 
 \item \emph{Ligação entre serviços}: após os serviços terem sido iniciados, 
-para cada relação de dependência na coreografia (ex: serviço \textsf{TravelAgency}
+para cada relação de dependência na coreografia (p.ex: serviço \textsf{TravelAgency}
 depende do serviço \textsf{Airline}), o EE fornece o endereço da dependência 
-(ex: \url{http://airline.com/ws}) ao serviço dependente.
+(p.ex: \url{http://airline.com/ws}) ao serviço dependente.
 Mais informações sobre o processo de ligação são fornecidas na Seção~\ref{sec:ligacao}.
 
 \item \emph{Resposta para o cliente}: o EE responde ao seu cliente,
@@ -143,14 +143,14 @@ coleta valores de uso de CPU, memória e disco dos nós.
 O \ee recebe de seus clientes a especificação da composição na forma 
 de uma descrição arquitetural com as informações necessárias e suficientes para 
 que se possa realizar a implantação da composição. 
-O EE também devolve ao seu cliente informações sobre o resultado da implantação, 
+O EE também devolve, ao seu cliente, informações sobre o resultado da implantação, 
 em especial as localizações de acesso aos serviços. As descrições da composição e de sua 
-especificação são feitas com uma \emph{linguagens de descrição arquitetural} (ADL), 
+especificação são feitas por meio de uma \emph{linguagem de descrição arquitetural} (ADL), 
 assim como a dos trabalhos vistos no Capítulo~\ref{cap:relacionados}. 
 A ADL do EE define a estrutura de classes apresentada na Figura~\ref{fig:adl}. 
 Em nossa implementação, representações de instâncias desse modelo 
 são trocadas entre o EE e seu cliente em formato XML. 
-A descrição detalhada de cada atributo e o \emph{schema} XML da linguagem
+A descrição detalhada de cada atributo e o esquema XML da linguagem
 são apresentados no \userguide.
 
 \begin{figure}[!h]
@@ -163,8 +163,8 @@ são apresentados no \userguide.
 A especificação da coreografia fornece todas as informações para a implantação da composição,
 possibilitando que o implantador descreva em alto-nível apenas \emph{o que} deve ser implantado,
 e não os detalhes de implementação de \emph{como} deve ser implantado.
-Assim, a escrita de uma especificação declarativa se contrapõe a escrita de um script,
-no qual normalmente se descreve os passos de \emph{como} o sistema deve ser implantado.
+Assim, a escrita de uma especificação declarativa se contrapõe à escrita de um script,
+no qual normalmente são descritos os passos de \emph{como} o sistema deve ser implantado.
 
 Na ADL do EE, para cada serviço, especifica-se de onde o pacote do serviço pode ser baixado, 
 qual o tipo do pacote (WAR, JAR, etc.), quantas réplicas devem ser implantadas, etc.
@@ -193,17 +193,21 @@ airportBusCompanySpec.addDependency(
 \end{lstlisting}
 }
 
+\fabio{listagem acima confusa}
+
 \section{Ligação entre serviços}
 \label{sec:ligacao}
 
 Em uma composição de serviços, alguns serviços se comunicam com outros serviços para implementar o fluxo de negócio.
 Quando um serviço $A$ invoca um serviço $B$, dizemos que o serviço $A$ depende do serviço $B$. 
 Dizemos também que $A$ é \emph{dependente} de $B$, enquanto que $B$ é \emph{dependência} de $A$,
-ou ainda que $A$ é \emph{consumidor} de $B$, enquanto que $B$ é \emph{provedor} de $A$.
-Para que uma coreografia funcione, cada serviço precisa saber o endereço de suas dependências,
-e o processo pelo qual os serviços recebem os endereços de suas dependências é denominado \emph{ligação}.
+ou ainda que $A$ é \emph{consumidor} de $B$, enquanto $B$ é \emph{provedor} de $A$.
+Para que uma coreografia funcione, cada serviço precisa saber o endereço de suas dependências;
+o processo pelo qual os serviços recebem os endereços de suas dependências é denominado \emph{ligação}.
 
-Segundo Dearle~\cite{Dearle2007PastPresentFuture}, componentes podem ser ligados entre si em vários momentos: compilação, montagem, configuração e execução. Em nosso contexto, a ligação deve ser efetuada em tempo de execução, pois é somente nesse momento que os endereços completos dos serviços implantados estão disponíveis. Uma das possibilidades apontadas por Dearle para efetivação da ligação em tempo de execução é a utilização do padrão de injeção de dependência, conforme introduzido por Fowler~\cite{Fowler2004Inversion}. A injeção de dependências é utilizada em contêineres como o Springer\footnote{\url{http://www.springer.org}}, no qual o middleware passa ao componente referências de suas dependências. No entanto, Dearle ainda alega que há uma falta de arcabouços para a aplicação da injeção de dependência de forma distribuída.
+\leo{fabio sugere ``enlace dinâmico'' no lugar de ``ligação dinâmica''. Quando aplicar isso, conferir todo o texto.}
+
+Segundo Dearle~\cite{Dearle2007PastPresentFuture}, componentes podem ser ligados entre si em vários momentos: compilação, montagem, configuração e execução. Em nosso contexto, a ligação deve ser efetuada em tempo de execução, pois é somente nesse momento que os endereços completos dos serviços implantados estão disponíveis. Uma das possibilidades apontadas por Dearle para efetivação da ligação em tempo de execução é a utilização do padrão de injeção de dependências, conforme introduzido por Fowler~\cite{Fowler2004Inversion}. A injeção de dependências é utilizada em contêineres como o arcabouço Spring\footnote{\url{http://spring.io}}, no qual o middleware passa ao componente referências de suas dependências. No entanto, Dearle ainda alega que há uma falta de arcabouços para a aplicação da injeção de dependência de forma distribuída.
 
 A solução adotada no \ee para possibilitar a ligação entre serviços envolve a utilização do middleware para a passagem de endereços dos serviços implantados aos seus consumidores. Essa solução consiste na aplicação do padrão de injeção de dependência de forma distribuída, e é similar ao que foi feito nos trabalhos sobre a linguagem Darwin~\cite{Magee1996Dynamic, Magee1994Regis}. 
 Note que nessa solução, a ``inteligência'' em determinar quais serviços satisfazem as necessidades de outros serviços está na camada que produz a entrada do EE.
@@ -228,19 +232,21 @@ que se trata de um novo supermercado.
 
 \end{description}
 
-Assim, em uma coreografia em que, por exemplo, um serviço de agência de viagem dependa do serviço de uma companhia aérea, o EE executa a seguinte invocação ao serviço da agência de viagens : \texttt{setInvocationAddress('Companhia Aérea', 'Nimbus Airline', [ 'http://192.168.56.107:8080/nimbus/ws/' ])}. 
+Assim, em uma coreografia em que, por exemplo, um serviço de agência de viagem dependa do serviço de uma companhia aérea, o EE executa a seguinte invocação ao serviço da agência de viagens : \texttt{setInvocationAddress('Companhia Aérea', 'Nimbus Airline', [ 'http://nimbus.com/ws/' ])}. 
 
 A descrição fornecida até aqui é abstrata e independente de tecnologia.
 A definição exata da assinatura da operação deve ser definida de acordo com a tecnologia utilizada.
 A versão atual do EE já define essa assinatura para serviços SOAP.
 Para detalhes, ver o guia do usuário (Apêndice~\ref{ape:user_guide}).
 
-Apesar dos benefícios da solução adotada no EE, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação \texttt{setInvocationAddress} e conhecer os papéis de suas dependências, o que implica em conhecer a interface sintática de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e não impede a utilização do serviço em outro middleware.
+Apesar dos benefícios da solução adotada no EE, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação \texttt{setInvocationAddress} e conhecer os papéis de suas dependências, o que implica em conhecer as operações de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e não impede a utilização do serviço em outro middleware.
+
+\todo{padronizar referências ao guia do usuário, de preferência em pt e referenciando o apêndice}
 
 \section{Mapeamento dos serviços na infraestrutura alvo}
 \label{sec:mapeamento}
 
-Em algum momento do processo de implantação é preciso definir em que nó cada instância de serviço será hospedado.
+Em algum momento do processo de implantação, é preciso definir em que nó cada instância de serviço será hospedado.
 Chamamos de \emph{mapeamento}, ou seleção de nós, essa fase do processo de implantação.
 Na forma mais simples de seleção de nó, o IP do nó alvo é definido estaticamente no script de implantação do serviço.
 O trabalho de Magee e Kramer~\cite{Magee1997Corba} apresenta a seleção de nós em função da utilização de CPUs nos nós existentes, não havendo possibilidade de utilização de outros critérios, como memória, disco, custo etc. Nos sistemas apresentados por Dolstra et al.~\cite{Dolstra2005Configuration} e Balter et al.~\cite{Balter1998Olan} é preciso que a distribuição dos serviços seja especificada com o uso dos IPs das máquinas nas quais os serviços devem ser implantados, o que não é possível em um ambiente de nuvem. Por fim, o \emph{broker} apresentado por Watson et al. é o componente que mais se assemelha ao nosso NodeSelector, pois os autores deixam claro que várias implementações diferentes são possíveis, considerando-se diferentes tipo de requisitos e diferentes fontes de monitoramento. Como a escolha é feita em tempo de execução do serviço, seria também possível uma seleção que independa de IPs estabelecidos em tempo de projeto. No entanto, os autores não explicam como os usuários de seu sistema, os provedores de infraestrutura, deveriam proceder para criar seus próprios \emph{brokers} personalizados.
@@ -249,7 +255,7 @@ Para avançar em relação às limitações dos trabalhos anteriormente citados,
 a seleção de nós no \ee
 considera os requisitos de dinamicidade do ambiente de nuvem, que nos impede de conhecer os IPs das máquinas 
 em tempo de desenvolvimento ou configuração do script de implantação.
-O EE utiliza um seletor de nós automatizado que escolhe em tempo implantação os nós alvos para um dado serviço.
+O EE utiliza um seletor de nós automatizado que escolhe em tempo de implantação os nós alvos para um dado serviço.
 A escolha de uma política ótima para o seletor é assunto de diversas pesquisas.
 Portanto, adotamos aqui uma abordagem extensível, com o fornecimento inicial de políticas como
 ``sempre cria um novo nó'' ou ``cria nós até um limite, e depois faz rodízio entre eles''.
@@ -262,10 +268,11 @@ Por se tratar de uma API REST, o cliente pode ser implementado em qualquer lingu
 e ambiente que possua alguma biblioteca HTTP. 
 Também disponibilizamos um cliente na forma de uma biblioteca na linguagem Java, 
 tornando o uso do EE ainda mais simples para os usuários da linguagem Java, 
-atualmente uma das mais utilizadas do mercado. 
+atualmente uma das mais utilizadas na indústria. 
 Seguimos agora com uma descrição de alto nível de cada uma das operações disponíveis 
-na API REST do EE. Detalhes da API, como os códigos de status HTTP retornados, 
-são fornecidos no guia do usuário (Apêndice~\ref{ape:user_guide}).
+na API REST do EE. Detalhes da API, como os códigos de estado HTTP devolvidos, 
+são fornecidos no guia do usuário (Apêndice~\ref{ape:user_guide}). 
+\todo{trocar status HTTP por estado HTTP no resto do texto}
 
 \begin{description}
 
@@ -304,13 +311,13 @@ estudam o processo de atualização dinâmica, pelo qual as transações corrent
 são preservadas durante a atualização de um serviço. 
 Embora não esteja no escopo de nosso trabalho, esperamos que a arquitetura do EE possa ser 
 evoluída para que a operação de atualização de coreografia utilize procedimentos seguros de 
-atualização dinâmica, dentre os quais destacamos a proposta de Xiaoxing et al~\cite{Xiaoxing2011VersionConsistent}.
+atualização dinâmica, dentre os quais destacamos a proposta de Xiaoxing et al.~\cite{Xiaoxing2011VersionConsistent}.
 
 \end{description}
 
-Na Listagem~\ref{lst:java_chor_enactment} fornecemos um exemplo de 
+Na Listagem~\ref{lst:java_chor_enactment}, fornecemos um exemplo de 
 um programa Java invocando o EE para implantar uma coreografia.
-Nesse exemplo, a classe \textsf{MyChorSpec} está escondendo a 
+Nesse exemplo, a classe \textsf{MyChorSpec} encapsula a 
 especificação da coreografia.
 
 \begin{lstlisting}[breaklines, caption={Programa Java que invoca o \ee para implantar uma coreografia.}, label={lst:java_chor_enactment}]
@@ -318,7 +325,7 @@ public class Deployment {
 
     public static void main(String[] args) throws DeploymentException, ChoreographyNotFoundException {
 
-        final String EE_URI = "http://localhost:9102/enactmentengine";
+        final String EE_URI = "http://myhost:9102/enactmentengine";
         EnactmentEngine ee = new EnactmentEngineClient(EE_URI);
         ChoreographySpec chorSpec = MyChorSpec.getChorSpec();
 
@@ -334,7 +341,7 @@ public class Deployment {
 \section{Pontos de extensão}
 \label{sec:extensao}
 
-Para lidar com as particularidades do ambiente de cada organização, o Enactment Engine fornece alguns pontos de extensão. Esses pontos de extensão são classes que desenvolvedores devem escrever na linguagem Java e que, de acordo com as configurações do sistema, poderão ser executadas pelo arcabouço.
+Em se tratando de um arcabouço, para lidar com as particularidades do ambiente de cada organização, o Enactment Engine fornece alguns pontos de extensão. Esses pontos de extensão são classes que desenvolvedores devem escrever na linguagem Java e que, de acordo com as configurações do sistema, poderão ser executadas pelo arcabouço.
 Neste capítulo descreveremos os pontos de extensão de nosso middleware, 
 mostrando as interface associadas a cada um deles.
 Para mais detalhes sobre todos os passos necessários para implementar
@@ -344,25 +351,25 @@ uma extensão, verificar o guia do usuário (Apêndice~\ref{ape:user_guide}).
 
 \item [Provedor de infraestrutura:] implementando a interface \textsf{CloudProvider} (Listagem~\ref{lst:cloud_provider}) 
 é possível acrescentar ao EE o suporte a novos provedores de infraestrutura. 
-Atualmente o EE suporta o serviço EC2 do AWS e o OpenStack como provedores de infraestrutura.
+Atualmente, o EE oferece suporte para o serviço EC2 do AWS e o OpenStack como provedores de infraestrutura.
 Cada um deles possui sua própria implementação de \textsf{CloudProvider}.
 
 \begin{lstlisting}[frame=trbl, label=lst:cloud_provider, caption=Interface CloudProvider.]
 public interface CloudProvider {
 
-    public String getCloudProviderName();
+  public String getCloudProviderName();
 
-    public CloudNode createNode(NodeSpec nodeSpec) throws NodeNotCreatedException;
+  public CloudNode createNode(NodeSpec nodeSpec) throws NodeNotCreatedException;
 
-    public CloudNode getNode(String nodeId) throws NodeNotFoundException;
+  public CloudNode getNode(String nodeId) throws NodeNotFoundException;
 
-    public List<CloudNode> getNodes();
+  public List<CloudNode> getNodes();
 
-    public void destroyNode(String id) throws NodeNotDestroyed, NodeNotFoundException;
+  public void destroyNode(String id) throws NodeNotDestroyed, NodeNotFoundException;
 
-    public CloudNode createOrUseExistingNode(NodeSpec nodeSpec) throws NodeNotCreatedException;
+  public CloudNode createOrUseExistingNode(NodeSpec nodeSpec) throws NodeNotCreatedException;
 
-    public void setCloudConfiguration(CloudConfiguration cloudConfiguration);
+  public void setCloudConfiguration(CloudConfiguration cloudConfiguration);
 
 }
 \end{lstlisting}
@@ -444,6 +451,8 @@ end
 default['CHOReOSData']['serviceData']['$NAME']['PackageURL'] = "$PACKAGE_URL"
 \end{lstlisting}
 
+\fabio{e se quiséssemos implantar serviços Ruby ou Python ou C, qual seria a dificuldade e o trabalho necessário?}
+
 Os arquivos listados acima são modelos não executáveis, uma vez que apenas em tempo de implantação 
 os símbolos \emph{\$NAME} e \emph{\$PACKAGE\_URL} serão substituídos por valores adequados.
 Essa substituição é feita pelo próprio EE.
@@ -454,11 +463,11 @@ enquanto que o \emph{\$NAME} será substituído por uma identificação única d
 
 
 \item [Tipos de serviços:] a ligação entre serviços de uma composição depende da passagem de endereços que é feita do \ee para os 
-serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação dar-se-
-á de forma diferente de acordo com o tipo de tecnologia de serviço empregada (SOAP ou REST, por exemplo). 
+serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação se dá 
+de forma diferente de acordo com o tipo de tecnologia de serviço empregada (SOAP ou REST, por exemplo). 
 A implementação da interface \textsf{ContextSender} define como a operação \texttt{setInovcationAddress} é invocada. 
-Atualmente o EE possui uma implementação de \textsf{ContextSender}, utilizada para serviços SOAP.
-Nota-se que para cada nova implementação, é preciso definir uma convenção para a assinatura sintática da operação \texttt
+Atualmente, o EE possui uma implementação de \textsf{ContextSender}, utilizada para serviços SOAP.
+Nota-se que, para cada nova implementação, é preciso definir uma convenção para a assinatura sintática da operação \texttt
 {setInvocationAddres}.
 
 \begin{lstlisting}[frame=trbl, label=lst:context_sender, caption=Interface ContextSender.]
@@ -476,8 +485,9 @@ public interface ContextSender {
 \section{Aspectos gerais de implementação}
 \label{sec:implementacao}
 
-Nesta seção descrevemos alguns detalhes sobre a implementação do \ee que 
+Nesta seção, descrevemos alguns detalhes sobre a implementação do \ee que 
 podem ser especialmente úteis a eventuais desenvolvedores de nosso middleware.
+Leitores não interessados nesses aspectos, podem pular diretamente para a Seção~\ref{sec:discussao}.
 
 \begin{description}
 
@@ -543,7 +553,7 @@ provoquem efeitos colaterais no sistema operacional não é adequado
 em testes de unidade. Tais ``efeitos colaterais'' são sempre provocados
 durante a execução das receitas Chef.
 
-Por isso o EE possui também vários testes de \emph{integração} automatizados,
+Por isso, o EE possui também vários testes de \emph{integração} automatizados,
 no qual máquinas virtuais são utilizados para a execução de testes nos
 quais o EE possa interagir com um sistema operacional.
 Esses testes incluem a implantação completa de coreografias.
@@ -574,12 +584,12 @@ Para tratar falhas ocorridas na \emph{atualização do nó},
 a cada execução da implantação o processo de atualização
 é executado em todos os nós novamente.
 Nesse passo, o EE está se aproveitando da idempotência dos scripts
-de implantação gerados, que no caso são receitas Chef.
+de implantação gerados que, no caso, são receitas Chef.
 As receitas utilizam recursos específicos da linguagem do Chef para implementar a idempotência.
 
 Por fim, falhas na \emph{ligação entre serviços} são recuperadas pois todas
 as invocações à operação \texttt{setInvocationAddress} são refeitas.
-Nesse passo a idempotência é garantida pela assinatura idempotente
+Nesse passo, a idempotência é garantida pela assinatura idempotente
 da própria operação \texttt{setInvocationAddress}.
 
 \item [Software livre:] por fim, todas as bibliotecas 
@@ -588,6 +598,7 @@ utilizadas pelo \ee são software livre.
 \end{description}
 
 \section{Discussão: auxiliando implantações em grande escala}
+\label{sec:discussao}
 
 Nesta seção discutimos como as características arquiteturais e de implementação do \ee
 impactam na implantação de composições de serviço de grande escala.
@@ -605,20 +616,21 @@ e até mesmo para soluções \emph{ad-hoc}.
 \item [Processo:]
 
 Tornar a implantação de sistemas ``\emph{Internet-scale}'' processos totalmente automatizados
-é necessário para que a implantação se torne testável, flexível e confiável~\cite{Hamilton2007InternetScale},
+é necessário para que a implantação se torne testável, flexível e confiável~\cite{Hamilton2007InternetScale}
+\fabio{frase muito feia. Revisar. E remover esse Internet-Scale em inglês no meio da frase.},
 conforme discutido na Seção~\ref{sec:implantacao}.
 O EE possibilita a automação do processo de implantação
-graças a sua interface remota (REST), que recebe a especificação
+graças à sua interface remota (REST), que recebe a especificação
 da composição a ser implantada e devolve o resultado do processo.
 Embora uma interface gráfica para a implantação de composições seja viável,
 tal opção não favorece a implantação automatizada,
-e por isso não foi priorizada em nosso trabalho.
+e, por isso, não foi priorizada em nosso trabalho.
 
 O uso de uma especificação declarativa,
 como já utilizado em outros trabalhos~\cite{Balter1998Olan,Magee1996Dynamic},
 também facilita o desenvolvimento do script de implantação
 para cada nova composição a ser implantada.
-Isso ocorre porque com uso de uma linguagem declarativa o implantador descreve em alto nível apenas
+Isso ocorre porque, com uso de uma linguagem declarativa, o implantador descreve em alto nível apenas
 \emph{o que} deve ser implantado, e não os detalhes de \emph{como} deve ser implantado.
 O uso de linguagens declarativas requer algum tipo de middleware que interprete
 a descrição declarativa, executando as ações adequadas.
@@ -663,7 +675,7 @@ Desta forma, pode-se ajustar esses valores de acordo com
 as características do ambiente alvo.
 Portanto, essa abordagem é também uma estratégia para colaborar 
 com a heterogeneidade de plataformas e tecnologias.
-A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \emph{decorator}~\cite{GoF1995Patterns}.} 
+A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \textsf{Decorator}~\cite{GoF1995Patterns}.} 
 para ajustar dinamicamente os valores de timeouts de cada tarefa.
 Para implementar essa adaptação, o desenvolvedor tem acesso
 ao histórico dos tempos de execução do \emph{invoker}.
@@ -679,6 +691,9 @@ O EE utiliza os \emph{invokers} nos momentos adequados e necessários.
 Isso fornece uma robustez mais facilmente proporcionada por sistemas de middleware,
 nos quais interesses transversais podem ser implementados sem que o implantador 
 tenha que se preocupar com isso.
+
+\fabio{Esse é o único lugar onde os mecanismos de tolerância a falhas são descritos? 
+Essa é uma seção para discussão.  A descrição deveria ter vindo antes.}
 
 O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
 Quando uma requisição chega, o EE tenta criar um novo nó.
@@ -774,12 +789,12 @@ pelos nós envolvidos na implantação.}
 foi essencial para se obter desempenhos razoáveis
 com uma grande quantidade de serviços implantados..
 
-No Capítulo~\ref{cap:avaliacao} apresentamos a avaliação em detalhes da 
+No Capítulo~\ref{cap:avaliacao}, apresentamos a avaliação em detalhes da 
 escalabilidade fornecida pelo \ee.
 
 \item [Heterogeneidade:]
 
-Na Seção~\ref{sec:extensao} apresentamos os pontos de extensão do \ee,
+Na Seção~\ref{sec:extensao}, apresentamos os pontos de extensão do \ee,
 que possibilitam mais facilmente adaptá-lo para diversos provedores de infraestrutura
 e tecnologias de desenvolvimento e empacotamento de serviços.
 Essa flexibilidade ajuda a superar
@@ -842,7 +857,7 @@ o que seria mais custoso do que a adoção de uma plataforma comum.
 
 \item [Adaptabilidade:]
 
-O \ee por si só não garante que uma composição será autonômica ou auto-adaptativa.
+O \ee por si só não garante que uma composição será autônoma ou auto-adaptativa.
 Contudo, ele fornece suporte para o desenvolvimento de tais sistemas.
 
 Sistemas auto-adaptativos e autonômicos precisam estar cientes
@@ -884,7 +899,7 @@ Esse serviço de monitoramento pode então disparar ações de adaptação com b
 nos dados recebidos. Uma ação de adaptação envolve a geração de uma nova especificação
 de composição e a atualização da composição em execução de acordo com a nova especificação.
 
-O CHOReOS \ee é uma ferramenta útil a praticantes e pesquisadores para
+O CHOReOS \ee é uma ferramenta útil a profissionais da indústria e pesquisadores para
 a implantação de composições de serviços, especialmente no contexto de grande escala.
 Mas as funcionalidades relacionadas à adaptação são de especial interesse
 aos pesquisadores que trabalham com a auto-adaptação de composições de serviços.
