@@ -132,7 +132,7 @@ e pacotes independentes de sistema operacional (p.ex: jar, war).
 \end{description}
 
 No caso de um processo de implantação automatizado, o \emph{implantador}
-é o responsável por desenvolver os scripts de implantação.
+é o responsável por desenvolver os \scripts de implantação.
 Em contrapartida, utilizamos o termo \emph{desenvolvedor} para se referir ao
 desenvolvedor das composições de serviços web.
 
@@ -173,24 +173,24 @@ o lançamento de uma nova versão do sistema se torne um grande evento nas organ
 em que há muita tensão e que faz as pessoas trabalharem até mais tarde.
 A solução para esses sintomas, segundo os autores, é a automação do processo de implantação.
 Em um processo de implantação automatizado tudo o que for possível é executado de forma automatizada,
-geralmente por meio de scripts. O objetivo de um processo de implantação automatizado
+geralmente por meio de \scripts. O objetivo de um processo de implantação automatizado
 é proporcionar um processo de implantação \emph{reprodutível}, \emph{confiável} e \emph{fácil}~\cite{Humble2011Continuous}.
 
-A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutimos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
+A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de \scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutimos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
 
 Um processo de implantação pode ser automatizado de várias maneiras.
-Pode-se utilizar linguagens de script de propósito geral (Python, shell script),
+Pode-se utilizar linguagens de \script de propósito geral (Python, shell script),
 ferramentas gerais voltados para o processo de implantação (p.ex: 
 Chef\footnote{\url{http://www.getchef.com/}}, Capistrano\footnote{\url{https://github.com/capistrano/capistrano}})
 ou sistemas de middleware especializados em determinados tipos de artefatos implantáveis,
 entre os quais se enquadram as soluções de Plataforma como um Serviço,
 sobre as quais discutimos na Seção~\ref{sec:cloud}.
 Humble e Farley recomendam a utilização de sistemas especializados, preterindo 
-a utilização de linguagens de scripts de propósito geral.
+a utilização de linguagens de \scripts de propósito geral.
 
 A concretização de um processo de implantação automatizado depende bastante da
 integração de diferentes papéis em uma organização, principalmente da integração entre desenvolvedores
-e operadores, uma vez que o desenvolvimento dos scripts de implantação requer
+e operadores, uma vez que o desenvolvimento dos \scripts de implantação requer
 habilidades de ambos os perfis.
 Essa percepção levou à criação do conceito de uma cultura 
 denominada DevOps~\cite{Humble2011DevOps}, na qual times inter-funcionais
@@ -203,15 +203,15 @@ Muitos problemas na implantação manual se dão por causa de documentação inc
 contendo pressupostos não compartilhados por todo o time responsável por um produto ou serviço.
 Dessa forma é comum que a organização fique bastante dependente de uma única
 pessoa para realizar a tarefa de implantação.
-Por outro lado, um script de implantação é uma documentação completa e precisa de todos os passos
-do processo. Caso um script fique desatualizado, o impacto será imediato, pois
+Por outro lado, um \script de implantação é uma documentação completa e precisa de todos os passos
+do processo. Caso um \script fique desatualizado, o impacto será imediato, pois
 não será possível implantar o sistema. Dessa forma, na prática,
-dificilmente tais scripts estarão desatualizados,
+dificilmente tais \scripts estarão desatualizados,
 diferentemente do que ocorre com a documentação convencional.
 
 A facilidade de se implantar o sistema com um simples comando
 leva a sua utilização contínua por diferentes atores.
-O time de desenvolvimento estará constantemente utilizando esse script 
+O time de desenvolvimento estará constantemente utilizando esse \script 
 para realizar testes de integração e aceitação. 
 Essa execução contínua do processo de implantação nos testes trará os seguintes benefícios:
 
@@ -219,7 +219,7 @@ Essa execução contínua do processo de implantação nos testes trará os segu
 \item Os testes se tornam mais confiáveis por serem executados em um ambiente garantidamente similar ao ambiente de produção.
 \item A quantidade de execuções de testes de integração e aceitação será maior, o que auxilia na garantia de qualidade do sistema.
 \item O próprio processo de implantação se torna mais confiável, pois quando o ``grande dia'' da implantação chega, o processo já terá sido executado várias vezes.
-\item Em particular, é de se esperar que defeitos no script de implantação já tenham sido detectados e corrigidos.
+\item Em particular, é de se esperar que defeitos no \script de implantação já tenham sido detectados e corrigidos.
 \end{itemize}
 
 A utilização da implantação automatizada na execução de testes também
@@ -278,7 +278,7 @@ imagem\footnote{\emph{Imagens} são sistemas de arquivo somente-leitura contendo
 que já contenha
 o serviço implantado, ou 2) deve ser criada com base em uma imagem contendo apenas um
 sistema operacional recém instalado, de forma que a implantação do serviço seja feita
-por scripts. O modelo de imagem pronta proporciona implantações mais rápidas,
+por \scripts. O modelo de imagem pronta proporciona implantações mais rápidas,
 porém a segunda abordagem é mais flexível, pois para implantar uma nova versão do sistema
 evita-se a publicação de uma nova imagem, o que é um processo demorado,
 já que imagens são arquivos com vários gigabytes.
@@ -340,7 +340,7 @@ Quando um novo nó é requisitado para o provedor de infraestrutura,
 há uma chance de que o provisionamento falhe.
 Além disso, alguns nós podem levar um tempo muito maior que a média para ficarem prontos.
 Outras operações que podem falhar durante o processo de implantação são
-conexões SSH e a execução de scripts nos nós alvos.
+conexões SSH e a execução de \scripts nos nós alvos.
 
 A Figura~\ref{fig:ec2_boxplot} mostra a distribuição por nós observada empiricamente
 do tempo de criação de VMs quando se requisita concorrentemente a criação
@@ -378,7 +378,7 @@ que uma única execução produziria~\cite{Weider2007QoSWS}.
 Isso implica na capacidade do sistema em tolerar requisições duplicadas,
 importante para o tratamento eficiente de falhas de comunicação 
 ou de processamento~\cite{Ramalingam2013Idempotence}.
-Em interfaces REST, por exemplo, todas as operações que não sejam POST devem ser idempotentes~\cite{Allamaraju2010REST}. A idempotência de scripts
+Em interfaces REST, por exemplo, todas as operações que não sejam POST devem ser idempotentes~\cite{Allamaraju2010REST}. A idempotência de \scripts
 de implantação é um dos principais destaques dentre as funcionalidades do 
 Chef\footnote{\url{http://docs.opscode.com/chef_why.html}}.
 

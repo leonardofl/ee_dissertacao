@@ -5,11 +5,9 @@
 Neste capítulo, apresentamos os trabalhos relacionados à implantação automatizada,
 incluindo algumas ferramentas utilizadas por profissionais da indústria.
 
-\todo{script em itálico}
+Ao utilizar ferramentas de \emph{gerência de configuração} como Chef\footnote{\url{http://www.opscode.com/chef}}, Capistrano\footnote{\url{https://github.com/capistrano}} e Nix~\cite{Dolstra2005Configuration}, os usuários devem escrever \scripts que realizem a configuração do ambiente (sistema operacional e middleware) e a implantação do serviço. No caso do Chef, um \script (também chamado de \emph{receita}) configura a máquina na qual o serviço é implantado, enquanto que o Capistrano possibilita a coordenação da implantação de serviços em diferentes nós. Com as expressões do Nix, é possível também unificar a especificação da implantação com o \textit{build} da aplicação em um único \script, possibilitando a edição parametrizada de arquivos de configuração da aplicação em função do local de implantação. 
 
-Ao utilizar ferramentas de \emph{gerência de configuração} como Chef\footnote{\url{http://www.opscode.com/chef}}, Capistrano\footnote{\url{https://github.com/capistrano}} e Nix~\cite{Dolstra2005Configuration}, os usuários devem escrever scripts que realizem a configuração do ambiente (sistema operacional e middleware) e a implantação do serviço. No caso do Chef, um script (também chamado de \emph{receita}) configura a máquina na qual o serviço é implantado, enquanto que o Capistrano possibilita a coordenação da implantação de serviços em diferentes nós. Com as expressões do Nix, é possível também unificar a especificação da implantação com o \textit{build} da aplicação em um único script, possibilitando a edição parametrizada de arquivos de configuração da aplicação em função do local de implantação. 
-
-A abordagem procedimental, com scripts, fornece uma grande 
+A abordagem procedimental, com \scripts, fornece uma grande 
 flexibilidade para especificar a implantação de sistemas, 
 mas normalmente requer especialização de seus usuários, 
 pois todos os detalhes do processo devem ser especificados. 
@@ -17,7 +15,7 @@ Wettinger et al.~\cite{Wettinger2013ExtensiblePaaS}
 afirmam que ferramentas como Chef são usadas
 para a criação de planos de implantação específicos para cada aplicação,
 promovendo pouca reusabilidade.
-Esses scripts de implantação também deveriam ser desenvolvidos 
+Esses \scripts de implantação também deveriam ser desenvolvidos 
 com o mesmo rigor do código da aplicação, inclusive com o uso 
 de testes automatizados~\cite{Humble2011Continuous}. 
 O descumprimento dessa recomendação torna o processo de implantação 
@@ -30,7 +28,7 @@ Um exemplo de abordagem declarativa é o uso de Linguagens de Descrição Arquit
 
 Magee e Kramer demonstraram a utilidade prática da linguagem Darwin ao utilizá-la de forma integrada a componentes CORBA~\cite{Magee1997Corba}, padrão de interoperabilidade de sistemas distribuídos dominante no mercado à época. Darwin possui também um ambiente de execução, Regis~\cite{Magee1994Regis}, que realiza a implantação dos sistemas descritos em Darwin. Regis possui duas políticas de distribuição de programas por estações de trabalho. A primeira política é o mapeamento definido pelo usuário de forma estática, abordagem não apropriada para ambientes de computação em nuvem. A segunda opção de política é a alocação automática em função da carga na CPU das estações de trabalho, não havendo flexibilidade para a consideração de outros recursos, como espaço em disco ou memória, por exemplo. Uma similaridade entre Regis e o \ee\ desenvolvido em nossa pesquisa é o uso do middleware para o envio de mensagens contendo referências remotas dos componentes implantados para que eles possam estabelecer ligações dinâmicas entre si.
 
-Olan~\cite{Balter1998Olan} é um ambiente para a descrição, configuração e implantação de aplicações distribuídas em ambientes heterogêneos, e que também utiliza uma ADL própria. Baseando-se na entrada descrita na ADL, Olan gera scripts de Configuração de Máquina, que definem a execução do processo de implantação dos componentes no ambiente distribuído e o ajuste dos canais de comunicação entre esses componentes. A abordagem de gerar um script de configuração a partir de uma especificação declarativa é também implementada pelo \ee. A ADL de Olan também possibilita a especificação de restrições sobre a localização da implantação do componente, porém sem flexibilidade para a adoção de estratégias dinâmicas de alocação de nós.
+Olan~\cite{Balter1998Olan} é um ambiente para a descrição, configuração e implantação de aplicações distribuídas em ambientes heterogêneos, e que também utiliza uma ADL própria. Baseando-se na entrada descrita na ADL, Olan gera \scripts de Configuração de Máquina, que definem a execução do processo de implantação dos componentes no ambiente distribuído e o ajuste dos canais de comunicação entre esses componentes. A abordagem de gerar um \script de configuração a partir de uma especificação declarativa é também implementada pelo \ee. A ADL de Olan também possibilita a especificação de restrições sobre a localização da implantação do componente, porém sem flexibilidade para a adoção de estratégias dinâmicas de alocação de nós.
 
 Apesar de os trabalhos sobre Darwin e Olan já falarem sobre software de ``grande porte'', o que se entendia por grande porte já se alterou significativamente desde a época em que esses trabalhos foram feitos. Uma evidência dessa diferente percepção de escala são os exemplos de aplicações fornecidos no artigo sobre Olan, em que se fala sobre componentes muito granulares, como pedaços de interfaces gráficas, e que não consideram possíveis falhas de comunicação que são comuns na Internet. Além disso, os próprios autores do artigo sobre Olan admitem que não se preocuparam com questões de desempenho. 
 Hoje, há novos  desafios e requisitos que precisam ser considerados no desenvolvimento de software 

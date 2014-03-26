@@ -48,31 +48,31 @@ A implantação de cada serviço é executada por uma receita Chef contida em um
 Nós escrevemos um \emph{cookbook} modelo, para implantar pacotes JARs,
 e o usamos para gerar \emph{cookbooks} para os 15 serviços participantes.
 O processo de criar os 15 \emph{cookbooks} foi parcialmente automatizado
-pelo script \texttt{generate} que escrevemos.
+pelo \script \texttt{generate} que escrevemos.
 As URLs dos pacotes dos serviços tiveram que ser manualmente inseridas nos
-\emph{cookbooks} depois da execução da script \texttt{generate}.
+\emph{cookbooks} depois da execução da \script \texttt{generate}.
 
 Para implementar a ligação entre serviços,
 desenvolvemos um pequeno mas não trivial programa Java, chamado \texttt{context\_sender}. 
 Ele é responsável por invocar a operação \texttt{setInvocationAddress} de um dado serviço.
 Implementamos o \texttt{context\_sender} como um programa Java para
 aproveitar a API SOAP fornecida pelo ambiente Java SE.
-Também desenvolvemos o script \texttt{bind\_services},
+Também desenvolvemos o \script \texttt{bind\_services},
 responsável por executar o programa \texttt{context\_sender}
 para cada dependência presente na coreografia.
 Uma vez que os IPs dos serviços são conhecidos apenas após a implantação,
-o script \texttt{bind\_services} é na verdade um modelo com lacunas
+o \script \texttt{bind\_services} é na verdade um modelo com lacunas
 que devem ser manualmente preenchidas com os IPs dos serviços implantados.
 
 A execução da solução \emph{ad-hoc} possui vários passos,
 inclusive alguns manuais.
 Para cada nó alvo, o implantador deve se conectar ao nó (via SSH),
-instalar o git, baixar os \emph{cookbooks}, executar o script \texttt{install\_chef} 
+instalar o git, baixar os \emph{cookbooks}, executar o \script \texttt{install\_chef} 
 para instalar o Chef, editar alguns arquivos de configuração para definir
 quais serviços serão implantados no nó, e executar o Chef-Solo.
-Após implantar os serviços, o implantador deve editar o script
+Após implantar os serviços, o implantador deve editar o \script
 \texttt{bind\_services} com os IPs dos serviços implantados
-e, finalmente, executar o script \texttt{bind\_services}.
+e, finalmente, executar o \script \texttt{bind\_services}.
 Alguns dos problemas dessa solução \emph{ad-hoc} são:
 
 \begin{itemize}
@@ -94,7 +94,7 @@ não acostumado com o padrão SOAP.
 Se algo muda no modelo, é preciso regenerar todos os \emph{cookbooks}
 e realizar a edição manual também.
 Contudo, as edição manuais mencionadas
-poderiam ser evitadas com um script mais complexo.
+poderiam ser evitadas com um \script mais complexo.
 Replicação de código poderia também ter sido evitada com a criação de um
 ``LWRP'' (\emph{light weight resource provider}) do Chef,
 mas isso seria uma tarefa para usuários avançados do Chef.
@@ -110,7 +110,7 @@ Esquecer-se de vírgulas ou digitar errado o nome de serviços
 são erros bem prováveis de acontecerem.
 
 \item Há muita pouca paralelização no processo.
-Com os scripts construídos, o implantador poderia melhorar
+Com os \scripts construídos, o implantador poderia melhorar
 um pouco o paralelismo utilizando ferramentas como o
 Byobu\footnote{\url{http://byobu.co/}} 
 para digitar o mesmo comando em várias máquinas.
