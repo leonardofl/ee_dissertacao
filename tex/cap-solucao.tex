@@ -117,11 +117,11 @@ o EE dispara a execução do agente de configuração, que por sua vez executa o
 de preparação e inicialização dos serviços atribuídos ao nó.
 Dessa forma, os serviços entram em estado de execução na infraestrutura alvo.
 
-\item \emph{Ligação entre serviços}: após os serviços terem sido iniciados, 
+\item \emph{Enlace entre serviços}: após os serviços terem sido iniciados, 
 para cada relação de dependência na coreografia (p.ex: serviço \textsf{TravelAgency}
 depende do serviço \textsf{Airline}), o EE fornece o endereço da dependência 
 (p.ex: \url{http://airline.com/ws}) ao serviço dependente.
-Mais informações sobre o processo de ligação são fornecidas na Seção~\ref{sec:ligacao}.
+Mais informações sobre o processo de enlace são fornecidas na Seção~\ref{sec:ligacao}.
 
 \item \emph{Resposta para o cliente}: o EE responde ao seu cliente,
 informando em que nó cada serviço foi implantado
@@ -195,7 +195,7 @@ airportBusCompanySpec.addDependency(
 
 \fabio{listagem acima confusa}
 
-\section{Ligação entre serviços}
+\section{Enlace entre serviços}
 \label{sec:ligacao}
 
 Em uma composição de serviços, alguns serviços se comunicam com outros serviços para implementar o fluxo de negócio.
@@ -203,13 +203,11 @@ Quando um serviço $A$ invoca um serviço $B$, dizemos que o serviço $A$ depend
 Dizemos também que $A$ é \emph{dependente} de $B$, enquanto que $B$ é \emph{dependência} de $A$,
 ou ainda que $A$ é \emph{consumidor} de $B$, enquanto $B$ é \emph{provedor} de $A$.
 Para que uma coreografia funcione, cada serviço precisa saber o endereço de suas dependências;
-o processo pelo qual os serviços recebem os endereços de suas dependências é denominado \emph{ligação}.
+o processo pelo qual os serviços recebem os endereços de suas dependências é denominado \emph{enlace}.
 
-\leo{fabio sugere ``enlace dinâmico'' no lugar de ``ligação dinâmica''. Quando aplicar isso, conferir todo o texto.}
+Segundo Dearle~\cite{Dearle2007PastPresentFuture}, componentes podem ser ligados entre si pelo enlace em vários momentos: compilação, montagem, configuração e execução. Em nosso contexto, o enlace deve ser efetuado em tempo de execução, pois é somente nesse momento que os endereços completos dos serviços implantados estão disponíveis. Uma das possibilidades apontadas por Dearle para efetivação do enlace em tempo de execução é a utilização do padrão de injeção de dependências, conforme introduzido por Fowler~\cite{Fowler2004Inversion}. A injeção de dependências é utilizada em contêineres como o arcabouço Spring\footnote{\url{http://spring.io}}, no qual o middleware passa ao componente referências de suas dependências. No entanto, Dearle ainda alega que há uma falta de arcabouços para a aplicação da injeção de dependência de forma distribuída.
 
-Segundo Dearle~\cite{Dearle2007PastPresentFuture}, componentes podem ser ligados entre si em vários momentos: compilação, montagem, configuração e execução. Em nosso contexto, a ligação deve ser efetuada em tempo de execução, pois é somente nesse momento que os endereços completos dos serviços implantados estão disponíveis. Uma das possibilidades apontadas por Dearle para efetivação da ligação em tempo de execução é a utilização do padrão de injeção de dependências, conforme introduzido por Fowler~\cite{Fowler2004Inversion}. A injeção de dependências é utilizada em contêineres como o arcabouço Spring\footnote{\url{http://spring.io}}, no qual o middleware passa ao componente referências de suas dependências. No entanto, Dearle ainda alega que há uma falta de arcabouços para a aplicação da injeção de dependência de forma distribuída.
-
-A solução adotada no \ee para possibilitar a ligação entre serviços envolve a utilização do middleware para a passagem de endereços dos serviços implantados aos seus consumidores. Essa solução consiste na aplicação do padrão de injeção de dependência de forma distribuída, e é similar ao que foi feito nos trabalhos sobre a linguagem Darwin~\cite{Magee1996Dynamic, Magee1994Regis}. 
+A solução adotada no \ee para possibilitar o enlace entre serviços envolve a utilização do middleware para a passagem de endereços dos serviços implantados aos seus consumidores. Essa solução consiste na aplicação do padrão de injeção de dependência de forma distribuída, e é similar ao que foi feito nos trabalhos sobre a linguagem Darwin~\cite{Magee1996Dynamic, Magee1994Regis}. 
 Note que nessa solução, a ``inteligência'' em determinar quais serviços satisfazem as necessidades de outros serviços está na camada que produz a entrada do EE.
 As dependências entre os serviços são definidas na especificação da coreografia,
 pela lista de objetos \textsf{ServiceDependency} pertencentes a um \textsf{ServiceSpec}.
@@ -462,7 +460,7 @@ O símbolo \emph{\$PACKAGE\_URL} será substituído pela URL do pacote do servi�
 enquanto que o \emph{\$NAME} será substituído por uma identificação única dentro do EE.
 
 
-\item [Tipos de serviços:] a ligação entre serviços de uma composição depende da passagem de endereços que é feita do \ee para os 
+\item [Tipos de serviços:] o enlace entre serviços de uma composição depende da passagem de endereços que é feita do \ee para os 
 serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação se dá 
 de forma diferente de acordo com o tipo de tecnologia de serviço empregada (SOAP ou REST, por exemplo). 
 A implementação da interface \textsf{ContextSender} define como a operação \texttt{setInovcationAddress} é invocada. 
@@ -572,7 +570,7 @@ que falhas podem acontecer no processo de implantação em cada uma dessas três
 1) preparação do nó, que consiste na seleção do nó para uma instância, 
 incluindo a transferência dos \scripts de implantação para o nó selecionado;
 2) a atualização do nó, que é quando os \scripts são executados;
-e 3) a ligação entre serviços.
+e 3) o enlace entre serviços.
 
 Caso a falha ocorra na \emph{preparação do nó},
 o problema poderá ser corrigido na próxima execução da implantação,
@@ -587,7 +585,7 @@ Nesse passo, o EE está se aproveitando da idempotência dos \scripts
 de implantação gerados que, no caso, são receitas Chef.
 As receitas utilizam recursos específicos da linguagem do Chef para implementar a idempotência.
 
-Por fim, falhas na \emph{ligação entre serviços} são recuperadas pois todas
+Por fim, falhas no \emph{enlace entre serviços} são recuperadas pois todas
 as invocações à operação \texttt{setInvocationAddress} são refeitas.
 Nesse passo, a idempotência é garantida pela assinatura idempotente
 da própria operação \texttt{setInvocationAddress}.
@@ -646,7 +644,7 @@ implantação de sistemas baseados em componentes~\cite{Balter1998Olan,Magee1996
 em uma infraestrutura de nuvem, os nós alvos são mais dinâmicos. 
 Não é possível conhecer os endereços IPs
 dos nós alvos quando se está escrevendo a especificação da composição a ser implantada.
-A ligação entre serviços é feita em tempo de execução, o que o EE faz via \texttt{setInvocationAddress},
+O enlace entre serviços é feita em tempo de execução, o que o EE faz via \texttt{setInvocationAddress},
 e a política de alocação de nós deve ser flexível, i.e.,
 um serviço não deve ser alocado a um IP estático antes do tempo de implantação.
 O EE possibilita que políticas de alocação de nós
@@ -834,7 +832,7 @@ compartilhar uma mesma instância do EE.
 O segundo mecanismo é a utilização da entidade \emph{serviço legado} na especificação da composição.
 O serviço legado é um serviço já existente na Internet, e que portanto
 não será implantado pelo EE.
-A utilidade de utilizar esse mecanismo está na fase de ligação
+A utilidade de utilizar esse mecanismo está na fase de enlace
 entre serviços, pois o EE irá fornecer
 aos serviços implantados os endereços dos serviços legados declarados como suas dependências.
 A maior limitação dessa abordagem é a dificuldade em se lidar com a alteração de URIs
@@ -885,7 +883,7 @@ o que é conhecido como \emph{escalamento horizontal}~\cite{Pritchett2008Base}.
 
 O EE possibilita a replicação de serviço por meio da implantação de
 múltiplas instâncias do serviço e da notificação aos serviços consumidores
-sobre a existência dessas réplicas durante a fase de ligação de serviços.
+sobre a existência dessas réplicas durante a fase de enlace de serviços.
 A quantidade inicial de réplicas é definida por atributo na especificação
 do serviço fornecida ao EE, e, depois, pode ser redefinida dinamicamente.
 Um trabalho futuro é configurar automaticamente um balanceamento de carga

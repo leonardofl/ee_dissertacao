@@ -144,7 +144,7 @@ Ainda segundo o DEPL, o processo de implantação é composto pelas seguintes fa
 o código compilado do componente junto de sua configuração são os insumos para a produção do pacote do componente.
 \item [Planejamento:] resulta em um \emph{plano de implantação}, que mapeia como os componentes serão distribuídos pelos nós do ambiente alvo.  
 \item [Preparação:] procedimentos no ambiente alvo para preparar a execução do componente. Envolve configurações do sistema operacional, instalação de middlewares (p.ex. Tomcat), e a transferência do componente para a máquina onde será executado. 
-\item [Inicialização:] é quando finalmente o componente é iniciado e entra em execução, podendo processar chamadas de seus clientes. A inicialização também inclui a ligação entre os componentes de uma composição, para que os componentes conheçam a localização dos componentes dos quais dependem.
+\item [Inicialização:] é quando finalmente o componente é iniciado e entra em execução, podendo processar chamadas de seus clientes. A inicialização também inclui o \emph{enlace} entre os componentes de uma composição, para que os componentes conheçam a localização dos componentes dos quais dependem.
 \end{description}
 
 Todo o processo que vai desde o \emph{commit} do código-fonte até a implantação em produção
