@@ -40,7 +40,7 @@ Alguns aspectos aqui discutidos são tratados em alto nível,
 priorizando o que é importante para o entendimento das contribuições
 acadêmicas deste trabalho.
 Detalhes técnicos sobre o middleware, principalmente do ponto de vista do
-usuário, são encontrados no \userguide (Apêndice~\ref{ape:user_guide}).
+usuário, são encontrados no guia do usuário (Apêndice~\ref{ape:user_guide}).
 
 \section{Execução do \ee}
 
@@ -151,7 +151,7 @@ A ADL do EE define a estrutura de classes apresentada na Figura~\ref{fig:adl}.
 Em nossa implementação, representações de instâncias desse modelo 
 são trocadas entre o EE e seu cliente em formato XML. 
 A descrição detalhada de cada atributo e o esquema XML da linguagem
-são apresentados no \userguide.
+são apresentados no guia do usuário (Apêndice~\ref{ape:user_guide}).
 
 \begin{figure}[!h]
   \centering
@@ -185,15 +185,23 @@ language=Java,
 {\scriptsize
 \begin{lstlisting}[breaklines, caption={Trecho da especificação de uma coreografia.}, label={lst:service_spec}]
 airportBusCompanySpec =
-  new DeployableServiceSpec(AIRPORT_BUS_COMPANY, ServiceType.SOAP, PackageType.COMMAND_LINE, resourceImpact, serviceVersion, AIRPORT_BUS_COMPANY_JAR_URL, AIRPORT_BUS_COMPANY_PORT, AIRPORT_BUS_COMPANY, numberOfReplicas);
+  new DeployableServiceSpec(AIRPORT_BUS_COMPANY_NAME, 
+  							ServiceType.SOAP, 
+  							PackageType.COMMAND_LINE, 
+  							resourceImpact, 
+  							serviceVersion, 
+  							AIRPORT_BUS_COMPANY_JAR_URL, 
+  							AIRPORT_BUS_COMPANY_PORT, 
+  							AIRPORT_BUS_COMPANY_ENDPOINT, 
+  							numberOfReplicas);
+
 airportBusCompanySpec.setRoles(
-  Collections.singletonList(AIRPORT_BUS_COMPANY));
+  Collections.singletonList(AIRPORT_BUS_COMPANY_ROLE));
+
 airportBusCompanySpec.addDependency(
-  new ServiceDependency(AIRPORT, AIRPORT_ENDPOINT));
+  new ServiceDependency(AIRPORT_NAME, AIRPORT_ROLE));
 \end{lstlisting}
 }
-
-\fabio{listagem acima confusa}
 
 \section{Enlace entre serviços}
 \label{sec:ligacao}
@@ -239,8 +247,6 @@ Para detalhes, ver o guia do usuário (Apêndice~\ref{ape:user_guide}).
 
 Apesar dos benefícios da solução adotada no EE, Dearle~\cite{Dearle2007PastPresentFuture} também alerta sobre a desvantagem em forçar componentes a aderirem convenções de codificação impostas pelo middleware, o que poderia restringir o serviço a uma determinada linguagem de programação ou a algum middleware específico. Reconhecemos que esse problema existe em nossa solução, mas acreditamos que o desenho adotado ameniza os problemas levantados, pois tudo o que o serviço é obrigado a fazer é implementar a operação \texttt{setInvocationAddress} e conhecer os papéis de suas dependências, o que implica em conhecer as operações de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e não impede a utilização do serviço em outro middleware.
 
-\todo{padronizar referências ao guia do usuário, de preferência em pt e referenciando o apêndice}
-
 \section{Mapeamento dos serviços na infraestrutura alvo}
 \label{sec:mapeamento}
 
@@ -268,9 +274,8 @@ Também disponibilizamos um cliente na forma de uma biblioteca na linguagem Java
 tornando o uso do EE ainda mais simples para os usuários da linguagem Java, 
 atualmente uma das mais utilizadas na indústria. 
 Seguimos agora com uma descrição de alto nível de cada uma das operações disponíveis 
-na API REST do EE. Detalhes da API, como os códigos de estado HTTP devolvidos, 
+na API REST do EE. Detalhes da API, como os códigos de estado HTTP retornados, 
 são fornecidos no guia do usuário (Apêndice~\ref{ape:user_guide}). 
-\todo{trocar status HTTP por estado HTTP no resto do texto}
 
 \begin{description}
 
@@ -434,22 +439,20 @@ include_recipe "apt"
 include_recipe "tomcat::choreos"
 
 remote_file "war_file" do
-        source "#{node['CHOReOSData']['serviceData']['$NAME']['PackageURL']}"
-        path "#{node['tomcat']['webapp_dir']}/$NAME.war"
-        mode "0755"
-        action :create_if_missing
+   source "#{node['CHOReOSData']['serviceData']['$NAME']['PackageURL']}"
+   path "#{node['tomcat']['webapp_dir']}/$NAME.war"
+   mode "0755"
+   action :create_if_missing
 end
 
 file "#{node['tomcat']['webapp_dir']}/$NAME.war" do
-        action :nothing
+   action :nothing
 end
 \end{lstlisting}
 
 \begin{lstlisting}[frame=trbl, label=lst:attributes_template, caption=Arquivo modelo de atributos para a implantação de WARs.]
 default['CHOReOSData']['serviceData']['$NAME']['PackageURL'] = "$PACKAGE_URL"
 \end{lstlisting}
-
-\fabio{e se quiséssemos implantar serviços Ruby ou Python ou C, qual seria a dificuldade e o trabalho necessário?}
 
 Os arquivos listados acima são modelos não executáveis, uma vez que apenas em tempo de implantação 
 os símbolos \emph{\$NAME} e \emph{\$PACKAGE\_URL} serão substituídos por valores adequados.
@@ -458,6 +461,11 @@ Ou seja, criar um novo modelo de \emph{cookbok} para o EE significa simplesmente
 utilizando adequadamente os símbolos \emph{\$NAME} e \emph{\$PACKAGE\_URL}.
 O símbolo \emph{\$PACKAGE\_URL} será substituído pela URL do pacote do serviço,
 enquanto que o \emph{\$NAME} será substituído por uma identificação única dentro do EE.
+
+A complexidade de se criar uma nova receita Chef vai depender do tipo de tecnologia utilizada,
+mas a comunidade Chef já fornece diversas receitas prontas para a implantação dos ambientes
+de execução mais populares. Além disso, pode-se encontrar também na Internet
+exemplos de implantação de serviços utilizando as tecnologias mais populares.
 
 
 \item [Tipos de serviços:] o enlace entre serviços de uma composição depende da passagem de endereços que é feita do \ee para os 
@@ -613,9 +621,8 @@ e até mesmo para soluções \emph{ad-hoc}.
 
 \item [Processo:]
 
-Tornar a implantação de sistemas ``\emph{Internet-scale}'' processos totalmente automatizados
-é necessário para que a implantação se torne testável, flexível e confiável~\cite{Hamilton2007InternetScale}
-\fabio{frase muito feia. Revisar. E remover esse Internet-Scale em inglês no meio da frase.},
+Automatizar a implantação de sistemas 
+é necessário para que a implantação se torne testável, flexível e confiável~\cite{Hamilton2007InternetScale},
 conforme discutido na Seção~\ref{sec:implantacao}.
 O EE possibilita a automação do processo de implantação
 graças à sua interface remota (REST), que recebe a especificação

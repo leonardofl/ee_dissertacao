@@ -61,7 +61,7 @@ As representações dos recursos não estão presas a um formato de troca de men
 }
 \end{lstlisting}
 
-As operações REST são definidas em função dos conceitos da interface uniforme, recursos e representações. Assim, um exemplo de operação REST é o cadastro de um novo livro, que é implementada como uma requisição HTTP do tipo POST para a URI \url{http://livraria.com/livros}, com a representação do livro no corpo da requisição. Como resposta, o servidor retorna um \emph{código de status}\footnote{\url{http://en.wikipedia.org/wiki/List_of_HTTP_status_codes}} que informa o resultado da operação. 
+As operações REST são definidas em função dos conceitos da interface uniforme, recursos e representações. Assim, um exemplo de operação REST é o cadastro de um novo livro, que é implementada como uma requisição HTTP do tipo POST para a URI \url{http://livraria.com/livros}, com a representação do livro no corpo da requisição. Como resposta, o servidor retorna um \emph{código de estado}\footnote{\url{http://en.wikipedia.org/wiki/List_of_HTTP_status_codes}} que informa o resultado da operação. 
 Informações adicionais também podem ser transmitidas pelos cabeçalhos da resposta HTTP.
 Em nosso exemplo, esperamos o código 201 para indicar o sucesso da criação do novo recurso, além do cabeçalho \emph{location} contendo a URI desse recurso recém criado.
 Diferentemente de SOAP, em REST não existe a noção de registro de serviços, pois a identificação de recursos por URIs e o uso de hyperlinks nas próprias mensagens REST possibilitam que os serviços necessários para a aplicação sejam encontrados~\cite{Pautasso2008Restful}.
