@@ -13,13 +13,19 @@ de \emph{feed back} recebido, o que pode ser usado
 para se redirecionar e refinar tanto o \emph{o que fazer}, 
 quanto o \emph{como fazer}.
 
-\todo{faltou definir implantação... pegar do DEPL de novo?}
-
-No problema de implantação de sistemas, o princípio de iteratividade
+A implantação de um software é o
+processo que vai da aquisição à
+execução desse software~\cite{DEPL2006},
+sendo que a \emph{aquisição} pode corresponder 
+a um desenvolvimento interno na organização que irá implantar o software.
+Na implantação de sistemas, 
+o princípio de iteratividade
 ganhou força com as ideias de entrega contínua de software~\cite{Humble2011Continuous},
-o que é uma evolução da prática de integração contínua, já utilizada em métodos ágeis.
+o que é uma evolução da prática de integração contínua~\cite{Duvall2007Integration}, 
+já incorporada à métodos ágeis como o XP~\cite{Beck1999XP}.
 Entregar software continuamente significa que normalmente cada \emph{commit}
-no código-fonte corresponde a uma versão potencialmente implantável.
+no código-fonte, que seja aprovado por uma bateria de testes,
+corresponde a uma versão potencialmente implantável.
 E a capacidade de se implantar software continuamente é passo fundamental
 para o lançamento constante de novas versões de um sistema.
 
@@ -34,7 +40,8 @@ possui mais de 80 compahias aéreas, 190.000 passageiros por dia (picos de 230.0
 6.000 empregados, 1.000 pousos e decolagens por dia, e 40 serviços de refeição.}
 e o crescimento futuro desses números, espera-se que
 composições de serviços envolvam um grande número de participantes,
-conforme já sugerido por pesquisadores~\cite{Valerie2011FutureInternet} \gerosa{nomes ou mais refs}.
+conforme já sugerido por 
+pesquisadores~\cite{Valerie2011FutureInternet,Papadimitriou2009FutureInternet}.
 
 No entanto, o desenvolvimento de colaborações entre serviços 
 trazem desafios para a formulação de mecanismos que funcionem, 
@@ -105,11 +112,12 @@ Essas máquinas virtuais são criadas por provedores de infraestrutura que funci
 de acordo com o modelo de computação em nuvem denominado Infraestrutura como um Serviço (IaaS).
 Ao fim da implantação, as composições de serviços estão disponíveis para serem consumidas
 por usuários, operando no modelo de Software como um Serviço (SaaS).
-A arquitetura de nossa solução em função dos modelos de computação em nuvem pode ser observada na Figura~\ref{fig:modelos_nuvem}. \fabio{essa figura não mostra a arquitetura de nossa solução, ela mostra outra coisa.} \todo{ligar EE às caixinhas em cima e em baixo?}
+A relação entre os modelos de computação em nuvem e nossa solução
+pode ser observada na Figura~\ref{fig:modelos_nuvem}. 
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=.70\textwidth]{nuvem_modelos.pdf} 
+  \includegraphics[width=.80\textwidth]{nuvem_modelos.pdf} 
   \caption{Modelos da computação em nuvem associadas ao CHOReOS \ee.}
   \label{fig:modelos_nuvem} 
 \end{figure}
