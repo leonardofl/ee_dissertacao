@@ -66,9 +66,15 @@ Informações adicionais também podem ser transmitidas pelos cabeçalhos da res
 Em nosso exemplo, esperamos o código 201 para indicar o sucesso da criação do novo recurso, além do cabeçalho \emph{location} contendo a URI desse recurso recém criado.
 Diferentemente de SOAP, em REST não existe a noção de registro de serviços, pois a identificação de recursos por URIs e o uso de hyperlinks nas próprias mensagens REST possibilitam que os serviços necessários para a aplicação sejam encontrados~\cite{Pautasso2008Restful}.
 
-Segundo Pautasso~\cite{Pautasso2008Restful}, serviços REST são considerados ``mais simples'' do que serviços SOAP porque fazem uso de padrões já bem estabelecidos, como HTTP, XML, URI e MIME, para os quais já existe uma ampla infraestrutura implantada \fabio{SOAP também faz uso de padrões já bem estabelecidos. Esta frase não parece fazer sentido para mim.}. Um exemplo disso, é que é possível testar alguns serviços REST apenas com um navegador comum. Parte da escalabilidade atribuída a serviços REST também vem desse uso de padrões bem estabelecidos, pois os \emph{caches} implementados pelos servidores web tornam-se automaticamente caches para serviços REST~\cite{Tong2010CXF}.
+Geralmente serviços REST são considerados mais simples e escaláveis
+que serviços SOAP por utilizarem diretamente o HTTP como protocolo de 
+aplicação~\cite{Pautasso2008Restful}.
+Mais simples pela existência de um grande conjunto de ferramentas e bibliotecas
+que já entendem o HTTP. Mais escaláveis, dentre outros motivos,
+porque o \emph{cache} de serviços REST são diretamente
+gerenciados pelos servidores web~\cite{Tong2010CXF}.
 
-Apesar das vantagens apresentadas dos serviços REST, serviços que utilizam a tecnologia WS-* ainda são mais propensos a uma série de manipulações automatizadas que se tornam mais difíceis nos serviços REST, como por exemplo a geração automatizada de clientes para uma dada linguagem de programação. Isso se deve principalmente pelo alto nível de padronização da tecnologia WS-* \fabio{aqui você contradiz o que disse no parágrafo anterior.} e pela existência de interfaces bem definidas e processáveis por software (WSDL). 
+Por outro lado, serviços que utilizam a tecnologia WS-* ainda são mais propensos a uma série de manipulações automatizadas que se tornam mais difíceis nos serviços REST, como por exemplo a geração automatizada de clientes para uma dada linguagem de programação. Isso se deve principalmente pelo alto nível de padronização da tecnologia WS-* e pela existência de interfaces bem definidas e processáveis por software (WSDL). 
 
 \section{Composições de serviços web}
 \label{sec:composicoes}
@@ -147,18 +153,25 @@ o código compilado do componente junto de sua configuração são os insumos pa
 \item [Inicialização:] é quando finalmente o componente é iniciado e entra em execução, podendo processar chamadas de seus clientes. A inicialização também inclui o \emph{enlace} entre os componentes de uma composição, para que os componentes conheçam a localização dos componentes dos quais dependem.
 \end{description}
 
+Profissionais da acadêmia e da indústria levantam a necessidade de se automatizar o processo de implantação, uma vez que o processo de implantação manual se torna moroso e propenso a erros, principalmente na implantação de sistemas distribuídos~\cite{Dolstra2005Configuration}. 
+Esses problemas fazem da implantação em produção um momento de grande apreensão
+e mais trabalho nas organizações~\cite{Humble2011Continuous}.
+A solução para esses sintomas, segundo esses autores, é a automação do processo de implantação.
+Em um processo de implantação automatizado tudo o que for possível é executado de forma automatizada,
+geralmente por meio de \scripts. O objetivo de um processo de implantação automatizado
+é proporcionar um processo de implantação \emph{reprodutível}, \emph{confiável} e \emph{fácil} de ser executado~\cite{Humble2011Continuous}.
+
 Todo o processo que vai desde o \emph{commit} do código-fonte até a implantação em produção
 chamaremos de processo de \emph{lançamento} de uma determinada versão do sistema.
 Esse processo de lançamento pode ser automatizado por um 
 ``\emph{pipeline de implantação}''~\cite{Humble2011Continuous},
 no qual o sistema passa por uma sequência de etapas,
 sendo que em cada etapa um aspecto do sistema é testado.
-A cada etapa, mais confiança se tem sobre o sistema a ser lançado.
+A cada etapa, mais confiança se tem sobre o candidato a lançamento.
 Vencidas todas as etapas, o sistema pode ser implantado no ambiente de produção,
 ou em alguns casos em um ambiente de homologação.
+Cada etapa do \emph{pipeline} de implantação pode precisar de uma nova implantação do sistema.
 Um exemplo básico de pipeline de implantação pode ser visto na Figura~\ref{fig:pipeline_implantacao}.
-Para cada etapa do pipeline, o processo de implantação 
-deve ser executado de forma automatizada.
 
 \begin{figure}[!h]
   \centering
@@ -167,14 +180,6 @@ deve ser executado de forma automatizada.
   \label{fig:pipeline_implantacao} 
 \end{figure}
 
-Profissionais da acadêmia e da indústria levantam a necessidade de se automatizar o processo de implantação, uma vez que o processo de implantação manual se torna moroso e propenso a erros, principalmente na implantação de sistemas distribuídos~\cite{Humble2011Continuous,Dolstra2005Configuration}. 
-Humble e Farley~\cite{Humble2011Continuous} afirmam que o processo de implantação manual faz com que  
-o lançamento de uma nova versão do sistema se torne um grande evento nas organizações, 
-em que há muita tensão e que faz as pessoas trabalharem até mais tarde.
-A solução para esses sintomas, segundo os autores, é a automação do processo de implantação.
-Em um processo de implantação automatizado tudo o que for possível é executado de forma automatizada,
-geralmente por meio de \scripts. O objetivo de um processo de implantação automatizado
-é proporcionar um processo de implantação \emph{reprodutível}, \emph{confiável} e \emph{fácil}~\cite{Humble2011Continuous}.
 
 A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de \scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutimos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
 
@@ -188,20 +193,20 @@ sobre as quais discutimos na Seção~\ref{sec:cloud}.
 Humble e Farley recomendam a utilização de sistemas especializados, preterindo 
 a utilização de linguagens de \scripts de propósito geral.
 
-A concretização de um processo de implantação automatizado depende bastante da
+Um processo de implantação automatizado depende bastante da
 integração de diferentes papéis em uma organização, principalmente da integração entre desenvolvedores
 e operadores, uma vez que o desenvolvimento dos \scripts de implantação requer
 habilidades de ambos os perfis.
 Essa percepção levou à criação do conceito de uma cultura 
-denominada DevOps~\cite{Humble2011DevOps}, na qual times inter-funcionais
-trabalham para a concretização da implantação automatizada.
+denominada DevOps~\cite{Humble2011DevOps}, na qual equipes inter-funcionais
+viabilizam a implantação automatizada.
 
 A discussão a seguir sobre as vantagens do processo de implantação automatizado
 são baseadas no livro ``\emph{Continuous Delivery}''~\cite{Humble2011Continuous}.
 
 Muitos problemas na implantação manual se dão por causa de documentação incompleta,
 contendo pressupostos não compartilhados por todo o time responsável por um produto ou serviço.
-Dessa forma é comum que a organização fique bastante dependente de uma única
+Dessa forma, é comum que a organização se torne dependente de uma única
 pessoa para realizar a tarefa de implantação.
 Por outro lado, um \script de implantação é uma documentação completa e precisa de todos os passos
 do processo. Caso um \script fique desatualizado, o impacto será imediato, pois
@@ -211,15 +216,17 @@ diferentemente do que ocorre com a documentação convencional.
 
 A facilidade de se implantar o sistema com um simples comando
 leva a sua utilização contínua por diferentes atores.
-O time de desenvolvimento estará constantemente utilizando esse \script 
+O time de desenvolvimento, por exemplo, estará constantemente utilizando esse \script 
 para realizar testes de integração e aceitação. 
 Essa execução contínua do processo de implantação nos testes trará os seguintes benefícios:
 
 \begin{itemize}
 \item Os testes se tornam mais confiáveis por serem executados em um ambiente garantidamente similar ao ambiente de produção.
 \item A quantidade de execuções de testes de integração e aceitação será maior, o que auxilia na garantia de qualidade do sistema.
-\item O próprio processo de implantação se torna mais confiável, pois quando o ``grande dia'' da implantação chega, o processo já terá sido executado várias vezes.
-\item Em particular, é de se esperar que defeitos no \script de implantação já tenham sido detectados e corrigidos.
+\item A implantação em produção se torna mais confiável, 
+pois o sistema já terá sido implantado várias vezes
+antes de chegar à produção.
+\item Em particular, espera-se que defeitos no \script de implantação já tenham sido detectados e corrigidos antes de ser aplicado em produção.
 \end{itemize}
 
 A utilização da implantação automatizada na execução de testes também
@@ -227,25 +234,26 @@ facilita a execução concorrente de múltiplos testes em ambientes isolados.
 Isso, por sua vez, contribui para o aumento da bateria de testes, fazendo com que
 a cobertura dos testes aumente e, por fim, a própria qualidade do sistema testado também melhore.
 
-Outro problema na implantação manual é que quando o sistema finalmente é testado
-no ambiente de produção, grandes mudanças arquiteturais podem ser economicamente inviáveis.
-A implantação automatizada favorece a prática da implantação contínua desde as versões
-embrionárias do sistema, ajudando a garantir que decisões arquiteturais são adequadas
-e evitando alterações de última hora para adequar o sistema ao ambiente de produção.
+Com a implantação manual, normalmente o sistema é executado no ambiente
+de produção ou homologação apenas nas fases finais do desenvolvimento.
+Nesse estágio, grandes mudanças arquiteturais podem ser economicamente inviáveis.
+Por outro lado, a implantação automatizada favorece a prática da implantação contínua desde as versões
+embrionárias do sistema. 
+Isso ajuda a garantir desde o início que as decisões arquiteturais são adequadas.
+Também evita a necessidade de
+alterações emergenciais para adequar o sistema ao ambiente de produção.
 
-A implantação contínua e confiável do sistema é um fator determinante de apoio ao lançamento
+A implantação contínua e confiável do sistema é determinante no apoio ao lançamento
 contínuo de novas versões. Isso é importante para que se consiga o \emph{feedback} do cliente
 o quanto antes sobre as últimas alterações no sistema.
 Esse \emph{feedback} é importante tanto do ponto de vista técnico para o aprimoramento do sistema,
-quanto do ponto de vista de negócio, pois é ele que ajuda o time a saber se está construindo
-\emph{a coisa certa}.
+quanto do ponto de vista de negócio, pois pode redefinir os objetivos do sistema.
 O encurtamento do tempo entre desenvolvimento e \emph{feedback} do cliente
 é uma prática pregada pelo movimento \emph{lean startup}~\cite{Ries2011Lean}.
 
 Na próxima seção falamos sobre a computação em nuvem,
-moderna tecnologia que impacta altamente as técnicas de implantação de sistemas.
-
-\gerosa{esta seção em geral não está tão boa quanto as outras. rever o texto.}
+um conjunto de modernas tecnologias
+com grande impacto sobre a implantação de sistemas.
 
 \section{Computação em nuvem}
 \label{sec:cloud}
@@ -322,8 +330,8 @@ ainda mais fundamental.
 Hamilton~\cite{Hamilton2007InternetScale} lista uma série de boas práticas acumuladas 
 por anos de experiência no desenvolvimento de serviços de grande escala.
 Dentre elas, Hamilton destaca a automação de todos os processos de operações dos serviços,
-alegando que processos automatizados são testáveis, reparáveis e, portanto,
-mais confiáveis \Gerosa{processos manuais tb são testáveis e reparáveis}.
+alegando que processos automatizados são mais confiáveis
+por evitar erros humanos na operação dos serviços.
 
 \item [Falhas de terceiros:] 
 
@@ -342,22 +350,17 @@ Além disso, alguns nós podem levar um tempo muito maior que a média para fica
 Outras operações que podem falhar durante o processo de implantação são
 conexões SSH e a execução de \scripts nos nós alvos.
 
-A Figura~\ref{fig:ec2_boxplot} mostra a distribuição por nós observada empiricamente
-do tempo de criação de VMs quando se requisita concorrentemente a criação
-de 100 nós na nuvem da Amazon (esse experimento foi repetido 10 vezes).
+A Figura~\ref{fig:ec2_boxplot} mostra a distribuição por nós observada 
+empiricamente do tempo de criação de VMs no Amazon EC2. 
+Cada um dos dez \emph{boxplots} corresponde ao resultado
+observado para 100 requisições concorrentes ao EC2,
+cada uma requisitando a criação uma nova VM.
 Nós contamos o tempo que vai da requisição de criação do nó
 até o momento em que a VM se encontra apta a receber conexões SSH,
 que é quando ela se torna pronta para uso na prática.
-Nós observamos uma taxa de falha de 0.6\%
-quando se tenta criar concorrentemente 100 nós.
-É interessante notar que o tempo de criação tem uma mediana estável,
-mas que alguns valores altos para esse tempo são esperados quando
-se cria ao mesmo tempo uma grande quantidade de nós.
-Em nossas observações, falhas e tempos longos de provisionamento
-afetaram até 7\% das requisições de criação de nós.
-\fabio{tem que explicar a figura.
-a figura usa uma notação que não foi explicada.
-faça essa figura bem maior verticalmente para ficar mais legível.}
+Os dados utilizados para gerar a Figura~\ref{fig:ec2_boxplot}
+foram coletados em maio de 2013. As máquinas virtuais, 
+do tipo \emph{m1.small}, foram criadas na zona de disponibilidade \emph{us-east-1b}.
 
 \begin{figure}[ht]
 \centering
@@ -366,11 +369,25 @@ faça essa figura bem maior verticalmente para ficar mais legível.}
 \label{fig:ec2_boxplot}
 \end{figure}
 
-Os dados utilizados para gerar a Figura~\ref{fig:ec2_boxplot}
-foram coletados em maio de 2013. As máquinas virtuais, 
-do tipo \emph{m1.small}, foram criadas na zona de disponibilidade \emph{us-east-1b}.
+Na Figura~\ref{fig:ec2_boxplot} podemos observar, 
+pelas regiões interquartis dos \emph{boxplots}, que
+o tempo de criação de VMs possui uma mediana estável.
+Observamos também que ao se criar ao mesmo tempo uma grande quantidade de nós,
+é esperado a existência de algumas tempos de criação bem mais demorados,
+observados nos pontos acima dos \emph{whiskers} superiores.
 
-Nygard~\cite{Nygard2009Release} apresenta vários padrões de estabilidade que são de importante aplicação em sistemas de grande escala. Em sua essência, esses padrões dizem respeito a detectar falhas e evitar sua propagação, provendo um tratamento adequado a elas. Dentre as práticas recomendas pelo autor destacam-se 1) o uso de \emph{timeouts} no cliente, que evita que um cliente fique eternamente esperando uma resposta; 2) a interrupção de tentativas do cliente quando há sintomas de indisponibilidade do provedor; 3) criação de recursos exclusivos para diferentes clientes, evitando que uma falha em um recurso compartilhado afete todos os clientes; e 4) a ``falha rápida'', que faz com que um provedor forneça uma resposta de erro tão logo quanto seja possível saber que a operação não terá sucesso. \gerosa{repetição de ``cliente'' no parágrafo}
+Apenas o tempo
+das requisições que foram completadas com sucesso são observadas na
+Figura~\ref{fig:ec2_boxplot}.
+No entanto, a cada tentativa de se criar simultaneamente várias VMs,
+nem todas as VMs requisitadas são criadas.
+Nos experimentos realizados para a produção da Figura~\ref{fig:ec2_boxplot},
+nós observamos uma taxa de falha de 0.6\%.
+Nesses experimentos, falhas e tempos longos de provisionamento 
+(acima dos \emph{whiskers} superiores)
+afetaram 7\% das requisições de criação de nós.
+
+Nygard~\cite{Nygard2009Release} apresenta vários padrões de estabilidade que são de importante aplicação em sistemas de grande escala. Em sua essência, esses padrões dizem respeito a detectar falhas e evitar sua propagação, provendo um tratamento adequado a elas. Dentre as práticas recomendas pelo autor destacam-se 1) o uso de \emph{timeouts}, que evita que um cliente fique eternamente esperando uma resposta; 2) a interrupção de tentativas do cliente quando há sintomas de indisponibilidade do provedor; 3) criação de recursos exclusivos para diferentes clientes, evitando que uma falha em um recurso compartilhado afete todos os clientes; e 4) a ``falha rápida'', que faz com que um provedor forneça uma resposta de erro tão logo quanto seja possível saber que a operação não terá sucesso. 
 
 Quando um sistema faz uma requisição a outro serviço, não é possível distinguir um \emph{timeout} de uma resposta eventualmente mais lenta. Dessa forma, só é seguro, do ponto de vista funcional, o sistema cliente enviar uma nova requisição devido a \emph{timeout} caso a operação considerada seja \emph{idempotente}. 
 Uma operação é idempotente quando executá-la várias produz o mesmo resultado 
