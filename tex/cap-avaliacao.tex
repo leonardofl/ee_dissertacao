@@ -167,8 +167,8 @@ para que possamos analisar o desempenho do EE conforme a carga aumenta.
 \end{figure}
 
 
-Inicialmente, conduzimos uma análise multi-variada \fabio{ref}
-do desempenho do EE implantando composições nos seguintes cenários:
+Inicialmente, conduzimos experimentos
+de desempenho do EE implantando composições nos seguintes cenários:
 1) um pequeno conjunto de pequenas composições;
 2) um pequeno conjunto de composições maiores;
 3) um conjunto maior de pequenas composições;
@@ -177,13 +177,13 @@ A Tabela~\ref{tab:cases} quantifica cada cenário.
 
 \begin{table}
 \centering
-\caption{Cenários de implantação para a análise multi-variada.}
+\caption{Cenários de implantação para os experimentos de desempenho.}
 \label{tab:cases}
 \begin{tabular}{r r r r c} \hline
 \emph{Cenário} & \emph{Composições} & \emph{Tamanho} & \emph{Nós} & \emph{Serviços/Nós} \\ \hline
-1 &  10 &  10 &  9 & 11 or 12 \\
-2 &  10 & 100 & 90 & 11 or 12 \\
-3 & 100 &  10 & 90 & 11 or 12 \\
+1 &  10 &  10 &  9 & 11 ou 12 \\
+2 &  10 & 100 & 90 & 11 ou 12 \\
+3 & 100 &  10 & 90 & 11 ou 12 \\
 4 &  10 &  10 &  5 &       20 \\
 \hline \end{tabular}
 \end{table}
@@ -218,7 +218,7 @@ A tabela também mostra quantas composições e serviços foram corretamente imp
 \begin{tabular}{c r@{ $\pm$ }l r@{ $\pm$ }l r@{ $\pm$ }l} \hline
 
 \emph{Cenário} & \multicolumn{2}{c}{\emph{Tempo}} & \multicolumn{2}{c}{\emph{Composições}}   & \multicolumn{2}{c}{\emph{Serviços}}\\
-                 & \multicolumn{2}{c}{}           & \multicolumn{2}{c}{\emph{com sucesso}} & \multicolumn{2}{c}{\emph{com sucesso}}\\
+                 & \multicolumn{2}{c}{(s)}           & \multicolumn{2}{c}{\emph{com sucesso}} & \multicolumn{2}{c}{\emph{com sucesso}}\\
 \hline
 1 &  467.9 &  34.8 & 10.0 & 0   & 100.0 & 0   (100\%) \\
 2 & 1477.1 & 130.0 &  9.3 & 0.3 & 999.3 & 0.4 (99.9\%)\\
@@ -227,18 +227,22 @@ A tabela também mostra quantas composições e serviços foram corretamente imp
 \hline \end{tabular}
 \end{table}
 
-\fabio{não tínhamos uma tabela mais informativa no artigo do CCGrid??}
-
 Os resultados mostram que o EE escala relativamente bem em termos de serviços sendo implantados.
-Embora o número de serviços foi multiplicado por 10, o tempo de implantação
-cresceu aproximadamente apenas 3 vezes nos cenários 2 e 3 \fabio{não entendi. onde está mostrado isso???}.
-Esse incremento no tempo de implantação é causado principalmente pelo fato
-de que quanto maior a quantidade de serviços, maiores são as chances da ocorrência de falhas,
-o que dispara a re-execução de algumas rotinas. \fabio{explicação confusa e incompleta}
+Do cenário 1 para os cenários 2 e 3, o número de serviços (\emph{Composições * Tamanho}) 
+foi multiplicado por 10 (Tabela~\ref{tab:cases}),
+e em ambas as situações o tempo de implantação cresceu aproximadamente apenas 3 vezes
+(Tabela~\ref{tab:results}). 
+Parte da explicação para esse incremento no tempo de implantação
+está na ocorrência de falhas da infraestrutura.
+Quanto maior a quantidade de serviços implantados, 
+maiores são as chances da ocorrência dessas falhas.
+E para cada falha que acontece, uma nova tentativa de execução
+da rotina correspondente é necessária 
+(ver sobre o \emph{invoker} na Seção~\ref{sec:falhas}).
 
-Os resultados também mostram que o quando o número de serviços por nó dobrou (cenário 4)
-\fabio{dobrou em relação a o que??? não dá prá entender.},
-o tempo de implantação cresceu aproximadamente 25\%. Parte dessa sobrecarga foi causada
+Indo do cenário 1 para o cenário 4, o número de serviços por nó dobrou
+(Tabela~\ref{tab:cases}). Nessa situação, os resultados da Tabela (Tabela~\ref{tab:results}) 
+mostram que o tempo de implantação cresceu aproximadamente 25\%. Parte dessa sobrecarga foi causada
 pelo incremente no número de receitas Chef que devem ser executadas (sequencialmente) nos nós.
 
 Durante os experimentos, observamos que, graças aos mecanismos de tolerância a falhas do EE,
@@ -292,6 +296,7 @@ Em números absolutos, cada incremento em 400 serviços implantados foi respons�
 de 180 a 460 segundos no tempo de implantação.
 
 
-\gerosa{E aquela questão de olhar o real overhead vs o crescimento esperado pela variação estatística do tempo individual de implantação?}
-
+%\gerosa{E aquela questão de olhar o real overhead vs o crescimento esperado pela variação estatística do tempo individual de implantação?}
+% Questão muito interessante, mas o fato de a distribuição do tempo de implantação
+% das coreografias ser quase normal, mas não normal, atrapalha bastante esse tipo de análise. =T
 
