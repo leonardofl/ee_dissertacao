@@ -487,6 +487,71 @@ public interface ContextSender {
 
 \end{description}
 
+\section{Tratamento de falhas de terceiros}
+\label{sec:falhas}
+
+Seguindo recomendações gerais feitas por Nygard~\cite{Nygard2009Release},
+adotamos no \ee uma abordagem simples para tratar falhas externas.
+A lógica de invocação a sistemas externos foi encapsulada em uma classe, 
+chamada \textsf{Invoker} (Figura~\ref{fig:invoker}).
+Toda vez que se deve acessar um sistema externo, o EE utiliza um \emph{invoker}.
+O \textsf{Invoker} recebe os seguintes parâmetros:
+uma \emph{tarefa}, que é uma rotina que se comunicará com algum sistema externo,
+a quantidade de \emph{tentativas} para executar a tarefa,
+o \emph{timeout} de cada tentativa e um \emph{intervalo} entre as tentativas.
+
+Uma instância do \textsf{Invoker} deve ser configurada 
+de acordo com sua tarefa (por exemplo, nós descobrimos que três tentativas
+não é o suficiente para transferência de arquivos por SCP).
+Em vez de ter esses valores fixados no código-fonte, eles são explicitamente
+ajustados em arquivos de configuração.
+Desta forma, pode-se ajustar esses valores de acordo com 
+as características do ambiente alvo.
+Portanto, essa abordagem é também uma estratégia para colaborar 
+com a heterogeneidade de plataformas e tecnologias.
+A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \textsf{Decorator}~\cite{GoF1995Patterns}.} 
+para ajustar dinamicamente os valores de timeouts de cada tarefa.
+Para implementar essa adaptação, o desenvolvedor tem acesso
+ao histórico dos tempos de execução do \emph{invoker}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.6\linewidth]{invoker.pdf}
+\caption{Uma instância de \textsf{Invoker} é parametrizada com uma tarefa, uma quantidade de tentativas, um timeout por tentativa e um intervalo de tempo entre as tentativas.}
+\label{fig:invoker}
+\end{figure}
+
+O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
+Quando uma requisição chega, o EE tenta criar um novo nó.
+Se a criação falha ou demora muito, um nó já criado é recuperado de uma reserva de nós ociosos.
+Essa estratégia evita que se tenha que esperar novamente pelo tempo de se criar um novo nó.
+A capacidade inicial da reserva é definida por configuração,
+sendo a reserva preenchida cada vez que a criação de um nó é requisitada.
+Se o tamanho da reserva é reduzido e alcança um dado limite inferior,
+a capacidade é aumentada, de forma a tentar evitar uma situação futura
+de se encontrar uma reserva vazia em um momento de necessidade.
+
+A abordagem da reserva impõe um custo extra de se manter algumas VMs a mais
+em execução em um estado ocioso. Contudo, esse problema é tratado
+pelo EE por um algoritmo de gerenciamento distribuído em cada nó:
+se o nó está em um estado ocioso por $N-1$ minutos, onde $N$ é um limite
+de tempo que implica custo adicional, o nó envia ao EE um pedido para 
+sua própria finalização. Assim, depois de um tempo de inatividade no EE,
+a reserva se torna vazia em algum momento, sendo preenchida novamente
+somente quando chegam novas requisições de criação de nós.
+%This distributed approach alleviates the need to have the \ee periodically check
+%the status of the machines to decide whether they should be removed.
+
+%% Não estou mt certo sobre oq está abaixo...
+%% parece que pelo menos o espaço em disco continuaria sendo cobrado
+%% de uma instância parada.
+%Considerando que o tempo de criação de um nó é bem maior que o tempo de inicialização (\emph{boot})
+%desse nó, uma melhoria a ser feita na reserva de nós ociosos é manter o nó ocioso desligado
+%até o momento de uso, uma vez que provedores de infraestrutura, como a Amazon,
+%costumam não cobrar por máquinas desligadas.
+%Essa abordagem pode diminuir um pouco o desempenho da reserva de nós,
+%mas irá economizar mais recursos.
+
 
 \section{Aspectos gerais de implementação}
 \label{sec:implementacao}
@@ -661,72 +726,17 @@ com características dos nós disponíveis.
 
 \item [Falhas de terceiros:]
 
-Seguindo recomendações gerais feitas por Nygard~\cite{Nygard2009Release},
-adotamos no \ee uma abordagem simples para tratar falhas externas.
-A lógica de invocação a sistemas externos foi encapsulada em uma classe, 
-chamada \textsf{Invoker} (Figura~\ref{fig:invoker}).
-Toda vez que se deve acessar um sistema externo, o EE utiliza um \emph{invoker}.
-O \textsf{Invoker} recebe os seguintes parâmetros:
-uma \emph{tarefa}, que é uma rotina que se comunicará com algum sistema externo,
-a quantidade de \emph{tentativas} para executar a tarefa,
-o \emph{timeout} de cada tentativa e um \emph{intervalo} entre as tentativas.
+Conforme apresentado na Seção~\ref{sec:falhas},
+o \ee adota duas principais estratégias para lidar com falhas
+de componentes de terceiros ou falhas na rede.
+Essas estratégias são o uso do \emph{invoker} e da
+\emph{reserva de nós ociosos}.
 
-Uma instância do \textsf{Invoker} deve ser configurada 
-de acordo com sua tarefa (por exemplo, nós descobrimos que três tentativas
-não é o suficiente para transferência de arquivos por SCP).
-Em vez de ter esses valores fixados no código-fonte, eles são explicitamente
-ajustados em arquivos de configuração.
-Desta forma, pode-se ajustar esses valores de acordo com 
-as características do ambiente alvo.
-Portanto, essa abordagem é também uma estratégia para colaborar 
-com a heterogeneidade de plataformas e tecnologias.
-A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \textsf{Decorator}~\cite{GoF1995Patterns}.} 
-para ajustar dinamicamente os valores de timeouts de cada tarefa.
-Para implementar essa adaptação, o desenvolvedor tem acesso
-ao histórico dos tempos de execução do \emph{invoker}.
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.6\linewidth]{invoker.pdf}
-\caption{Uma instância de \textsf{Invoker} é parametrizada com uma tarefa, uma quantidade de tentativas, um timeout por tentativa e um intervalo de tempo entre as tentativas.}
-\label{fig:invoker}
-\end{figure}
-
-O EE utiliza os \emph{invokers} nos momentos adequados e necessários.
-Isso fornece uma robustez mais facilmente proporcionada por sistemas de middleware,
-nos quais interesses transversais podem ser implementados sem que o implantador 
-tenha que se preocupar com isso.
-
-\fabio{Esse é o único lugar onde os mecanismos de tolerância a falhas são descritos? 
-Essa é uma seção para discussão.  A descrição deveria ter vindo antes.}
-
-O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
-Quando uma requisição chega, o EE tenta criar um novo nó.
-Se a criação falha ou demora muito, um nó já criado é recuperado de uma reserva de nós ociosos.
-Essa estratégia evita que se tenha que esperar novamente pelo tempo de se criar um novo nó.
-A capacidade inicial da reserva é definida por configuração
-e ela é preenchida cada vez que a criação de um nó é requisitada.
-Se o tamanho da reserva é reduzido e alcança um dado limite,
-a capacidade é aumentada, de forma a tentar evitar uma situação futura
-de se encontrar uma reserva vazia em um momento de necessidade.
-
-A abordagem da reserva impõe um custo extra de se manter algumas VMs a mais
-em execução em um estado ocioso. Contudo, esse problema é tratado
-pelo EE por um algoritmo de gerenciamento distribuído em cada nó:
-se o nó está em um estado ocioso por $N-1$ minutos, onde $N$ é um limite
-de tempo que implica custo adicional, o nó envia ao EE um pedido para 
-sua própria finalização. Assim, depois de um tempo de inatividade no EE,
-a reserva se torna vazia em algum momento, sendo preenchida novamente
-somente quando chegam novas requisições de criação de nós.
-%This distributed approach alleviates the need to have the \ee periodically check
-%the status of the machines to decide whether they should be removed.
-
-Considerando que o tempo de criação de um nó é bem maior que o tempo de inicialização (\emph{boot})
-desse nó, uma melhoria a ser feita na reserva de nós ociosos é manter o nó ocioso desligado
-até o momento de uso, uma vez que provedores de infraestrutura, como a Amazon,
-costumam não cobrar por máquinas desligadas.
-Essa abordagem pode diminuir um pouco o desempenho da reserva de nós,
-mas irá economizar mais recursos.
+O uso dessas estratégias caracterizam a aplicação de interesses transversais
+durante a invocação de um sistema externo.
+Deixar que o middleware implemente interesses transversais
+traz uma maior robustez ao sistema, pois evita-se que o implantador
+esqueça de utilizar tais mecanismos em alguns pontos do sistema.
 
 Outra prática importante relacionada a tolerância a falhas é a 
 \emph{degradação suave}~\cite{Brewer2001GiantScale,Hamilton2007InternetScale}.
