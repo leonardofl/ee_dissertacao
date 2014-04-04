@@ -512,7 +512,7 @@ com a heterogeneidade de plataformas e tecnologias.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.6\linewidth]{invoker.pdf}
+\includegraphics[width=0.3\linewidth]{invoker.pdf}
 \caption{Uma instância de \textsf{Invoker} é parametrizada com uma tarefa, uma quantidade de tentativas, um timeout por tentativa e um intervalo de tempo entre as tentativas.}
 \label{fig:invoker}
 \end{figure}
@@ -532,7 +532,7 @@ As invocações externas tratadas pelo \textsf{Invoker} no EE são as seguintes:
 Mais informações sobre a flexibilidade oferecida pelo
 \textsf{Invoker}, incluindo possibilidade de extensão para adaptação dinâmica
 dos valores de configuração dos \emph{invokers},
-podem ser vistos na Seção~\ref{sec:implementacao}.
+podem ser vistas na Seção~\ref{sec:implementacao}.
 
 O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
 Quando uma requisição chega, o EE tenta criar um novo nó.
@@ -607,13 +607,20 @@ end
 
 \item [Invoker]
 
-As classes criadas para a utilização do \textsf{Invoker}
+As classes criadas para a utilização do \textsf{Invoker} (Figura~\ref{fig:invoker_lib})
 foram projetadas para fornecer uma utilização flexível
 do conceito de \emph{invoker}.
 Pode-se adotar diferentes estratégias para determinar os
 valores de configuração de um \emph{invoker},
 assim como diferentes estratégias de tratamento de erro
 implementada pelo \emph{invoker}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=1\linewidth]{invoker_lib.pdf}
+\caption{Biblioteca de classes para a utilização do Invoker.}
+\label{fig:invoker_lib}
+\end{figure}
 
 A implementação utilizada de \textsf{InvokerConfigurator} produz \emph{invokers}
 utilizando os valores configurados no arquivo \texttt{invoker.properties}.
@@ -627,13 +634,12 @@ Pode-se também desejar a criação de novas implementações de \textsf{Invoker
 Se, por exemplo, o sistema for portado pra um ambiente mais confiável,
 como um aglomerado utilizando \emph{infiniband},
 podemos fazer com que a fábrica de \emph{invokers} retorne
-um ``\emph{invoker} curto-circuito'', que nada fará,
-ou um \emph{invoker} um pouco mais simples, que apenas
-considere o timeout de uma chamada.
+um ``\emph{invoker} curto-circuito'', que nada fará
+a não ser invocar a tarefa especificada.
 Tratamentos mais complexos que o da implementação atual também podem
 ser concebidos.
 A vantagem do desenho utilizado é que essa troca de estratégia
-pode ser realizada dinamicamente sem que seja preciso alterar
+pode ser realizada sem que seja preciso alterar
 o código dos clientes do \emph{invoker}.
 
 \item [Apache CXF:]
