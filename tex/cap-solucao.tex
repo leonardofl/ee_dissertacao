@@ -509,10 +509,6 @@ Desta forma, pode-se ajustar esses valores de acordo com
 as características do ambiente alvo.
 Portanto, essa abordagem é também uma estratégia para colaborar 
 com a heterogeneidade de plataformas e tecnologias.
-A classe \textsf{Invoker} pode ser decorada\footnote{Ver padrão de projeto \textsf{Decorator}~\cite{GoF1995Patterns}.} 
-para ajustar dinamicamente os valores de timeouts de cada tarefa.
-Para implementar essa adaptação, o desenvolvedor tem acesso
-ao histórico dos tempos de execução do \emph{invoker}.
 
 \begin{figure}[ht]
 \centering
@@ -520,6 +516,23 @@ ao histórico dos tempos de execução do \emph{invoker}.
 \caption{Uma instância de \textsf{Invoker} é parametrizada com uma tarefa, uma quantidade de tentativas, um timeout por tentativa e um intervalo de tempo entre as tentativas.}
 \label{fig:invoker}
 \end{figure}
+
+As invocações externas tratadas pelo \textsf{Invoker} no EE são as seguintes:
+
+\begin{itemize}
+\item Criação de nó alvo.
+\item Conexão SSH.
+\item Envio de arquivo por SCP.
+\item Instalação do Chef em nó alvo. 
+\item Geração de receitas Chef em nó alvo.
+\item Execução de receitas em nó alvo.
+\item Chamada à operação \texttt{setInvocationAddress} na fase de enlace.
+\end{itemize}
+
+Mais informações sobre a flexibilidade oferecida pelo
+\textsf{Invoker}, incluindo possibilidade de extensão para adaptação dinâmica
+dos valores de configuração dos \emph{invokers},
+podem ser vistos na Seção~\ref{sec:implementacao}.
 
 O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
 Quando uma requisição chega, o EE tenta criar um novo nó.
@@ -591,6 +604,37 @@ remote_file "#{node['easyesb']['downloaded_file']}" do
   action :create_if_missing
 end
 \end{lstlisting}
+
+\item [Invoker]
+
+As classes criadas para a utilização do \textsf{Invoker}
+foram projetadas para fornecer uma utilização flexível
+do conceito de \emph{invoker}.
+Pode-se adotar diferentes estratégias para determinar os
+valores de configuração de um \emph{invoker},
+assim como diferentes estratégias de tratamento de erro
+implementada pelo \emph{invoker}.
+
+A implementação utilizada de \textsf{InvokerConfigurator} produz \emph{invokers}
+utilizando os valores configurados no arquivo \texttt{invoker.properties}.
+Para que os valores de configuração dos \emph{invokers}
+sejam ajustados dinamicamente,
+pode-se implementar um novo \textsf{InvokerConfigurator}
+que utilize algum algoritmo adaptativo com base no histórico
+de execução dos \emph{invokers}, que é produzido pelo próprio \textsf{Invoker}.
+
+Pode-se também desejar a criação de novas implementações de \textsf{Invoker}.
+Se, por exemplo, o sistema for portado pra um ambiente mais confiável,
+como um aglomerado utilizando \emph{infiniband},
+podemos fazer com que a fábrica de \emph{invokers} retorne
+um ``\emph{invoker} curto-circuito'', que nada fará,
+ou um \emph{invoker} um pouco mais simples, que apenas
+considere o timeout de uma chamada.
+Tratamentos mais complexos que o da implementação atual também podem
+ser concebidos.
+A vantagem do desenho utilizado é que essa troca de estratégia
+pode ser realizada dinamicamente sem que seja preciso alterar
+o código dos clientes do \emph{invoker}.
 
 \item [Apache CXF:]
 
