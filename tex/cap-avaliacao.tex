@@ -255,8 +255,6 @@ No cenário 2, a pior situação, foram 3 falhas dentre 1000 serviços.
 No cenário 3, houve uma execução com 20 falhas, mas esse foi um evento excepcional,
 uma vez que a segunda pior situação contou com apenas 3 falhas.
 
-\fabio{quantas seriam as falhas se não tivéssemos o mecanismo de tolerância?}
-
 Finalmente, observamos que 80\% das execuções não utilizaram a reserva de nós ociosos.
 Quando a reserva foi usada, houve um acesso máximo por execução de 6 nós,
 mas na maioria das vezes o acesso foi de apenas 1 nó.
@@ -299,4 +297,53 @@ de 180 a 460 segundos no tempo de implantação.
 %\%gerosa{E aquela questão de olhar o real overhead vs o crescimento esperado pela variação estatística do tempo individual de implantação?}
 % Questão muito interessante, mas o fato de a distribuição do tempo de implantação
 % das coreografias ser quase normal, mas não normal, atrapalha bastante esse tipo de análise. =T
+
+%%%
+
+Para termos uma melhor ideia do impacto causado pela utilização dos mecanismos 
+de tratamento de falhas do EE, realizamos mais um experimento.
+Nesse experimento realizamos 10 execuções em que 1 coreografia de 100 serviços
+é implantada em 10 nós. Esse procedimento foi realizado com duas variações:
+na primeira variação o \emph{invoker} e a reserva de nós ociosos estavam ativados,
+enquanto que na segunda variação ambos estavam desativados.
+
+Nesse experimento, a topologia utilizada na composição foi a mesma 
+dos experimentos anteriores (Figura~\ref{fig:eval_composition}).
+O EE foi executado em uma máquina virtual (4 GB de RAM e 2 vCPUs de 2.3 GHz)
+hospedada na infraestrutura de nossa Universidade.
+Os nós alvos criados pelo EE eram instâncias \emph{small} da Amazon EC2 
+e o \emph{timeout} de criação dos nós era de 300 segundos.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.7]{error_handling.pdf}
+  \caption{Comparação da execução do EE com e sem os mecanismos de tratamento de falhas de terceiros.}
+  \label{fig:error_handling}
+\end{figure}
+
+Os resultados podem ser vistos na Figura~\ref{fig:error_handling}.
+Ao utilizar os mecanismos de tratamento de falhas de terceiros fornecidos pelo EE,
+todos os serviços foram adequadamente implantados em todas as execuções.
+Por outro lado, ao não utilizar esses mecanismos, obtivemos execuções em que nem todos
+os serviços foram corretamente implantados.
+
+Para as execuções realizadas, observamos que
+a quantidade de serviços falhos por execução foram múltiplos de 10
+(10 ou 30 serviços falhos).
+Essa propriedade sugere que as falhas observadas
+ocorreram devido à falha na criação de máquinas virtuais,
+uma vez que cada nó deveria hospedar 10 serviços.
+Essa consideração evidencia como a falha de criação de VMs é um
+dos tipos de falhas mais importantes a serem tratados,
+justificando o tratamento especial que demos a esse tipo de falha
+ao criar a reserva de nós ociosos.
+
+
+
+
+
+
+
+
+
 
