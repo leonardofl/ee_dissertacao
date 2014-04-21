@@ -85,7 +85,7 @@ o estado dos processos dos serviços implantados.
 Isso sugere que se requer uma ampla gama de habilidades técnicas
 do desenvolvedor de soluções de implantação.
 Algumas dessas habilidades, como utilizar o Chef,
-são notoriamente não-fáceis de se aprender.
+são notoriamente não-fáceis de aprender.
 O código Java utilizado para realizar a invocação de serviços SOAP
 pode também ser considerado como não-trivial para um programador
 não acostumado com o padrão SOAP.
@@ -101,8 +101,9 @@ mas isso seria uma tarefa para usuários avançados do Chef.
 
 \item Para cada nó alvo, o implantador deve realizar alguns passos manuais
 que são demorados. Alguns deles (executar \texttt{install\_chef}, por exemplo)
-poderiam ser evitados com a utilização de uma ferramenta como
-Capistrano\footnote{\url{http://www.capistranorb.com/}},
+poderiam ser evitados com a utilização de ferramentas
+que auxiliam na execução de comandos remotos,
+como o Capistrano\footnote{\url{http://www.capistranorb.com/}} por exemplo,
 mas isso demandaria mais uma tecnologia a ser aprendida.
 Outros passos manuais, como a edição de arquivos de configuração, 
 são bastante propensos a erros.
@@ -140,7 +141,7 @@ Conduzir um experimento rigoroso de engenharia de software com vários
 desenvolvedores assumindo o papel de implantador traria uma evidência melhor.
 Contudo, acreditamos que a avaliação descrita aqui já é o suficiente
 para expandir nosso entendimento sobre o valor agregado por uma solução
-com suporte de middleware, como o \ee, uma vez que temos agora uma boa ilustração
+com suporte de middleware, como o \ee, uma vez que temos agora uma avaliação preliminar
 do esforço necessário para se implantar composições de serviços.
 
 \section{Análise de desempenho e escalabilidade}
