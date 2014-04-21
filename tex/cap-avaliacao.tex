@@ -54,7 +54,7 @@ As URLs dos pacotes dos serviços tiveram que ser manualmente inseridas nos
 
 Para implementar o enlace entre serviços,
 desenvolvemos um pequeno mas não trivial programa Java, chamado \texttt{context\_sender}. 
-Ele é responsável por invocar a operação \texttt{setInvocationAddress} de um dado serviço.
+Ele é responsável pela invocação da operação \texttt{setInvocation\allowbreak Address} de um dado serviço.
 Implementamos o \texttt{context\_sender} como um programa Java para
 aproveitar a API SOAP fornecida pelo ambiente Java SE.
 Também desenvolvemos o \script \texttt{bind\_services},
@@ -290,7 +290,7 @@ dentre, 200, 600, 1000, 1400 e 1800 serviços, respectivamente.
 \end{figure}
 
 Esses resultados mostram uma boa escalabilidade em termos de serviços implantados.
-Aumentando-se 9 em vezes o número de serviços implantados, o tempo de implantação aumentou 3,5 vezes.
+Aumentando\allowbreak -se 9 em vezes o número de serviços implantados, o tempo de implantação aumentou 3,5 vezes.
 Em números absolutos, cada incremento em 400 serviços implantados foi responsável pelo incremento
 de 180 a 460 segundos no tempo de implantação.
 
