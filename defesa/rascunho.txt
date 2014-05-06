@@ -1,0 +1,73 @@
+Implantação automatizada de composições de serviços web de grande escala
+
+== Explicando título ==
+
+**Implantação automatizada** de composições de serviços web de grande escala
+
+**Implantação** automatizada de composições de serviços web **de grande escala**
+
+**Implantação** automatizada de **composições de serviços web** de grande escala
+
+== Implantação de sistemas ==
+
+* Entrega contínua
+* Implantação automatizada
+
+== Composições de serviços web == 
+
+* Future Internet
+* Aeroporto
+
+== Desafios na implantação em grande-escala ==
+
+* Processo
+* Falhas
+* Disponibilidade
+* Escalabilidade
+* Heterogeneidade
+* Múltiplas organizações
+* Adaptabilidade
+
+== Computação em nuvem ==
+
+* Relação entre nuvem e implantação automatizada
+
+== Implantação middleware-based vs ad-hoc ==
+
+== Objetivo ==
+
+* Que vantagens a abordagem middleware-based traz neste cenário?
+* Goal: projetar, implementar e avaliar um middleware que forneça suporte à implantação automatizada de composições de serviços web de grande escala
+
+Mais importante que fazer um middleware melhor doq os outros existentes,
+é a experiência de fazer um para determinar quais aspectos de arquitetura/implantação
+fazem um middleware adequado para grande escala.
+
+
+== O Enactment Engine ==
+
+* Camadas
+* Ambiente de execução
+* processo
+* ADL
+* enlace
+* node selector
+* interface (poderia ter gui web, mas é web api q nos ajuda em nossos objetivos)
+* pontos de extensão
+* tratamentos de falhas
+
+== Revisitando desafios grande-escala ==
+
+== Avaliação ==
+
+* Comparar middleware-based vs ad-hoc no cenário "composições de serviço em grande escala"
+
+== Trabalhos relacionados ==
+
+== Contribuições ==
+
+== Trabalhos futuros ==
+
+
+
+

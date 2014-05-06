@@ -1,0 +1,661 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{listings}                   % para formatar código-fonte (ex. em Java)
+
+\newcommand\adhoc{\emph{ad-hoc}}
+\newcommand\sectiontitle[1]{\begin{center}\huge#1\end{center}}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Defesa mestrado]{Implantação automatizada de composições de \\ serviços web de grande escala} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Leonardo Leite} % Your name
+\institute[IME - USP] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+IME - USP \\ % Your institution for the title page
+\medskip
+%\textit{leofl@ime.usp.br} % Your email address
+}
+\date{26 de maio de 2014} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\begin{center}
+{\scriptsize
+Orientador: Marco Aurélio Gerosa \\
+Coorientador: Fabio Kon
+}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Agenda} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Introdução} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+%\subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+\begin{frame}
+\frametitle{}
+\begin{center}
+\huge
+Implantação automatizada \\ de composições de serviços web \\ de grande escala
+\end{center}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{}
+\begin{center}
+\huge
+\textbf{Implantação automatizada} \\ de composições de serviços web \\ de grande escala
+\end{center}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{}
+\begin{center}
+\huge
+\textbf{Implantação} automatizada \\ de composições de serviços web \\ \textbf{de grande escala}
+\end{center}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{}
+\begin{center}
+\huge
+\textbf{Implantação} automatizada \\ \textbf{de composições de serviços web} \\ de grande escala
+\end{center}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Implantação de sistemas}
+
+\begin{itemize}
+\item Entrega contínua
+\item Implantação automatizada
+\item DevOps
+\item Scripts vs declarativa
+\item Baseado em middleware vs \adhoc
+\end{itemize}
+
+%\begin{figure}
+%\includegraphics[scale=0.2]{img/humble}
+%\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Composições de serviços web}
+
+\begin{itemize}
+\item Interfaces acessíveis por máquinas
+\item Automação de fluxos de negócios
+\item Internet do Futuro
+\item Aeroporto
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.7\linewidth]{img/bpmn2}
+\end{figure}
+
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Desafios na implantação em grande-escala}
+
+\begin{itemize}
+\item Processo
+\item Falhas
+\item Disponibilidade
+\item Escalabilidade
+\item Heterogeneidade
+\item Múltiplas organizações
+\item Adaptabilidade
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Computação em nuvem}
+
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Falhas na criação de VMs do Amazon EC2}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{img/ec2_boxplot}
+\end{figure}
+
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Questão}
+
+Que vantagens a abordagem baseada em middleware traz neste cenário?
+
+O quão \emph{melhor} ela é comparada a abordagens ad-hocs?
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Objetivo}
+
+Projetar, implementar e avaliar um middleware que forneça suporte à implantação automatizada de composições de serviços web de grande escala
+
+\end{frame}
+
+%------------------------------------------------
+
+\section{O CHOReOS Enactment Engine}
+
+\begin{frame}
+
+\sectiontitle{O CHOReOS Enactment Engine}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os modelos de computação nuvem}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{img/nuvem_modelos}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Ambiente de execução do EE}
+
+\begin{figure}
+\includegraphics[width=0.8\linewidth]{img/arquitetura}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Processo de implantação implementado pelo EE}
+
+\begin{figure}
+\includegraphics[width=0.55\linewidth]{img/processo}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Estrutura da descrição arquitetural de uma coreografia}
+
+\begin{figure}
+\includegraphics[width=0.6\linewidth]{img/adl}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Exemplo de descrição arquitetural de uma coreografia}
+
+\begin{block}{}
+{\scriptsize
+\begin{lstlisting}[breaklines]
+airportBusCompanySpec =
+  new DeployableServiceSpec(AIRPORT_BUS_COMPANY_NAME, 
+  							ServiceType.SOAP, 
+  							PackageType.COMMAND_LINE, 
+  							resourceImpact, 
+  							serviceVersion, 
+  							AIRPORT_BUS_COMPANY_JAR_URL, 
+  							AIRPORT_BUS_COMPANY_PORT, 
+  							AIRPORT_BUS_COMPANY_ENDPOINT, 
+  							numberOfReplicas);
+
+airportBusCompanySpec.setRoles(
+  Collections.singletonList(AIRPORT_BUS_COMPANY_ROLE));
+
+airportBusCompanySpec.addDependency(
+  new ServiceDependency(AIRPORT_NAME, AIRPORT_ROLE));
+\end{lstlisting}
+}
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Enlace entre os serviços}
+
+\texttt{setInvocationAddress}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Mapeamento dos serviços na infraestrutura alvo}
+
+\texttt{nodeSelector}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Interface REST}
+
+
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Pontos de extensão}
+
+\begin{itemize}
+\item \texttt{cloudProvider}
+\item \texttt{nodeSelector}
+\item \texttt{packageType}
+\item \texttt{ContextSender}
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Tratando falhas de terceiros}
+
+\begin{itemize}
+\item \texttt{invoker}
+\item \texttt{reservoir}
+\end{itemize}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{img/invoker}
+\end{figure}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os desafios de implantação em grande escala}
+
+\begin{itemize}
+\item Processo
+\item Falhas
+\item Disponibilidade
+\item Escalabilidade
+\item Heterogeneidade
+\item Múltiplas organizações
+\item Adaptabilidade
+\end{itemize}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os desafios de implantação em grande escala}
+
+Processo
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os desafios de implantação em grande escala}
+
+
+Falhas
+
+\begin{itemize}
+\item Invoker
+\item Reservoir
+\item Degradação suave
+\end{itemize}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os desafios de implantação em grande escala}
+
+Disponibilidade
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os desafios de implantação em grande escala}
+
+Escalabilidade
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os desafios de implantação em grande escala}
+
+Heterogeneidade
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os desafios de implantação em grande escala}
+
+Múltiplas organizações
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{O EE e os desafios de implantação em grande escala}
+
+Adaptabilidade
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\section{Avaliação}
+
+\begin{frame}
+
+\sectiontitle{Avaliação}
+
+\end{frame}
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Comparação EE vs \adhoc}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Análise de desempenho}
+
+\begin{table}
+\centering
+\begin{tabular}{r r r r c} \hline
+\emph{Cenário} & \emph{Composições} & \emph{Tamanho} & \emph{Nós} & \emph{Serviços/Nós} \\ \hline
+1 &  10 &  10 &  9 & 11 ou 12 \\
+2 &  10 & 100 & 90 & 11 ou 12 \\
+3 & 100 &  10 & 90 & 11 ou 12 \\
+4 &  10 &  10 &  5 &       20 \\
+\hline \end{tabular}
+\end{table}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Análise de desempenho}
+
+\begin{figure}
+\includegraphics[width=0.4\linewidth, angle=270]{img/eval_composition}
+\end{figure}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Análise de desempenho}
+
+\begin{table}
+\centering
+\begin{tabular}{c r@{ $\pm$ }l r@{ $\pm$ }l r@{ $\pm$ }l} \hline
+
+\emph{Cenário} & \multicolumn{2}{c}{\emph{Tempo}} & \multicolumn{2}{c}{\emph{Composições}}   & \multicolumn{2}{c}{\emph{Serviços}}\\
+                 & \multicolumn{2}{c}{(s)}           & \multicolumn{2}{c}{\emph{com sucesso}} & \multicolumn{2}{c}{\emph{com sucesso}}\\
+\hline
+1 &  467.9 &  34.8 & 10.0 & 0   & 100.0 & 0   (100\%) \\
+2 & 1477.1 & 130.0 &  9.3 & 0.3 & 999.3 & 0.4 (99.9\%)\\
+3 & 1455.2 & 159.1 & 98.9 & 0.8 & 998.5 & 1.3 (99.9\%)\\
+4 &  585.2 &  38.1 & 10.0 & 0.1 & 100.0 & 0.1 (100\%)\\
+\hline \end{tabular}
+\end{table}
+
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Análise de escalabilidade}
+
+\begin{figure}
+\includegraphics[width=0.8\linewidth]{img/scalability}
+\end{figure}
+
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Efetividade do tratamento de falhas}
+
+\begin{figure}
+\includegraphics[width=0.9\linewidth]{img/error_handling}
+\end{figure}
+
+Cada execução: 1 coreografia de 100 serviços.
+
+\end{frame}
+
+
+%------------------------------------------------
+\section{Trabalhos relacionados}
+
+\begin{frame}
+
+\sectiontitle{Trabalhos relacionados}
+
+\end{frame}
+
+%------------------------------------------------
+
+\section{Conclusões}
+
+\begin{frame}
+
+\sectiontitle{Conclusões}
+
+\end{frame}
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Contribuições}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Trabalhos futuros}
+
+\begin{itemize}
+\item Análise da influência dos tratamentos de falhas na escalabilidade.
+\item Análise multivariável de fatores que influenciam a escalabilidade.
+\item Experimentos com desenvolvedores.
+\item Algoritmos adaptativos para tratamento de falhas.
+\item Federação de instâncias do EE.
+\item Utilização de um balanceador de carga.
+\item Utilização de um barramento de serviços.
+\item Atualização dinâmica de composições de serviços.
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+
+{\Huge \centerline{Obrigado! }}
+
+\vspace{1cm}
+
+\textbf{Leonardo Alexandre Ferreira Leite} \\
+\url{http://www.ime.usp.br/~leofl} \\
+\url{leofl@ime.usp.br} \\
+
+\vspace{0.6cm}
+
+\textbf{CHOReOS Enactment Engine} \\
+\url{http://ccsl.ime.usp.br/EnactmentEngine} \\
+\url{https://github.com/choreos/enactment_engine}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 

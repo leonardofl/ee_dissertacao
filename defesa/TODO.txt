@@ -1,0 +1,7 @@
+TODO
+
+Criar nuvem de tags
+* juntar .tex's em só arquivo
+* remover tags latex
+* http://www.wordle.net/create
+
