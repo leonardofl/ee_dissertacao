@@ -81,9 +81,12 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{listings}                   % para formatar código-fonte (ex. em Java)
+\usepackage{xspace}
 
-\newcommand\adhoc{\emph{ad-hoc}}
-\newcommand\sectiontitle[1]{\begin{center}\huge#1\end{center}}
+\newcommand\adhoc{\emph{ad-hoc}\xspace}
+\newcommand\sectiontitle[1]{\begin{center}\huge\textbf{#1}\end{center}}
+\newcommand\subtitulo[1]{{\large \textbf{#1}}}
+\newcommand\frase[1]{\begin{center}\large#1\end{center}}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -170,17 +173,43 @@ Implantação automatizada \\ de composições de serviços web \\ de grande esc
 \begin{frame}
 \frametitle{Implantação de sistemas}
 
+\frase{O processo de implantação manual se torna moroso e propenso a erros,
+principalmente na implantação de sistemas distribuídos.}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Implantação de sistemas}
+
+\subtitulo{Processo de implantação automatizada}
+
 \begin{itemize}
-\item Entrega contínua
-\item Implantação automatizada
-\item DevOps
-\item Scripts vs declarativa
-\item Baseado em middleware vs \adhoc
+\item reprodutível
+\item confiável
+\item fácil de ser executado
 \end{itemize}
 
-%\begin{figure}
-%\includegraphics[scale=0.2]{img/humble}
-%\end{figure}
+\begin{itemize}
+\item Entrega contínua
+\item DevOps
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Implantação de sistemas}
+
+\subtitulo{Processo de implantação automatizada}
+
+\begin{itemize}
+\item Abordagens por scripts vs descrições declarativas
+\item Abordagens \adhoc vs baseadas em middleware
+\end{itemize}
+
 \end{frame}
 
 %------------------------------------------------
@@ -191,8 +220,7 @@ Implantação automatizada \\ de composições de serviços web \\ de grande esc
 \begin{itemize}
 \item Interfaces acessíveis por máquinas
 \item Automação de fluxos de negócios
-\item Internet do Futuro
-\item Aeroporto
+\item Aeroporto do Futuro
 \end{itemize}
 
 \begin{figure}
@@ -224,29 +252,38 @@ Implantação automatizada \\ de composições de serviços web \\ de grande esc
 \begin{frame}
 \frametitle{Computação em nuvem}
 
+\begin{figure}
+\includegraphics[width=0.5\linewidth]{img/cloud}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\section{Definição da pesquisa}
+
+\begin{frame}
+
+\sectiontitle{Definição da pesquisa}
 
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Falhas na criação de VMs do Amazon EC2}
+\frametitle{Contexto}
 
-\begin{figure}
-\includegraphics[width=1\linewidth]{img/ec2_boxplot}
-\end{figure}
-
+\frase{Composições de serviços web de grande escala.}
 
 \end{frame}
 
 %------------------------------------------------
-
 \begin{frame}
 \frametitle{Questão}
 
-Que vantagens a abordagem baseada em middleware traz neste cenário?
-
-O quão \emph{melhor} ela é comparada a abordagens ad-hocs?
+\frase{O quanto e como soluções de implantação baseadas em middleware  
+trazem benefícios no dado contexto
+quando confrontadas com soluções \adhoc?}
 
 \end{frame}
 
@@ -255,7 +292,7 @@ O quão \emph{melhor} ela é comparada a abordagens ad-hocs?
 \begin{frame}
 \frametitle{Objetivo}
 
-Projetar, implementar e avaliar um middleware que forneça suporte à implantação automatizada de composições de serviços web de grande escala
+\frase{Projetar, implementar e avaliar um middleware que forneça \\ suporte à implantação automatizada de  composições de \\ serviços web de grande escala.}
 
 \end{frame}
 
@@ -345,27 +382,25 @@ airportBusCompanySpec.addDependency(
 
 %------------------------------------------------
 
-\begin{frame}
-\frametitle{Enlace entre os serviços}
+\begin{frame}[fragile]
+\frametitle{Interface remota}
 
-\texttt{setInvocationAddress}
+\begin{block}{}
+{\scriptsize
+\begin{lstlisting}[breaklines]
+public interface EnactmentEngine {
 
-\end{frame}
+    public String createChoreography(ChoreographySpec chor);
 
-%------------------------------------------------
+    public Choreography getChoreography(String chorId) throws ChoreographyNotFoundException;
 
-\begin{frame}
-\frametitle{Mapeamento dos serviços na infraestrutura alvo}
+    public Choreography deployChoreography(String chorId) throws DeploymentException, ChoreographyNotFoundException;
 
-\texttt{nodeSelector}
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Interface REST}
-
+    public void updateChoreography(String chorId, ChoreographySpec spec) throws DeploymentException, ChoreographyNotFoundException;
+}
+\end{lstlisting}
+}
+\end{block}
 
 
 \end{frame}
@@ -376,10 +411,10 @@ airportBusCompanySpec.addDependency(
 \frametitle{Pontos de extensão}
 
 \begin{itemize}
-\item \texttt{cloudProvider}
-\item \texttt{nodeSelector}
-\item \texttt{packageType}
-\item \texttt{ContextSender}
+\item Provedores de infraestrutura
+\item Políticas de seleção de nós
+\item Tipos de pacotes
+\item Tipos de serviços
 \end{itemize}
 
 \end{frame}
@@ -389,13 +424,22 @@ airportBusCompanySpec.addDependency(
 \begin{frame}
 \frametitle{Tratando falhas de terceiros}
 
-\begin{itemize}
-\item \texttt{invoker}
-\item \texttt{reservoir}
-\end{itemize}
-
 \begin{figure}
 \includegraphics[width=0.4\linewidth]{img/invoker}
+\end{figure}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Tratando falhas de terceiros}
+
+\subtitulo{Reserva de nós ociosos}
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{img/ec2_boxplot}
 \end{figure}
 
 \end{frame}
@@ -424,7 +468,7 @@ airportBusCompanySpec.addDependency(
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
 
-Processo
+\subtitulo{Processo}
 
 \end{frame}
 
@@ -434,8 +478,7 @@ Processo
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
 
-
-Falhas
+\subtitulo{Falhas}
 
 \begin{itemize}
 \item Invoker
@@ -451,7 +494,7 @@ Falhas
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
 
-Disponibilidade
+\subtitulo{Disponibilidade}
 
 \end{frame}
 
@@ -461,7 +504,7 @@ Disponibilidade
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
 
-Escalabilidade
+\subtitulo{Escalabilidade}
 
 \end{frame}
 
@@ -471,7 +514,7 @@ Escalabilidade
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
 
-Heterogeneidade
+\subtitulo{Heterogeneidade}
 
 \end{frame}
 
@@ -481,7 +524,7 @@ Heterogeneidade
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
 
-Múltiplas organizações
+\subtitulo{Múltiplas organizações}
 
 \end{frame}
 
@@ -491,7 +534,7 @@ Múltiplas organizações
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
 
-Adaptabilidade
+\subtitulo{Adaptabilidade}
 
 \end{frame}
 
@@ -540,7 +583,7 @@ Adaptabilidade
 \frametitle{Análise de desempenho}
 
 \begin{figure}
-\includegraphics[width=0.4\linewidth, angle=270]{img/eval_composition}
+\includegraphics[width=0.35\linewidth, angle=270]{img/eval_composition}
 \end{figure}
 
 \end{frame}
@@ -616,6 +659,11 @@ Cada execução: 1 coreografia de 100 serviços.
 
 \begin{frame}
 \frametitle{Contribuições}
+
+\begin{itemize}
+\item A implementação de um middleware que possibilita a implantação automatizada de composições de serviços. 
+\item Uma comparação, baseada na literatura e em evidências empíricas, entre soluções de implantação automatizada com abordagens \adhoc e baseadas em middleware.
+\end{itemize}
 
 \end{frame}
 

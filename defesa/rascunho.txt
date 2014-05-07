@@ -66,6 +66,11 @@ fazem um middleware adequado para grande escala.
 
 == Contribuições ==
 
+Destacar de novo, q mais q ter um middleware,
+o fazer o middleware nos possibilita entender várias
+coisas em relação ao pq das coisas funcionarem assim ou assado
+no contexto de grande escala.
+
 == Trabalhos futuros ==
 
 
