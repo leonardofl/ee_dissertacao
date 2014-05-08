@@ -82,6 +82,7 @@
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{listings}                   % para formatar código-fonte (ex. em Java)
 \usepackage{xspace}
+\usepackage{color}
 
 \newcommand\adhoc{\emph{ad-hoc}\xspace}
 \newcommand\sectiontitle[1]{\begin{center}\huge\textbf{#1}\end{center}}
@@ -206,7 +207,6 @@ principalmente na implantação de sistemas distribuídos.}
 \subtitulo{Processo de implantação automatizada}
 
 \begin{itemize}
-\item Abordagens por scripts vs descrições declarativas
 \item Abordagens \adhoc vs baseadas em middleware
 \end{itemize}
 
@@ -313,6 +313,17 @@ quando confrontadas com soluções \adhoc?}
 
 \begin{figure}
 \includegraphics[width=1\linewidth]{img/nuvem_modelos}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Atores}
+
+\begin{figure}
+\includegraphics[width=0.8\linewidth]{img/atores}
 \end{figure}
 
 \end{frame}
@@ -450,6 +461,8 @@ public interface EnactmentEngine {
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
 
+Como abordagens de implantação baseadas em middleware auxiliam o implantador em relação aos desafios listados?
+
 \begin{itemize}
 \item Processo
 \item Falhas
@@ -470,6 +483,13 @@ public interface EnactmentEngine {
 
 \subtitulo{Processo}
 
+\begin{itemize}
+\item Automação
+\item Interface REST
+\item Descrição declarativa
+\item Infraestrutura virtualizada
+\end{itemize}
+
 \end{frame}
 
 
@@ -484,6 +504,7 @@ public interface EnactmentEngine {
 \item Invoker
 \item Reservoir
 \item Degradação suave
+\item Idempotência
 \end{itemize}
 
 \end{frame}
@@ -496,6 +517,11 @@ public interface EnactmentEngine {
 
 \subtitulo{Disponibilidade}
 
+\begin{itemize}
+\item Replicação
+\item \textcolor{gray}{Dados}
+\end{itemize}
+
 \end{frame}
 
 
@@ -505,6 +531,12 @@ public interface EnactmentEngine {
 \frametitle{O EE e os desafios de implantação em grande escala}
 
 \subtitulo{Escalabilidade}
+
+\begin{itemize}
+\item Concorrência
+\item Tratamento de falhas
+\item Evitar gargalos (Chef Server $\rightarrow$ Chef Solo)
+\end{itemize}
 
 \end{frame}
 
@@ -516,6 +548,10 @@ public interface EnactmentEngine {
 
 \subtitulo{Heterogeneidade}
 
+\begin{itemize}
+\item Extensibilidade
+\end{itemize}
+
 \end{frame}
 
 
@@ -526,6 +562,12 @@ public interface EnactmentEngine {
 
 \subtitulo{Múltiplas organizações}
 
+\begin{itemize}
+\item Serviços legados
+\item Implantação multi-nuvem
+\item \textcolor{gray}{Federação}
+\end{itemize}
+
 \end{frame}
 
 
@@ -535,6 +577,13 @@ public interface EnactmentEngine {
 \frametitle{O EE e os desafios de implantação em grande escala}
 
 \subtitulo{Adaptabilidade}
+
+\begin{itemize}
+\item Atualização das coreografias
+\item Migração de serviços
+\item Replicação de serviços
+\item Implantação de infraestrutura de monitoramento
+\end{itemize}
 
 \end{frame}
 
