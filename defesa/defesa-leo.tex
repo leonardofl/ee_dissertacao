@@ -298,6 +298,48 @@ quando confrontadas com soluções \adhoc?}
 
 %------------------------------------------------
 
+\section{Trabalhos relacionados}
+
+\begin{frame}
+
+\sectiontitle{Trabalhos relacionados}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Trabalhos relacionados}
+
+{\small 
+\begin{table}[!t]
+\begin{center}
+    \begin{tabular}{l c c c c c c}
+	 \hline
+	 \itshape{Trabalho} & \itshape{ADL} & \itshape{Escala} & \itshape{Composições} & \itshape{Nuvem} & \itshape{Heterog.} \\ \hline
+    Chef & x  & - & - & - & - \\
+    Capistrano & x  & - & - & - & - \\
+    Nix & x  & x & \checkmark & x  & - \\
+    Darwin/Regis & \checkmark  & x & \checkmark & x & x \\
+    Olan & \checkmark & x & \checkmark & x & x  \\
+    Quema et al. & \checkmark & \checkmark & \checkmark & x & x \\
+    J2EE app deployment & \checkmark & x & \checkmark & x & x \\
+    Globus Toolkit & \checkmark & x & \checkmark & x & x \\
+    Dynasoar & - & x & x & x & ? \\
+    Open Knowledge  & \checkmark & x & \checkmark & x & x \\
+    TOSCA & \checkmark & x & \checkmark & \checkmark & \checkmark \\
+	Juju & - & x & x & \checkmark & \checkmark \\
+    Cloud Foundry & - & ? & x & \checkmark & \checkmark \\
+    \textbf{Enactment Engine}   & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \end{tabular}
+\end{center}
+\end{table}
+}
+
+\end{frame}
+
+%------------------------------------------------
+
 \section{O CHOReOS Enactment Engine}
 
 \begin{frame}
@@ -604,6 +646,49 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 \begin{frame}
 \frametitle{Comparação EE vs \adhoc}
 
+\begin{block}{EE}
+\begin{itemize}
+\item Desenvolvimento: 45 min.
+\item Execução: 4 min.
+\item Tamanho: 180 LoC Java.
+\end{itemize}
+\end{block}
+
+\vspace{0.6cm}
+
+\begin{block}{\adhoc}
+\begin{itemize}
+\item Desenvolvimento: 9 horas.
+\item Execução: 60 min.
+\item Tamanho: 100 LoC Shell Script, 220 LoC Java, e 85 LoC Ruby.
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Dificuldades da abordagem \adhoc}
+
+\begin{itemize}
+\item Muitas tecnologias.
+\item Replicação de código.
+\item Passos manuais.
+\item Pouca paralelização.
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Dificuldades da abordagem \adhoc}
+
+Solução \adhoc até poderia ficar melhor... \\
+mas poderia ficar quase tão complexa quanto o próprio EE!
+
 \end{frame}
 
 
@@ -683,15 +768,6 @@ Cada execução: 1 coreografia de 100 serviços.
 
 \end{frame}
 
-
-%------------------------------------------------
-\section{Trabalhos relacionados}
-
-\begin{frame}
-
-\sectiontitle{Trabalhos relacionados}
-
-\end{frame}
 
 %------------------------------------------------
 
