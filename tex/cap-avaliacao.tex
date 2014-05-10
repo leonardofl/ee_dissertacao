@@ -37,7 +37,7 @@ Para desenvolver a solução \emph{ad-hoc} foi necessário aproximadamente
 para o mesmo programador executar a implantação, distribuindo os 15
 serviços por três nós alvos.
 Essa solução precisou da escrita de 
-100 LoC de shell scripts, 220 LoC de Java, and 85 LoC de Ruby (para o Chef). 
+100 LoC de shell scripts, 220 LoC de Java, e 85 LoC de Ruby (para o Chef). 
 
 No restante desta seção, descreveremos o processo de criação e execução
 da solução \emph{ad-hoc}. Destacaremos as dificuldades no processo
@@ -168,7 +168,7 @@ para que possamos analisar o desempenho do EE conforme a carga aumenta.
 \end{figure}
 
 
-Inicialmente, conduzimos experimentos
+Inicialmente, conduzimos um experimento
 de desempenho do EE implantando composições nos seguintes cenários:
 1) um pequeno conjunto de pequenas composições;
 2) um pequeno conjunto de composições maiores;
@@ -176,9 +176,9 @@ de desempenho do EE implantando composições nos seguintes cenários:
 4) uma razão maior de serviços por nó.
 A Tabela~\ref{tab:cases} quantifica cada cenário.
 
-\begin{table}
+\begin{table}[h!]
 \centering
-\caption{Cenários de implantação para os experimentos de desempenho.}
+\caption{Cenários de implantação para o experimento de desempenho.}
 \label{tab:cases}
 \begin{tabular}{r r r r c} \hline
 \emph{Cenário} & \emph{Composições} & \emph{Tamanho} & \emph{Nós} & \emph{Serviços/Nós} \\ \hline
@@ -189,8 +189,8 @@ A Tabela~\ref{tab:cases} quantifica cada cenário.
 \hline \end{tabular}
 \end{table}
 
-Em nossos experimentos, a política de alocação de nós foi ``cria nós até um limite, e depois faz rodízio entre eles'',
-na qual a quantidade de nós utilizados é configurada antes de cada experimento.
+Nesse experimento, a política de alocação de nós foi ``cria nós até um limite, e depois faz rodízio entre eles'',
+na qual a quantidade de nós utilizados é configurada antes de cada execução.
 Se a quantidade de nós não é divisível pelo número de nós,
 alguns nós hospedarão um serviço a mais que outros nós.
 O tamanho da reserva de nós ociosos era 5,
@@ -201,7 +201,7 @@ cada uma com 1.7 GiB of RAM, uma vCPU com processamento
 equivalente a 1.0--1.2 GHz, e executando Ubuntu GNU/Linux 12.04.
 O EE foi executado em uma máquina com 8 GB de RAM,
 com processador Intel Core i7 CPU de 2.7 GHz e GNU/Linux kernel 3.6.7.
-A versão do EE utilizada nos experimentos e os dados coletados estão disponíveis 
+A versão do EE utilizada e os dados coletados estão disponíveis 
 on-line\footnote{\url{http://ccsl.ime.usp.br/enactmentengine}}
 para garantir a reprodutibilidades dos resultados.
 
@@ -214,7 +214,7 @@ A tabela também mostra quantas composições e serviços foram corretamente imp
 
 \begin{table}
 \centering
-\caption{Resultados experimentais.}
+\caption{Resultados do experimento de desempenho.}
 \label{tab:results}
 \begin{tabular}{c r@{ $\pm$ }l r@{ $\pm$ }l r@{ $\pm$ }l} \hline
 
@@ -246,7 +246,7 @@ Indo do cenário 1 para o cenário 4, o número de serviços por nó dobrou
 mostram que o tempo de implantação cresceu aproximadamente 25\%. Parte dessa sobrecarga foi causada
 pelo incremente no número de receitas Chef que devem ser executadas (sequencialmente) nos nós.
 
-Durante os experimentos, observamos que, graças aos mecanismos de tolerância a falhas do EE,
+Nesse experimento, observamos que, graças aos mecanismos de tolerância a falhas do EE,
 a quantidade de falhas na implantação foi baixa: todos os serviços foram corretamente implantados em mais
 de 75\% das execuções.
 Por ``falha'' consideramos que um serviço não foi corretamente implantado.
@@ -266,9 +266,9 @@ uma vez que novos nós eram imediatamente recuperados da reserva.
 
 %%%
 
-Também conduzimos experimentos para avaliar o desempenho e escalabilidade do Enactment Engine
+Também conduzimos um segundo experimento para avaliar o desempenho e escalabilidade do \ee
 em termos de sua capacidade de implantar grandes composições de serviços.
-Esses experimentos foram realizados em 5 cenários, nos quais se variou o tamanho das composições sendo implantadas
+Esse experimento foi realizado em 5 cenários, nos quais se variou o tamanho das composições sendo implantadas
 e a quantidade de nós disponíveis no ambiente de nuvem, enquanto manteve-se a razão de 20 serviços implantados por nó.
 Cada cenário foi executado 10 vezes.
 
@@ -276,7 +276,7 @@ A topologia utilizada na composição foi a mesma de antes (Figura~\ref{fig:eval
 O EE foi executado em uma máquina virtual (8 GiB de RAM e 4 vCPUs)
 hospedada na infraestrutura de nossa Universidade.
 Os nós alvos criados pelo EE eram instâncias \emph{small} da Amazon EC2 e o \emph{timeout} de criação dos nós era de 250 segundos.
-Os tempos médios de implantação, com intervalo de confiança de 95\%, são mostrados na Tabela~\ref{fig:ee_scalability}.
+Os tempos médios de implantação, com intervalo de confiança de 95\%, são mostrados na Figura~\ref{fig:ee_scalability}.
 
 Sobre as falhas de implantação,
 as piores execuções de cada cenário tiveram 1, 1, 2, 2, e 4 serviços não implantados corretamente
@@ -331,7 +331,7 @@ os serviços foram corretamente implantados.
 Para as execuções realizadas, observamos que
 a quantidade de serviços falhos por execução foram múltiplos de 10
 (10 ou 30 serviços falhos).
-Essa propriedade sugere que as falhas observadas
+Esse padrão sugere que as falhas observadas
 ocorreram devido à falha na criação de máquinas virtuais,
 uma vez que cada nó deveria hospedar 10 serviços.
 Essa consideração evidencia como a falha de criação de VMs é um

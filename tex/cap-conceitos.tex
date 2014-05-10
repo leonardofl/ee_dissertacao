@@ -54,6 +54,7 @@ As representações dos recursos não estão presas a um formato de troca de men
 
 \begin{lstlisting}[frame=trbl, label=lst:json, caption=Representação JSON do recurso /livros/2.]
 {
+  "id" : 2,
   "nome" : "Continuous Delivery",
   "autores" : "Jez Humble and David Farley",
   "editora" : "Addison-Wesly",
@@ -181,7 +182,7 @@ Um exemplo básico de pipeline de implantação pode ser visto na Figura~\ref{fi
 \end{figure}
 
 
-A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de \scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de preparação, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutimos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
+A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de \scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de planejamento, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutimos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
 
 Um processo de implantação pode ser automatizado de várias maneiras.
 Pode-se utilizar linguagens de \script de propósito geral (Python, shell script),
@@ -309,7 +310,7 @@ Na visão proposta pelo Instituto de Engenharia de Software da Universidade Carn
 
 Por outro lado, a característica mais importante de um sistema de grande escala não é seu tamanho, mas o fato de ser caracterizado como um ``ecossistema sociotécnico''~\cite{CarnegieMellon2006ULS}, em que pessoas são parte integrante do sistema, interagindo com diferentes objetivos, de modo decentralizado e independente, porém seguindo restrições impostas. A analogia proposta é de que o desenvolvimento dos atuais sistemas de grande escala equipara-se a construção de prédios, enquanto que o desenvolvimento de sistemas de escala ultra grande equivaleriam a construção de cidades, o que é naturalmente um processo contínuo e decentralizado.
 
-Recentemente, há ainda a consolidação da computação em nuvem, que traz um conjunto de tecnologias e práticas que se relacionam com as três características de sistemas de escala ultra grande anteriormente mencionadas. Sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos decentralizadamente por várias organizações~\cite{Steen2011VeryLarge}. A virtualização, um dos aspectos centrais da computação em nuvem, é de grande auxílio no provisionamento de novos ambientes~\cite{Humble2011Continuous}, o que é importante para o processo de implantação de sistemas. A virtualização também facilita a criação de ambientes replicados, arquitetura importante para tratar falhas individuais de componentes.
+%Recentemente, há ainda a consolidação da computação em nuvem, que traz um conjunto de tecnologias e práticas que se relacionam com as três características de sistemas de escala ultra grande anteriormente mencionadas. Sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos decentralizadamente por várias organizações~\cite{Steen2011VeryLarge}. A virtualização, um dos aspectos centrais da computação em nuvem, é de grande auxílio no provisionamento de novos ambientes~\cite{Humble2011Continuous}, o que é importante para o processo de implantação de sistemas. A virtualização também facilita a criação de ambientes replicados, arquitetura importante para tratar falhas individuais de componentes.
 
 A grande escala afeta os processos envolvidos no ciclo de vida dos sistemas.
 Estudando a literatura que aborda e discute desafios, princípios e práticas de
@@ -390,7 +391,7 @@ afetaram 7\% das requisições de criação de nós.
 Nygard~\cite{Nygard2009Release} apresenta vários padrões de estabilidade que são de importante aplicação em sistemas de grande escala. Em sua essência, esses padrões dizem respeito a detectar falhas e evitar sua propagação, provendo um tratamento adequado a elas. Dentre as práticas recomendas pelo autor destacam-se 1) o uso de \emph{timeouts}, que evita que um cliente fique eternamente esperando uma resposta; 2) a interrupção de tentativas do cliente quando há sintomas de indisponibilidade do provedor; 3) criação de recursos exclusivos para diferentes clientes, evitando que uma falha em um recurso compartilhado afete todos os clientes; e 4) a ``falha rápida'', que faz com que um provedor forneça uma resposta de erro tão logo quanto seja possível saber que a operação não terá sucesso. 
 
 Quando um sistema faz uma requisição a outro serviço, não é possível distinguir um \emph{timeout} de uma resposta eventualmente mais lenta. Dessa forma, só é seguro, do ponto de vista funcional, o sistema cliente enviar uma nova requisição devido a \emph{timeout} caso a operação considerada seja \emph{idempotente}. 
-Uma operação é idempotente quando executá-la várias produz o mesmo resultado 
+Uma operação é idempotente quando executá-la várias vezes produz o mesmo resultado 
 que uma única execução produziria~\cite{Weider2007QoSWS}.
 Isso implica na capacidade do sistema em tolerar requisições duplicadas,
 importante para o tratamento eficiente de falhas de comunicação 
@@ -479,7 +480,7 @@ entre sistemas e organizações, hoje em dia há mais de um mecanismo para
 implementar o conceito de serviços, principalmente SOAP e REST, além de outros.
 Portanto, dar suporte à heterogeneidade é importante para sistemas baseados em serviços.
 A falta de flexibilidade para a escolha de tecnologia para o desenvolvimento de serviços
-e o provedor de infraestrutura ocorre em muitas soluções PaaS atualmente disponíveis.
+e o provedor de infraestrutura (camada IaaS) ocorre em muitas soluções PaaS atualmente disponíveis.
 
 \item [Múltiplas organizações:]
 

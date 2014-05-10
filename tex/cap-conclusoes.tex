@@ -17,7 +17,7 @@ do processo de implantação, considerando tanto o tempo
 de desenvolvimento da solução de implantação,
 quanto o tempo de implantação de cada composição.
 
-Ao revisar a literatura identificamos desafios na implantação
+Ao revisar a literatura, identificamos desafios na implantação
 de sistemas de grande escala. 
 Procuramos atender tais desafios ao aplicar no EE
 técnicas e soluções espalhadas na literatura,
@@ -88,7 +88,7 @@ Listamos agora algumas dessas lições aprendidas:
 \begin{itemize}
 
 \item Arquiteturas escaláveis não devem depender de um ponto central de processamento.
-Em versões anteriores do EE a utilização do Chef Server impunha grandes
+Em versões anteriores do EE, a utilização do Chef Server impunha grandes
 restrições à escalabilidade do processo de implantação.
 Em um estágio mais anterior de nossa pesquisa acreditávamos que o Chef Server
 não seria um problema, pois para cada requisição seu trabalho era extremamente simples
@@ -122,18 +122,6 @@ do EE para que se suporte uma carga maior de requisições.
 Listamos agora alguns possíveis trabalhos futuros envolvendo o \ee.
 
 \begin{description}
-
-\item[Análise da influência dos tratamentos de falhas na escalabilidade.] 
-Ao analisar a escalabilidade fornecida pelo \ee ao processo de implantação,
-não determinamos o quanto dessa escalabilidade se deve graças aos mecanismos 
-presentes no EE que tratam falhas de terceiros.
-Um experimento a se fazer nesse sentido seria replicar o experimento 
-de escalabilidade (Figura~\ref{fig:ee_scalability})
-primeiramente desativando a reserva de nós ociosos e posteriormente
-desativando também os \emph{invokers}.
-Dessa forma poderíamos comparar três curvas em um mesmo plano
-a fim de determinar o quanto que os mecanismos de tratamento de falhas
-do EE melhoram a escalabilidade do processo de implantação de composições de serviços.
 
 \item[Análise multivariável de fatores que influenciam a escalabilidade.] 
 Outro experimento para melhor entender o desempenho e escalabilidade do EE
@@ -175,7 +163,7 @@ na modelagem da composição. O problema é que mudanças nos serviços de
 terceiros, como mudança de URI, podem causar impactos na composição implantada.
 Além disso, se serviços interdependentes de diferentes organizações são implantados em paralelo,
 torna-se difícil utilizar o recurso de \emph{serviço legado},
-uma vez que o implantador de uma organização ainda não dispões das URIs 
+uma vez que o implantador de uma organização ainda não dispõe das URIs 
 dos serviços sendo implantados pela outra organização.
 Para tornar a implantação de composições inter-organizacionais mais dinâmica,
 um caminho promissor é a federação de instâncias do EE.

@@ -28,7 +28,7 @@ As funcionalidades fornecidas pelo \ee ao usuário são as seguintes:
 \item API para escalamento vertical e horizontal.
 \end{itemize}
 
-Para a implementação do arcabouço Enactment Engine contribuíram os alunos de pós-graduação Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Diaz, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O \ee é software livre 
+Para a implementação do arcabouço Enactment Engine contribuíram os alunos de pós-graduação Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Phocco, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O \ee é software livre 
 sob a Licença Pública Mozilla 2\footnote{\url{http://www.mozilla.org/MPL/2.0/}} 
 e está disponível em \url{http://ccsl.ime.usp.br/enactmentengine}. 
 
@@ -251,7 +251,7 @@ Apesar dos benefícios da solução adotada no EE, Dearle~\cite{Dearle2007PastPr
 \label{sec:mapeamento}
 
 Em algum momento do processo de implantação, é preciso definir em que nó cada instância de serviço será hospedado.
-Chamamos de \emph{mapeamento}, ou seleção de nós, essa fase do processo de implantação.
+Chamamos de \emph{planejamento}, mapeamento, ou seleção de nós, essa fase do processo de implantação.
 Na forma mais simples de seleção de nó, o IP do nó alvo é definido estaticamente no \script de implantação do serviço.
 O trabalho de Magee e Kramer~\cite{Magee1997Corba} apresenta a seleção de nós em função da utilização de CPUs nos nós existentes, não havendo possibilidade de utilização de outros critérios, como memória, disco, custo etc. Nos sistemas apresentados por Dolstra et al.~\cite{Dolstra2005Configuration} e Balter et al.~\cite{Balter1998Olan} é preciso que a distribuição dos serviços seja especificada com o uso dos IPs das máquinas nas quais os serviços devem ser implantados, o que não é possível em um ambiente de nuvem. Por fim, o \emph{broker} apresentado por Watson et al. é o componente que mais se assemelha ao nosso NodeSelector, pois os autores deixam claro que várias implementações diferentes são possíveis, considerando-se diferentes tipo de requisitos e diferentes fontes de monitoramento. Como a escolha é feita em tempo de execução do serviço, seria também possível uma seleção que independa de IPs estabelecidos em tempo de projeto. No entanto, os autores não explicam como os usuários de seu sistema, os provedores de infraestrutura, deveriam proceder para criar seus próprios \emph{brokers} personalizados.
 
@@ -286,8 +286,7 @@ Essa operação não realiza a implantação da coreografia.
 
 \item [Obter coreografia:] obtém informações sobre uma coreografia registrada no EE. 
 Essas informações referem-se à especificação da coreografia e ao estado da implantação 
-de seus serviços, como os nós em que os serviços foram implantados, 
-no caso de a implantação já ter sido realizada.
+de seus serviços, como os nós em que os serviços foram implantados.
 
 \item [Implantar coreografia:] realiza a implantação de uma coreografia já registrada no EE. 
 Ao fim do processo, detalhes do resultado da implantação são retornados de forma estruturada 
@@ -344,8 +343,8 @@ public class Deployment {
 \section{Pontos de extensão}
 \label{sec:extensao}
 
-Em se tratando de um arcabouço, para lidar com as particularidades do ambiente de cada organização, o Enactment Engine fornece alguns pontos de extensão. Esses pontos de extensão são classes que desenvolvedores devem escrever na linguagem Java e que, de acordo com as configurações do sistema, poderão ser executadas pelo arcabouço.
-Neste capítulo descreveremos os pontos de extensão de nosso middleware, 
+Para lidar com as particularidades do ambiente de cada organização, o Enactment Engine fornece alguns pontos de extensão. Esses pontos de extensão são classes que desenvolvedores devem escrever na linguagem Java e que, de acordo com as configurações do sistema, poderão ser executadas pelo arcabouço.
+Nesta seção descreveremos os pontos de extensão de nosso middleware, 
 mostrando as interface associadas a cada um deles.
 Para mais detalhes sobre todos os passos necessários para implementar
 uma extensão, verificar o guia do usuário (Apêndice~\ref{ape:user_guide}).
@@ -434,6 +433,7 @@ arquivos, mas os principais são os arquivos da \emph{receita}, que é o \script
 {atributos} a serem usados nas receitas. A Listagem~\ref{lst:recipe_template} mostra a receita do \emph{cookbook} modelo
 para implantação de WARs, enquanto que a Listagem~\ref{lst:attributes_template} mostra o arquivo de atributos do mesmo \emph{cookbook}.
 
+\newpage
 \begin{lstlisting}[frame=trbl, label=lst:recipe_template, caption=Receita modelo para a implantação de WARs.]
 include_recipe "apt" 
 include_recipe "tomcat::choreos"
@@ -583,7 +583,7 @@ a JVM OpenJDK 7. O EE é compilado com o Maven 3.
 
 \item [Chef-solo:] 
 
-O Chef é o sistema voltado à implantação de sistemas sobre a qual construímos o \ee.
+O Chef é o sistema voltado à implantação de sistemas sobre o qual construímos o \ee.
 De certa forma, o EE é uma camada de abstração que facilita o uso do Chef.
 A versão utilizada do Chef-Solo é a 11.8.0.
 Em versões anteriores do EE, utilizamos o Chef Server,
@@ -909,7 +909,7 @@ mas o problema é saber \emph{quando} isso deve ser feito.
 
 Considerando as limitações dos mecanismos até aqui implementados,
 divisamos como importante trabalho futuro uma arquitetura de federação entre instâncias do EE.
-Caso um serviço $S_A$, implantado com o EE pela organização $O_A$, dependa de um serviço legado $B$,
+Caso um serviço $S_A$, implantado com o EE pela organização $O_A$, dependa de um serviço legado $S_B$,
 também implantado com o EE, mas para a organização $O_B$, a instância do EE em $O_B$ poderia
 manter a instância do EE em $O_A$ informada sobre o estado de $S_B$.
 Para que essa funcionalidade seja implementada é preciso projetar um protocolo
