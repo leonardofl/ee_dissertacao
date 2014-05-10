@@ -1,0 +1,532 @@
+%% ------------------------------------------------------------------------- %%
+\chapter{Conceitos básicos}
+\label{cap:conceitos}
+
+Neste capítulo apresentaremos conceitos que fundamentam esta pesquisa.
+Os conceitos apresentados abordam serviços web e suas composições, 
+implantação de sistemas e, por fim, os desafios particulares da implantação
+de sistemas de grande escala.
+
+\section{Serviços web}
+\label{sec:servicos}
+
+Serviços são entidades autônomas e independentes de plataforma, que podem ser descritas, publicadas, encontradas e compostas~\cite{Papazoglou2007State}. O conceito de serviço possui semelhanças com o conceito de \emph{componentes}. Componentes foram idealizados para que sistemas fossem construídos com ``blocos'' fornecidos por terceiros~\cite{McIlroy1968MassProduced}. Esses blocos teriam interfaces bem definidas e, com isso, seriam conectáveis entre si, sem que o desenvolvedor precise entender sobre a implementação desses blocos. Szyperski~\cite{Szyperski2003Component} define componente como uma unidade de composição, possuindo uma especificação contratual de interface e declaração explícita de suas dependências. 
+
+Uma das utilidades fundamentais de componentes e serviços é proporcionar a ligação entre sistemas heterogêneos.
+Em busca desse objetivo, a OMG liderou esforços para a construção de uma solução para a comunicação de objetos
+codificados em diferentes linguagens e executados em diferentes plataformas~\cite{Szyperski2002Components}.
+Desse esforço nasceu o Common Object Request Broker Architecture (CORBA).
+A especificação CORBA~\cite{CORBA1995} define um \emph{objeto} como uma ``entidade encapsulada e identificável que fornece um ou mais serviços que podem ser requisitados por um cliente''. Ainda na especificação CORBA, uma interface é definida como uma ``descrição do conjunto de possíveis operações que um cliente pode requisitar para um objeto por essa interface''. Uma interface de um componente CORBA é concretamente descrita utilizando-se a Interface Description Language (IDL). 
+Além da definição de objetos, há também a definição de \emph{componentes} CORBA, cujas principais características são 
+a presença de conjuntos de interface providas, interfaces requiridas, eventos emitidos e eventos recebidos~\cite{Szyperski2002Components}.
+
+As características apresentadas dos objetos CORBA têm muito em comum com o conceito de serviços: 
+interfaces bem definidas e acessíveis remotamente.
+Dessa forma, um serviço também pode ser considerado um componente, porém com algumas peculiaridades, 
+como ser acessível pela Internet e expor operações relacionadas a funcionalidades do negócio~\cite{Hewitt2009JavaSOA}.
+%Outra diferença é que um serviço web não precisa declarar explicitamente suas dependências
+%a outros serviços. Essa dependência pode ser implícita por meio de chamadas a outros serviços web
+%na implementação do serviço em questão. \%Gerosa{Inconsistência entre este parágrafo e o próximo.} 
+
+Como muitos dos trabalhos sobre implantação de componentes são diretamente aplicáveis na implantação de serviços, tratamos os termos ``componente'' e ``serviço'' como sinônimos, assim como Fowler~\cite{Fowler2004Inversion}. Neste trabalho utilizamos também os termos ``serviço'' e ``serviço web'' de forma equivalente, assim como feito por outros autores~\cite{Watson2006Dynasoar}. Damos preferência ao termo ``serviço web'' para evitar os significados mais gerais que a palavra ``serviço'' pode assumir. Exceção pode haver ao descrever trabalhos de terceiros que utilizam o termo ``serviço'' com algum significado mais amplo que o de ``serviço web''. 
+
+Um ponto de acesso (\textit{endpoint}) de um serviço web é uma entidade referenciável para a qual se envia mensagens construídas de acordo com a especificação do serviço~\cite{W3C2004Addressing}. 
+Um ponto de acesso é referenciado por uma URI (\emph{Uniform Resource Identifier}).
+Uma URI é uma sequência de caracteres que identifica um recurso, sendo que pode também ser chamada de URL (\emph{Uniform Resource Locator}) quando fornece o acesso ao recurso~\cite{rfc3986}.
+Assim como Smith e Murray~\cite{Smith2010Evolution}, em geral também utilizamos a palavra serviço como simplificação para o ponto de acesso do serviço. 
+
+Por questões de desempenho e disponibilidade, um serviço pode ter várias \emph{instâncias}, ou \emph{réplicas},
+em execução. Cada réplica possui seu próprio ponto de acesso, mas normalmente um conjunto de réplicas é apresentado
+ao mundo por meio de uma única URI. Essa única URI aponta para um balanceador de carga que conhece
+as URIs de cada uma das réplicas e distribui as requisições entre essas réplicas.
+
+Os padrões mais utilizados atualmente para a implementação e acesso de serviços são \emph{SOAP} \cite{W3C2007SOAP} e \emph{REST}~\cite{Roy2000REST}. Os serviços SOAP utilizam um conjunto específico de protocolos definidos pela W3C. As mensagens trocadas pelos serviços SOAP possuem uma estrutura (envelope) encapsulada em mensagens HTTP, protocolo utilizado como um meio de transporte. Já os serviços REST utilizam o HTTP como protocolo de aplicação, utilizando assim diretamente os princípios arquiteturais que são utilizados para explicar a alta escalabilidade do protocolo HTTP e da própria World Wide Web~\cite{Pautasso2008Restful}. 
+
+O W3C chama os serviços SOAP como ``serviços web'', fornecendo a seguinte definição: ``serviços web possibilitam a comunicação interoperável entre máquinas pela rede, utilizando padrões abertos para a troca de mensagens e descrição da interface dos serviços~\cite{W3C2004WS}''. Na prática, a única diferença dos serviços REST para essa definição é que em REST não se exige a descrição do serviço em linguagem legível por máquina, embora isso seja possível com a WADL~\cite{WADL2006}. Além disso, nessa definição da W3C também poderiam ser enquadradas outras tecnologias como CORBA~\cite{CORBA1995}. 
+
+Serviços SOAP descrevem suas interfaces com a Web Service Descritption Language (WSDL), interagem entre si pela troca de mensagens SOAP e são publicados e descobertos em repositórios UDDI. Uma interface de um serviço web descrita em WSDL é um arquivo XML com uma estrutura padronizada, o que possibilita a outros sistemas analisarem as possíveis formas de interação com esse serviço. Mensagens SOAP também são estruturadas em XML, sendo normalmente enviadas no corpo de requisições e respostas HTTP. O envelope de uma mensagem SOAP codifica a requisição ou resposta à operação de um serviço web, descrevendo também os tipos de dados e valores envolvidos na operação. 
+
+Além dos padrões mencionados (WSDL, SOAP, UDDI), há vários outros padrões que formam o conjunto chamado de WS-*, que inclui especificações para a realização de transações entre serviços (WS-Transaction~\cite{WSTrans2002}), troca de endereços de serviços (WS-Addressing~\cite{W3C2004Addressing}), composição de processos de negócios (WS-BPEL~\cite{BPEL2007}) e muitos outros. O uso desse conjunto de padrões de forma integrada relaciona-se com a criação de Arquiteturas Orientadas a Serviços (SOA). De acordo com Papazoglou~\cite{Papazoglou2007State}, SOA é uma forma de projetar sistemas que forneçam serviços com interfaces publicadas que possam ser descobertas, de modo que funcionalidades da aplicação sejam reutilizáveis como serviços por outras aplicações ou serviços em um ambiente distribuído. 
+
+Serviços REST utilizam como \emph{interface uniforme} os métodos do protocolo HTTP (GET, POST, PUT e DELETE) e comunicam-se fazendo uso do protocolo HTTP como protocolo de aplicação para a troca de \emph{representações} de \emph{recursos}. 
+Recursos são entidades do domínio do negócio que são de interesse dos clientes, e são identificados por URIs. Por exemplo, a URI \url{http://livraria.com/livros/2} identifica o recurso ``livro com ID 2''. 
+As representações dos recursos não estão presas a um formato de troca de mensagens, pois em cada mensagem o formato é descrito por um tipo MIME (p.ex: xml, json, png, txt). Os tipos mais comuns de representação de dados são JSON e XML. A Listagem~\ref{lst:json} mostra, como exemplo, a representação JSON do recurso~\url{/livros/2}.
+
+\begin{lstlisting}[frame=trbl, label=lst:json, caption=Representação JSON do recurso /livros/2.]
+{
+  "id" : 2,
+  "nome" : "Continuous Delivery",
+  "autores" : "Jez Humble and David Farley",
+  "editora" : "Addison-Wesly",
+  "ano" : "2011"
+}
+\end{lstlisting}
+
+As operações REST são definidas em função dos conceitos da interface uniforme, recursos e representações. Assim, um exemplo de operação REST é o cadastro de um novo livro, que é implementada como uma requisição HTTP do tipo POST para a URI \url{http://livraria.com/livros}, com a representação do livro no corpo da requisição. Como resposta, o servidor retorna um \emph{código de estado}\footnote{\url{http://en.wikipedia.org/wiki/List_of_HTTP_status_codes}} que informa o resultado da operação. 
+Informações adicionais também podem ser transmitidas pelos cabeçalhos da resposta HTTP.
+Em nosso exemplo, esperamos o código 201 para indicar o sucesso da criação do novo recurso, além do cabeçalho \emph{location} contendo a URI desse recurso recém criado.
+Diferentemente de SOAP, em REST não existe a noção de registro de serviços, pois a identificação de recursos por URIs e o uso de hyperlinks nas próprias mensagens REST possibilitam que os serviços necessários para a aplicação sejam encontrados~\cite{Pautasso2008Restful}.
+
+Geralmente serviços REST são considerados mais simples e escaláveis
+que serviços SOAP por utilizarem diretamente o HTTP como protocolo de 
+aplicação~\cite{Pautasso2008Restful}.
+Mais simples pela existência de um grande conjunto de ferramentas e bibliotecas
+que já entendem o HTTP. Mais escaláveis, dentre outros motivos,
+porque o \emph{cache} de serviços REST são diretamente
+gerenciados pelos servidores web~\cite{Tong2010CXF}.
+
+Por outro lado, serviços que utilizam a tecnologia WS-* ainda são mais propensos a uma série de manipulações automatizadas que se tornam mais difíceis nos serviços REST, como por exemplo a geração automatizada de clientes para uma dada linguagem de programação. Isso se deve principalmente pelo alto nível de padronização da tecnologia WS-* e pela existência de interfaces bem definidas e processáveis por software (WSDL). 
+
+\section{Composições de serviços web}
+\label{sec:composicoes}
+
+Serviços podem ser compostos para implementar sofisticados processos de negócios \cite{Papazoglou2007State}. Processos de negócio são sequências bem definidas de passos computacionais executados de uma maneira coordenada~\cite{Alonso2002Atomicity}. Sistemas de gerenciamento de workflow são a principal tecnologia para a implementação de processos de negócios~\cite{Agostini2000Improving}.  Um workflow é a automação, total ou parcial, de um processo de negócio, no qual documentos, informações ou tarefas são passados de um participante (humano ou não) para outros, de acordo com um conjunto de regras de procedimento~\cite{WorkflowCoalition1999}. Segundo Casati et al.~\cite{Casati1998Workflow}, workflows são compostos de \emph{tarefas}, unidades de trabalho a serem desempenhadas por agentes humanos ou automatizados e \emph{conectores}, que definem a ordem em que as tarefas devem ser executadas, o que também é denominado \emph{fluxo de controle}. Sincronizações de execuções concorrentes também são especificadas por controladores chamados ``\emph{forks}'' e ``\emph{joins}''. Quando uma tarefa é desempenhada por um agente automatizado, o gerenciador de workflow normalmente realiza a invocação a um serviço web, que é esse agente automatizado que participa do processo de negócio. Um exemplo de linguagem para a criação de processos de negócio a partir da composição de serviços web é a WS-BPEL~\cite{BPEL2007}.
+
+O modelo de composição de serviços web que possui um coordenador central que coordena o fluxo de controle da composição é denominado \emph{orquestração}~\cite{Nanda2004Decentralizing}. O coordenador central é chamado de \emph{orquestrador}. No caso em que processos de negócios são executados por sistemas gerenciadores de workflows, o orquestrador é o próprio sistema de workflow. Outro modelo de composição de serviços web é o de \emph{coreografia}, no qual o conhecimento sobre o fluxo de controle é distribuído entre os participantes, ou seja, cada serviço envolvido na composição sabe quando executar suas operações e com quais outros serviços interagir, sem que seja preciso um controle centralizado~\cite{Barker2009Choreographing}.
+
+Exemplos de linguagens e notações de descrição de coreografias são WSCI~\cite{WSCI2002}, WS-CDL~\cite{WSCDL2005} e BPMN2~\cite{BPMN2011}. Essas linguagens e notações descrevem sequências e restrições nas trocas de mensagens efetuadas pelos participantes da coreografia sob uma perspectiva global. Essa descrição de interações sob uma perspectiva global é vista como um contrato de negócios entre duas ou mais organizações~\cite{BPMN2011}. 
+Essa ideia de contrato está presente também nos trabalhos sobre o arcabouço Open Knowledge~\cite{Besana2008OpenKnowledge},
+no qual serviços compartilham um \emph{modelo de interação} que deve ser conhecido por todos os participantes da interação.
+Apesar da perspectiva global, como ressalta a especificação do BPMN2, uma coreografia não possui um controle de execução centralizado e participantes não compartilham um espaço de dados global. Dessa forma, um participante conhece o estado de outro participante apenas pela observação de seu comportamento externo, que consiste nas trocas de mensagens efetuadas~\cite{BPMN2011}.
+
+Embora a especificação de uma coreografia represente um modelo global de interação entre participantes,
+não é necessário que a implementação de cada participante tenha conhecimento do fluxo de negócio completo da coreografia,
+basta que ele tenha conhecimento de sua parte nesse fluxo.
+Assim, cada participante da coreografia pode ter o seu comportamento modelado por uma linguagem de orquestração. Dessa forma, uma coreografia pode também ser modelada como um conjunto de orquestrações distribuídas que interagem entre si, de forma que apenas os orquestradores precisam estar cientes de condições impostas pela coreografia~\cite{Poulin2011Collaboration}. 
+
+Um diagrama BPMN2 de coreografia especifica passos na execução da coreografia, que são denominados \emph{atividades}, e que consistem na troca de mensagens entre \emph{participantes}~\cite{BPMN2011}. Uma atividade pode ocorrer entre entidades participantes (p.ex: Magalhães Viagens realiza compra de passagem aérea da Nimbus Airline) ou entre \emph{papéis} de participantes (p.ex: uma Agência de Viagem realiza compra de passagem de uma Companhia Aérea). Dizemos que dois serviços desempenham o mesmo papel se fornecem funcionalidades equivalentes. O BPMN2 distingue um dos participantes de uma atividade como o participante iniciador, que é aquele que envia a mensagem ao outro participante. O participante iniciador é também denominado cliente ou consumidor, enquanto o outro participante é denominado provedor. O diagrama BPMN2 da Figura~\ref{fig:bpmn1} ilustra os elementos explicados em um exemplo de uma pequena coreografia com apenas dois serviços.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=.60\textwidth]{bpmn1.pdf} 
+  \caption{Exemplo de uma pequena coreografia de serviços em notação BPMN2.}
+  \label{fig:bpmn1} 
+\end{figure}
+
+Serviços podem ser projetados para participarem de uma determinada composição, mas também é possível que uma composição seja projetada para utilizar serviços já existentes. No segundo caso, é necessária a criação de serviços de coordenação (\emph{coordenadores}) que fazem com que serviços já existentes, não-cientes da composição, comuniquem-se adequadamente~\cite{Autili2013Synthesis}. 
+
+Em artigos acadêmicos também é comum a modelagem de coreografias com notações mais formais, tais como álgebras de processos~\cite{Roohi2011Realizability}, redes de Petri~\cite{Cicirelli2010Dynamically} e autômatos~\cite{Rinderle2006Evolution}. Essas notações possibilitam aos autores realizarem simulações e identificarem propriedades, como a verificação da consistência da evolução dinâmica de coreografias~\cite{Cicirelli2010Dynamically}. 
+%Em nosso trabalho, como estamos preocupados em viabilizar a execução de coreografias, adotamos como %modelagem de referência a notação BPMN2, que é um padrão de indústria.
+%\%gerosa{``modelagem de referência''??? ``padrão de indústria'': expressão estranha}
+
+Como uma orquestração é um caso particular de uma coreografia, neste trabalho utilizamos os termos ``coreografia'' e ``composição de serviços'' indistintamente. 
+Além disso, para fins da atividade de implantação, utilizando o middleware por nós desenvolvido,
+não há diferença em implantar uma coreografia ou uma orquestração,
+uma vez que orquestradores ou eventuais coordenadores são implementados como serviços web.
+
+\section{O processo de implantação de sistemas}
+\label{sec:implantacao}
+
+A ``Especificação de implantação e configuração de aplicações distribuídas baseadas em componentes'' (DEPL~\cite{DEPL2006}) é um padrão da OMG (Object Management Group). 
+A implantação é definida pelo DEPL como um \emph{processo}, que se inicia após a aquisição de um componente, e vai até o momento em que o componente está em execução, pronto para processar chamadas. 
+Embora o DEPL utilize o conceito de ``componente'', suas definições são aplicáveis e úteis ao contexto de implantação de serviços.
+
+%Embora nosso trabalho foque na implantação de serviços, os conceitos para implantação de componentes também se aplicam à implantação de serviços. 
+%Mas no contexto de implantação, pode-se dizer que a principal diferença seja o fato de que o \emph{implantador} do serviço seja a própria organização que o desenvolveu, enquanto que o conceito de componentes está mais ligado a um suposto mercado de componentes, em que uns desenvolvem, empacotam e publicam o componente, enquanto que outros adquirem e implantam o componente. \%gerosa{melhorar o texto deste parágrafo.}
+
+%Assim, quando possível, utilizaremos a terminologia estabelecida pelo DEPL em nosso trabalho.
+Os principais termos definidos no DEPL e utilizados neste trabalho são os seguintes:
+
+\begin{description}
+\item [Implantador:] é a pessoa, ou organização, que é a ``dona'' do componente, e que será responsável pelo processo de implantação. Não é o software que propriamente realiza o processo de implantação.
+\item [Ambiente alvo:] a máquina, ou conjunto de máquinas, onde os componentes serão implantados.
+\item [Nó:] um recurso computacional onde se implanta um componente, 
+como por exemplo uma máquina virtual; faz parte do ambiente alvo.
+\item [Pacote:] artefato executável que contém o código binário do componente.
+É por meio do pacote que um serviço pode ser instalado e executado em um determinado
+sistema operacional. Existem pacotes dependentes de sistema operacional (p.ex: deb, rpm),
+e pacotes independentes de sistema operacional (p.ex: jar, war).
+\end{description}
+
+No caso de um processo de implantação automatizado, o \emph{implantador}
+é o responsável por desenvolver os \scripts de implantação.
+Em contrapartida, utilizamos o termo \emph{desenvolvedor} para se referir ao
+desenvolvedor das composições de serviços web.
+
+Ainda segundo o DEPL, o processo de implantação é composto pelas seguintes fases:
+
+\begin{description}
+\item [Instalação:] o implantador transfere o componente adquirido para sua própria infraestrutura; a instalação está relacionada ao processo de aquisição do componente, e não se trata de mover o componente para o ambiente alvo, no qual será executado. Consideramos, portanto, que essa fase normalmente não se aplica à implantação de serviços, pois normalmente o serviço é implantado pela própria organização que o desenvolveu.
+\item [Configuração:] edição de arquivos de configuração para alterar o comportamento do software; 
+o código compilado do componente junto de sua configuração são os insumos para a produção do pacote do componente.
+\item [Planejamento:] resulta em um \emph{plano de implantação}, que mapeia como os componentes serão distribuídos pelos nós do ambiente alvo.  
+\item [Preparação:] procedimentos no ambiente alvo para preparar a execução do componente. Envolve configurações do sistema operacional, instalação de middlewares (p.ex. Tomcat), e a transferência do componente para a máquina onde será executado. 
+\item [Inicialização:] é quando finalmente o componente é iniciado e entra em execução, podendo processar chamadas de seus clientes. A inicialização também inclui o \emph{enlace} entre os componentes de uma composição, para que os componentes conheçam a localização dos componentes dos quais dependem.
+\end{description}
+
+Profissionais da acadêmia e da indústria levantam a necessidade de se automatizar o processo de implantação, uma vez que o processo de implantação manual se torna moroso e propenso a erros, principalmente na implantação de sistemas distribuídos~\cite{Dolstra2005Configuration}. 
+Esses problemas fazem da implantação em produção um momento de grande apreensão
+e mais trabalho nas organizações~\cite{Humble2011Continuous}.
+A solução para esses sintomas, segundo esses autores, é a automação do processo de implantação.
+Em um processo de implantação automatizado tudo o que for possível é executado de forma automatizada,
+geralmente por meio de \scripts. O objetivo de um processo de implantação automatizado
+é proporcionar um processo de implantação \emph{reprodutível}, \emph{confiável} e \emph{fácil} de ser executado~\cite{Humble2011Continuous}.
+
+Todo o processo que vai desde o \emph{commit} do código-fonte até a implantação em produção
+chamaremos de processo de \emph{lançamento} de uma determinada versão do sistema.
+Esse processo de lançamento pode ser automatizado por um 
+``\emph{pipeline de implantação}''~\cite{Humble2011Continuous},
+no qual o sistema passa por uma sequência de etapas,
+sendo que em cada etapa um aspecto do sistema é testado.
+A cada etapa, mais confiança se tem sobre o candidato a lançamento.
+Vencidas todas as etapas, o sistema pode ser implantado no ambiente de produção,
+ou em alguns casos em um ambiente de homologação.
+Cada etapa do \emph{pipeline} de implantação pode precisar de uma nova implantação do sistema.
+Um exemplo básico de pipeline de implantação pode ser visto na Figura~\ref{fig:pipeline_implantacao}.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{pipeline_implantacao.pdf} 
+  \caption{Exemplo básico de pipeline de implantação.}
+  \label{fig:pipeline_implantacao} 
+\end{figure}
+
+
+A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de \scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de planejamento, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutimos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
+
+Um processo de implantação pode ser automatizado de várias maneiras.
+Pode-se utilizar linguagens de \script de propósito geral (Python, shell script),
+ferramentas gerais voltados para o processo de implantação (p.ex: 
+Chef\footnote{\url{http://www.getchef.com/}}, Capistrano\footnote{\url{https://github.com/capistrano/capistrano}})
+ou sistemas de middleware especializados em determinados tipos de artefatos implantáveis,
+entre os quais se enquadram as soluções de Plataforma como um Serviço,
+sobre as quais discutimos na Seção~\ref{sec:cloud}.
+Humble e Farley recomendam a utilização de sistemas especializados, preterindo 
+a utilização de linguagens de \scripts de propósito geral.
+
+Um processo de implantação automatizado depende bastante da
+integração de diferentes papéis em uma organização, principalmente da integração entre desenvolvedores
+e operadores, uma vez que o desenvolvimento dos \scripts de implantação requer
+habilidades de ambos os perfis.
+Essa percepção levou à criação do conceito de uma cultura 
+denominada DevOps~\cite{Humble2011DevOps}, na qual equipes inter-funcionais
+viabilizam a implantação automatizada.
+
+A discussão a seguir sobre as vantagens do processo de implantação automatizado
+são baseadas no livro ``\emph{Continuous Delivery}''~\cite{Humble2011Continuous}.
+
+Muitos problemas na implantação manual se dão por causa de documentação incompleta,
+contendo pressupostos não compartilhados por todo o time responsável por um produto ou serviço.
+Dessa forma, é comum que a organização se torne dependente de uma única
+pessoa para realizar a tarefa de implantação.
+Por outro lado, um \script de implantação é uma documentação completa e precisa de todos os passos
+do processo. Caso um \script fique desatualizado, o impacto será imediato, pois
+não será possível implantar o sistema. Dessa forma, na prática,
+dificilmente tais \scripts estarão desatualizados,
+diferentemente do que ocorre com a documentação convencional.
+
+A facilidade de se implantar o sistema com um simples comando
+leva a sua utilização contínua por diferentes atores.
+O time de desenvolvimento, por exemplo, estará constantemente utilizando esse \script 
+para realizar testes de integração e aceitação. 
+Essa execução contínua do processo de implantação nos testes trará os seguintes benefícios:
+
+\begin{itemize}
+\item Os testes se tornam mais confiáveis por serem executados em um ambiente garantidamente similar ao ambiente de produção.
+\item A quantidade de execuções de testes de integração e aceitação será maior, o que auxilia na garantia de qualidade do sistema.
+\item A implantação em produção se torna mais confiável, 
+pois o sistema já terá sido implantado várias vezes
+antes de chegar à produção.
+\item Em particular, espera-se que defeitos no \script de implantação já tenham sido detectados e corrigidos antes de ser aplicado em produção.
+\end{itemize}
+
+A utilização da implantação automatizada na execução de testes também
+facilita a execução concorrente de múltiplos testes em ambientes isolados.
+Isso, por sua vez, contribui para o aumento da bateria de testes, fazendo com que
+a cobertura dos testes aumente e, por fim, a própria qualidade do sistema testado também melhore.
+
+Com a implantação manual, normalmente o sistema é executado no ambiente
+de produção ou homologação apenas nas fases finais do desenvolvimento.
+Nesse estágio, grandes mudanças arquiteturais podem ser economicamente inviáveis.
+Por outro lado, a implantação automatizada favorece a prática da implantação contínua desde as versões
+embrionárias do sistema. 
+Isso ajuda a garantir desde o início que as decisões arquiteturais são adequadas.
+Também evita a necessidade de
+alterações emergenciais para adequar o sistema ao ambiente de produção.
+
+A implantação contínua e confiável do sistema é determinante no apoio ao lançamento
+contínuo de novas versões. Isso é importante para que se consiga o \emph{feedback} do cliente
+o quanto antes sobre as últimas alterações no sistema.
+Esse \emph{feedback} é importante tanto do ponto de vista técnico para o aprimoramento do sistema,
+quanto do ponto de vista de negócio, pois pode redefinir os objetivos do sistema.
+O encurtamento do tempo entre desenvolvimento e \emph{feedback} do cliente
+é uma prática pregada pelo movimento \emph{lean startup}~\cite{Ries2011Lean}.
+
+Na próxima seção falamos sobre a computação em nuvem,
+um conjunto de modernas tecnologias
+com grande impacto sobre a implantação de sistemas.
+
+\section{Computação em nuvem}
+\label{sec:cloud}
+
+O Instituto Nacional de Padrões e Tecnologias dos Estados Unidos (NIST) define computação em nuvem como um ``modelo para possibilitar acesso ubíquo, conveniente e sob demanda pela rede a um conjunto compartilhado de recursos computacionais (p.ex. redes, servidores, discos, aplicações e serviços) que possam ser rapidamente provisionados e liberados com o mínimo de esforço gerencial ou interação com o provedor do serviço''~\cite{Nist2011Cloud}. 
+
+Zhang et al.~\cite{Zhang2010Cloud} destacam as seguintes características da computação em nuvem: i) separação de responsabilidades entre o dono da infraestrutura de nuvem e o dono do serviço implantado na nuvem; ii) compartilhamento de recursos (serviços de diferentes organizações hospedados na mesma máquina, por exemplo); iii) geodistribuição e acesso aos recursos pela Internet; iv) orientação a serviço como modelo de negócio; v) provisionamento dinâmico de recursos; vi) cobrança baseada no uso de recursos, de forma análoga à conta de eletricidade.
+
+Os serviços de computação em nuvem podem ser oferecidos a clientes internos ou externos à organização administradora da plataforma de nuvem. Uma nuvem é considerada pública quando os clientes são externos, como no caso da nuvem da Amazon; ou é considerada privada quando os clientes são internos,  situação na qual a organização pode utilizar ambientes baseados em um middleware como o OpenStack~\cite{Zhang2010Cloud}.
+
+À computação em nuvem são atribuídos os seguintes modelos de negócio~\cite{Zhang2010Cloud}, ou modelos de serviço~\cite{Nist2011Cloud}: Infraestrutura como um Serviço (IaaS), Plataforma como um Serviço (PaaS) e Software como um Serviço (SaaS). 
+
+O modelo de Infraestrutura como Serviço (IaaS) fornece acesso aos recursos virtualizados, como máquinas virtuais, de forma programática. Um dos principais fornecedores de IaaS na época da escrita deste texto é a Amazon, com os serviços Amazon Web Services (AWS). Dentre os vários serviços fornecidos pela plataforma, destaca-se o EC2, que possibilita a criação e gerenciamento de máquinas virtuais na nuvem da Amazon. Na utilização de IaaS, uma das considerações chaves é ``tratar hospedeiros como efêmeros e dinâmicos''~\cite{Amazon2012Practices}. É preciso considerar que hospedeiros podem ficar indisponíveis e que nenhuma suposição pode ser feita sobre seus endereços IPs, o que requer um modelo de configuração flexível e que a inicialização do hospedeiro leve em conta essa natureza dinâmica da nuvem. Para que as aplicações sejam escaláveis e tolerantes a falhas, a Amazon recomenda mais do que a criação de máquinas virtuais com o serviço EC2: deve-se utilizar grupos de máquinas replicadas que compartilhem um balanceador de carga~\cite{Amazon2012Practices}. Conforme a demanda da aplicação cresce ou diminui, máquinas podem ser dinamicamente acrescentadas ou removidas desses grupos de replicação, o que proporciona escalabilidade horizontal à aplicação. Naturalmente, essa replicação depende de um prévio preparo da aplicação para esse cenário, pois se deve levar em conta a distribuição, replicação e particionamento dos dados. 
+
+O uso de recursos virtualizados, proporcionado pelo modelo IaaS,
+potencializa a automação do processo de implantação~\cite{Humble2011Continuous}.
+Novos ambientes são criados dinamicamente, em poucos minutos,
+com a configuração de um sistema operacional recém instalado em uma máquina.
+Isso traz as seguintes vantagens para o processo de implantação:
+
+\begin{itemize}
+\item Evita-se a burocracia e custos necessários para o provisionamento de novo hardware.
+\item A implantação se torna facilmente reprodutível no mesmo ambiente, não é preciso reinstalar o sistema operacional ou limpar as configurações do sistema para se obter uma nova implantação do serviço.
+\item Se executados em diferentes máquinas virtuais, dois serviços podem dividir um mesmo servidor físico sem que a implantação e execução de um serviço afete a execução do outro serviço anteriormente implantado.
+\end{itemize}
+
+Na utilização de serviços IaaS para a implantação de serviços há duas abordagens possíveis:
+1) a máquina virtual deve ser criada com base em uma 
+imagem\footnote{\emph{Imagens} são sistemas de arquivo somente-leitura contendo um sistema operacional, aplicações e dados a serem instanciados em uma ou mais máquinas virtuais.} 
+que já contenha
+o serviço implantado, ou 2) deve ser criada com base em uma imagem contendo apenas um
+sistema operacional recém instalado, de forma que a implantação do serviço seja feita
+por \scripts. O modelo de imagem pronta proporciona implantações mais rápidas,
+porém a segunda abordagem é mais flexível, pois para implantar uma nova versão do sistema
+evita-se a publicação de uma nova imagem, o que é um processo demorado,
+já que imagens são arquivos com vários gigabytes.
+Um compromisso entre as duas abordagens também é possível:
+se todos os serviços implantados são WARs, por exemplo, então a imagem base
+pode conter não só o sistema operacional, mas também o ambiente de execução
+dos serviços, o Tomcat no caso.
+
+No modelo de Plataforma como Serviço (PaaS), os desenvolvedores da aplicação não precisam preocupar-se diretamente com a gerência dos recursos virtualizados ou com a configuração dos ambientes nos quais a aplicação será implantada, concentrando-se no desenvolvimento do código da aplicação.
+Um exemplo típico de PaaS é o Google App Engine\footnote{\url{https://developers.google.com/appengine/}}, que oferece implantação transparente a projetos em Python, Java ou Go. O App Engine também oferece escalabilidade automática de modo mais simples que os serviços de IaaS, uma vez que a configuração prévia e as alterações na infraestrutura ocorrem de modo totalmente transparente ao desenvolvedor da aplicação. Uma desvantagem presente nos serviços PaaS são as restrições de linguagens, bibliotecas e ambientes impostas aos desenvolvedores da aplicação.
+
+Um exemplo de SaaS é o Google Docs ou qualquer outro aplicativo online que seja diretamente utilizado pelo usuário final. Uma das aplicações desse tipo é o armazenamento de dados na nuvem, como fornecido pelo Dropbox\footnote{\url{http://dropbox.com/}}. Uma confusão comum é definir o conceito de nuvem como se fosse estritamente ligado a esse tipo de serviço de armazenamento de dados.
+
+Com as vantagens aqui apresentadas, é cada vez mais comum o uso dos recursos de nuvem por empresas que desenvolvem software, pois assim seus esforços concentram-se no desenvolvimento do produto, aliviando as preocupações com infraestrutura. A computação em nuvem também possibilita que organizações evitem grandes investimentos antecipados em infraestrutura, pois os recursos virtualizados são dinamicamente acrescentados conforme a carga da aplicação requeira. Pode-se então considerar o uso da nuvem uma realidade do mercado de software atual. Dessa forma, é natural esperar que a implantação de composições de serviços também se dê no ambiente de computação em nuvem, que é a abordagem deste trabalho. 
+
+\section{Desafios na implantação de sistemas de grande escala}
+\label{sec:desafios}
+
+Na visão proposta pelo Instituto de Engenharia de Software da Universidade Carnegie Mellon, sistemas de ultra grande escala são ultra grandes em relação a todas as dimensões possíveis: linhas de código, pessoas, dados, dispositivos, etc.~\cite{CarnegieMellon2006ULS}. O número estimado de linhas de código desses sistemas é de bilhões. Para efeito de comparação, o núcleo do sistema operacional GNU/Linux possui cerca de 15 milhões de linhas de código em sua versão 3.2, a mais recente no momento da escrita deste texto~\cite{Leemhuis2012Statistics}. Com isso, talvez o único sistema da atualidade que se assemelha aos sistemas de escala ultra grande previstos é a Internet. 
+
+Por outro lado, a característica mais importante de um sistema de grande escala não é seu tamanho, mas o fato de ser caracterizado como um ``ecossistema sociotécnico''~\cite{CarnegieMellon2006ULS}, em que pessoas são parte integrante do sistema, interagindo com diferentes objetivos, de modo decentralizado e independente, porém seguindo restrições impostas. A analogia proposta é de que o desenvolvimento dos atuais sistemas de grande escala equipara-se a construção de prédios, enquanto que o desenvolvimento de sistemas de escala ultra grande equivaleriam a construção de cidades, o que é naturalmente um processo contínuo e decentralizado.
+
+%Recentemente, há ainda a consolidação da computação em nuvem, que traz um conjunto de tecnologias e práticas que se relacionam com as três características de sistemas de escala ultra grande anteriormente mencionadas. Sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos decentralizadamente por várias organizações~\cite{Steen2011VeryLarge}. A virtualização, um dos aspectos centrais da computação em nuvem, é de grande auxílio no provisionamento de novos ambientes~\cite{Humble2011Continuous}, o que é importante para o processo de implantação de sistemas. A virtualização também facilita a criação de ambientes replicados, arquitetura importante para tratar falhas individuais de componentes.
+
+A grande escala afeta os processos envolvidos no ciclo de vida dos sistemas.
+Estudando a literatura que aborda e discute desafios, princípios e práticas de
+sistemas de grande escala, identificamos os seguintes desafios que essa nova
+realidade traz ao processo de implantação de sistemas:
+
+\begin{description}
+
+\item [Processo:]
+
+Como já foi discutido neste capítulo, a automação do processo de implantação
+vem se firmando como uma tendência crucial na capacidade
+das equipes de TI entregarem valor o mais continuamente possível,
+evitando as dificuldades e problemas presentes no processo manual de implantação.
+Tais dificuldade e problemas se tornam muito mais complicados em ambientes distribuídos
+e de grande escala. Por isso, nesse caso a automação dos processos se torna
+ainda mais fundamental.
+Hamilton~\cite{Hamilton2007InternetScale} lista uma série de boas práticas acumuladas 
+por anos de experiência no desenvolvimento de serviços de grande escala.
+Dentre elas, Hamilton destaca a automação de todos os processos de operações dos serviços,
+alegando que processos automatizados são mais confiáveis
+por evitar erros humanos na operação dos serviços.
+
+\item [Falhas de terceiros:] 
+
+Sistemas distribuídos de grande escala devem esperar e tratar falhas
+de componentes de terceiros~\cite{Hamilton2007InternetScale,Helland2009Quicksand,CarnegieMellon2006ULS}.
+Mesmo se a chance de falhas de cada componente é pequena,
+a grande quantidade de componentes e interações aumenta as chances de 
+falhas em algum lugar do sistema~\cite{CarnegieMellon2006ULS}.
+Mais do que ser projetado para não falhar, um componente operando em um ambiente  de grande escala deve ser projetado para tratar adequadamente situações de exceção e indisponibilidade, tanto do próprio componente, quanto de outros componentes dos quais depende.
+
+Um exemplo de falha típica em um processo de implantação automatizado
+utilizando um serviço de IaaS envolve o provisionamento de máquinas virtuais.
+Quando um novo nó é requisitado para o provedor de infraestrutura,
+há uma chance de que o provisionamento falhe.
+Além disso, alguns nós podem levar um tempo muito maior que a média para ficarem prontos.
+Outras operações que podem falhar durante o processo de implantação são
+conexões SSH e a execução de \scripts nos nós alvos.
+
+A Figura~\ref{fig:ec2_boxplot} mostra a distribuição por nós observada 
+empiricamente do tempo de criação de VMs no Amazon EC2. 
+Cada um dos dez \emph{boxplots} corresponde ao resultado
+observado para 100 requisições concorrentes ao EC2,
+cada uma requisitando a criação uma nova VM.
+Nós contamos o tempo que vai da requisição de criação do nó
+até o momento em que a VM se encontra apta a receber conexões SSH,
+que é quando ela se torna pronta para uso na prática.
+Os dados utilizados para gerar a Figura~\ref{fig:ec2_boxplot}
+foram coletados em maio de 2013. As máquinas virtuais, 
+do tipo \emph{m1.small}, foram criadas na zona de disponibilidade \emph{us-east-1b}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{ec2_boxplot.pdf}
+\caption{Tempos de criação de instâncias EC2 observados, em segundos.}
+\label{fig:ec2_boxplot}
+\end{figure}
+
+Na Figura~\ref{fig:ec2_boxplot} podemos observar, 
+pelas regiões interquartis dos \emph{boxplots}, que
+o tempo de criação de VMs possui uma mediana estável.
+Observamos também que ao se criar ao mesmo tempo uma grande quantidade de nós,
+é esperado a existência de algumas tempos de criação bem mais demorados,
+observados nos pontos acima dos \emph{whiskers} superiores.
+
+Apenas o tempo
+das requisições que foram completadas com sucesso são observadas na
+Figura~\ref{fig:ec2_boxplot}.
+No entanto, a cada tentativa de se criar simultaneamente várias VMs,
+nem todas as VMs requisitadas são criadas.
+Nos experimentos realizados para a produção da Figura~\ref{fig:ec2_boxplot},
+nós observamos uma taxa de falha de 0.6\%.
+Nesses experimentos, falhas e tempos longos de provisionamento 
+(acima dos \emph{whiskers} superiores)
+afetaram 7\% das requisições de criação de nós.
+
+Nygard~\cite{Nygard2009Release} apresenta vários padrões de estabilidade que são de importante aplicação em sistemas de grande escala. Em sua essência, esses padrões dizem respeito a detectar falhas e evitar sua propagação, provendo um tratamento adequado a elas. Dentre as práticas recomendas pelo autor destacam-se 1) o uso de \emph{timeouts}, que evita que um cliente fique eternamente esperando uma resposta; 2) a interrupção de tentativas do cliente quando há sintomas de indisponibilidade do provedor; 3) criação de recursos exclusivos para diferentes clientes, evitando que uma falha em um recurso compartilhado afete todos os clientes; e 4) a ``falha rápida'', que faz com que um provedor forneça uma resposta de erro tão logo quanto seja possível saber que a operação não terá sucesso. 
+
+Quando um sistema faz uma requisição a outro serviço, não é possível distinguir um \emph{timeout} de uma resposta eventualmente mais lenta. Dessa forma, só é seguro, do ponto de vista funcional, o sistema cliente enviar uma nova requisição devido a \emph{timeout} caso a operação considerada seja \emph{idempotente}. 
+Uma operação é idempotente quando executá-la várias vezes produz o mesmo resultado 
+que uma única execução produziria~\cite{Weider2007QoSWS}.
+Isso implica na capacidade do sistema em tolerar requisições duplicadas,
+importante para o tratamento eficiente de falhas de comunicação 
+ou de processamento~\cite{Ramalingam2013Idempotence}.
+Em interfaces REST, por exemplo, todas as operações que não sejam POST devem ser idempotentes~\cite{Allamaraju2010REST}. A idempotência de \scripts
+de implantação é um dos principais destaques dentre as funcionalidades do 
+Chef\footnote{\url{http://docs.opscode.com/chef_why.html}}.
+
+\item [Disponibilidade:]
+
+Embora serviços em um sistema distribuído tenham que estar preparados para lidar
+com a falha de outros serviços do sistema,
+cada serviço deve ter sua disponibilidade aumentada tanto quanto possível. 
+Para isso é preciso aplicar técnicas que
+aumentem o tempo médio entre falhas e/ou diminuam o tempo médio de reparo após uma falha.
+
+O balanceamento de carga entre réplicas de um serviço é uma das práticas mais importantes e 
+recomendados atualmente para aumentar a disponibilidade e escalabilidade de sistemas~\cite{Amazon2012Practices}.
+Com a replicação do serviço, a falha em uma réplica não implica na indisponibilidade
+do serviço. Além disso, com a utilização das tecnologias de nuvem,
+caso a quantidade de requisições aumente, pode-se requisitar um aumento na quantidade de réplicas,
+o que evita uma indisponibilidade por incapacidade de se atender a todas as requisições.
+
+Outra prática importante para o aumento da disponibilidade é a replicação de dados~\cite{Brewer2001GiantScale}.
+No entanto, a replicação síncrona de dados é inviável para sistemas de grande escala~\cite{Helland2009Quicksand}.
+O Teorema CAP~\cite{Brewer2012Cap} prevê que um sistema não mantém os níveis de consistência e de disponibilidade na presença de particionamentos de rede. Considerando que particionamentos de rede são intrínsecos ao ambiente da Internet, o aumento no tamanho dos sistemas inviabilizou uma consistência total com tempo de resposta satisfatório. 
+Essa mudança representou uma quebra de paradigma na área de bancos de dados,
+pois agora os bancos de dados projetados para fornecer as propriedades ACID,
+que garantem consistência total, cedem lugar aos cada vez mais populares
+bancos de dados não-relacionais (NoSQL).
+Essa nova categoria sacrifica a consistência dos dados para obter maior disponibilidade ou escalabilidade~\cite{Cattell2011NoSql}.
+
+O processo de implantação deve considerar as necessidades de replicação de serviços e dados,
+para que ele possa configurar adequadamente as múltiplas instâncias dos serviços e das bases de dados.
+Deve ser possível também alterar em tempo de execução a quantidade de réplicas para
+a adequação à demanda observada.
+
+Um processo utilizado para reduzir drasticamente o tempo de reparo após uma falha
+é o ``\emph{roll-back}'' automatizado do sistema: se o ambiente de produção encontra-se em algum estado inválido, 
+é feito uma reversão rápida e segura do sistema e do ambiente para 
+o último estado estável~\cite{Hamilton2007InternetScale, Brewer2001GiantScale}. 
+Nygard~\cite{Nygard2009Release} advoga que em caso de falha no sistema a prioridade deve ser 
+a reversão imediata do sistema para a sua última versão estável, 
+deixando para depois as investigações sobre as razões do problema, 
+mesmo que a reversão custe a perda de eventuais pistas para o diagnóstico. 
+
+\item [Escalabilidade:]
+
+Quando se implanta uma grande quantidade de serviços em um ambiente distribuído,
+não é desejável que as implantações dos diferentes serviços sejam sequenciais.
+Uma vez que a implantação de diferentes serviços são tarefas independentes,
+implantá-los concorrentemente aumenta drasticamente a escalabilidade
+do processo de implantação da composição.
+
+Uma arquitetura é perfeitamente escalável
+se ela continua a apresentar o mesmo desempenho por recurso,
+mesmo que usado em um problema de tamanho maior, conforme o número
+de recursos aumenta~\cite{Quinn1994Scalability}.
+No contexto de implantação, isso significa que, idealmente,
+o tempo de implantação deveria permanecer constante quando há um
+aumento proporcional no número de serviços a serem implantados e
+no número de nós alvos.
+
+O número de serviços a ser implantado aumenta em duas situações:
+1) quando se implanta composições maiores e 2) quando se implanta
+mais composições simultaneamente. 
+A primeira situação ocorre na implantação de sistemas de grande escala.
+A segunda situação ocorre, por exemplo,
+quando se executa uma bateria de testes de aceitação de uma composição de serviços.
+Nesse caso um teste de aceitação pode levar um tempo considerável,
+já que engloba o provisionamento de um novo nó e a preparação do sistema.
+Em tal situação, é desejável que testes de aceitação sejam executados em paralelo,
+o que requer implantação concorrente de múltiplas instâncias da mesma composição.
+Quanto maior a capacidade de paralelização desse processo,
+mais testes poderão ser admitidos na bateria de testes.
+
+\item [Heterogeneidade:]
+
+Componentes de sistemas de grande escala normalmente são construídos com diferentes tecnologias
+e hospedados em diferentes tipos de ambientes.
+Um dos principais caminhos para viabilizar a coexistência dessa pletora tecnológica
+é a Arquitetura Orientada a Serviços, incluindo as composições de serviços web.
+
+Embora serviços web tenha surgido para resolver os problemas de heterogeneidade
+entre sistemas e organizações, hoje em dia há mais de um mecanismo para
+implementar o conceito de serviços, principalmente SOAP e REST, além de outros.
+Portanto, dar suporte à heterogeneidade é importante para sistemas baseados em serviços.
+A falta de flexibilidade para a escolha de tecnologia para o desenvolvimento de serviços
+e o provedor de infraestrutura (camada IaaS) ocorre em muitas soluções PaaS atualmente disponíveis.
+
+\item [Múltiplas organizações:]
+
+Sistemas de grande escala não possuem um único dono~\cite{Steen2011VeryLarge}, 
+sendo que seus componentes pertencem a diferentes organizações que interagem de forma coordenada. 
+O conceito de coreografias de serviços web e notações como o BPMN surgem para 
+formalizar a interação em tempo de execução entre serviços de organizações diferentes.
+
+Em uma composição inter-organizacional a coordenação do processo de implantação se torna um desafio. Normalmente não se admite que um coordenador em uma organização possa tomar decisões 
+sobre a implantação de serviços de outra organização, pois esse processo envolve
+custos, acesso à infraestrutura e acesso ao pacote do serviço.
+Dessa forma, não é possível o uso de um orquestrador para coordenar o processo de implantação.
+As organizações devem agir de forma colaborativa para que o processo de implantação
+da composição tenha sucesso.
+No entanto, isso não é tão simples, pois no caso de implantação simultânea,
+é preciso haver algum protocolo de comunicação para que uma organização receba
+por notificação os endereços de serviços recém implantados por outra organização,
+quando esses serviços são dependências de seus próprios serviços sendo também implantados.
+
+\item [Adaptabilidade:]
+
+No futuro, sistemas deverão operar em um mundo altamente dinâmico,
+sendo preciso lidar com alterações imprevistas, como condições ambientais, incluindo desastres naturais, 
+adequação legal, etc.~\cite{Papazoglou2008Journey}.
+É de se esperar que em sistemas de grande escala a capacidade de agir autonomicamente 
+seja vital para manter um funcionamento adequado, uma vez que a intervenção manual
+se torna mais custosa.
+
+Quando requisitos funcionais ou não-funcionais são violados, 
+algumas das possíveis ações a serem tomadas são:
+1) substituição de versão de serviços; 2) aumento na quantidade de réplicas de um serviço; e
+3) migração da instância de um serviço para outro hospedeiro.
+Uma vez que todas essas ações tem relação com o processo de implantação,
+pode-se dizer que sistemas auto-adaptativos precisam estar cientes
+e ter pleno controle das atividades do processo de implantação.
+
+Para tomar as decisões de adaptação, um sistema auto-adaptativo precisa monitorar
+a si próprio para coletar métricas a serem utilizadas por algum algoritmo adaptativo.
+Um exemplo de métrica a ser coletada é a taxa de utilização de CPU no hospedeiro do serviço.
+Coletar tais métricas requer a utilização de um sistema de monitoramento
+que deve ser implantado na infraestrutura alvo.
+Portanto, o processo de implantação de sistemas auto-adaptativos
+também deve considerar a implantação de sistemas auxiliares que realizam esse monitoramento.
+
+
+\end{description}
+
+
+

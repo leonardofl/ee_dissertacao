@@ -1,0 +1,248 @@
+%% ------------------------------------------------------------------------- %%
+\chapter{Conclusões}
+\label{cap:conclusoes}
+
+Nesta dissertação, nós introduzimos o CHOReOS \ee,
+um novo sistema de middleware que facilita a implantação de composições
+de serviços de grande escala em um ambiente de computação em nuvem.
+
+Embora a automação do processo de implantação de composições de serviços
+possa ser implementada de maneiras \emph{ad-hoc},
+esse tipo de solução normalmente requer do implantador
+uma grande gama de conhecimentos técnicos.
+Por meio de experimentos, procuramos evidenciar como
+uma abordagem baseada em middleware, como o EE,
+reduz o tempo de trabalho necessário para a automação
+do processo de implantação, considerando tanto o tempo
+de desenvolvimento da solução de implantação,
+quanto o tempo de implantação de cada composição.
+
+Ao revisar a literatura, identificamos desafios na implantação
+de sistemas de grande escala. 
+Procuramos atender tais desafios ao aplicar no EE
+técnicas e soluções espalhadas na literatura,
+bem como refinar tais soluções com base em 
+nossas experimentações empíricas.
+Listamos a seguir considerações sobre os desafios na
+implantação de sistemas de grande escala
+e sobre como o uso de uma solução de implantação
+baseadas em middleware contribui para a superação
+de tais desafios.
+
+\begin{itemize}
+
+\item Identificamos que a automação é essencial
+para a implantação de sistemas de grande escala.
+Para isso é importante que o middleware de implantação
+forneça uma API remota para disparar as implantações.
+Nesse sentido, também contribui a especificação das
+composições por meio de descrições declarativas de
+suas arquiteturas.
+
+\item Ao se tratar de software distribuído de grande escala,
+falhas nas interações com componentes e serviços de terceiros
+se tornam comum. Implementar estratégias de tratamento
+de falhas de terceiros na camada do middleware é um
+grande auxílio no desenvolvimento de uma solução robusta 
+e escalável.
+
+\item Não só o tratamento de falhas de terceiros,
+mas o tratamento de concorrência pelo middleware é importante também
+para a obtenção de um resultado robusto e escalável,
+sem que o implantador tenha que entender a fundo essas
+questões complicadas.
+
+\item Soluções \emph{ad-hoc} levam vantagem na questão de suportar soluções heterogêneas.
+Contudo, soluções baseadas em middleware podem oferecer
+suporte pronto para as tecnologias mais utilizadas do mercado.
+Além disso, uma arquitetura extensível auxilia no desenvolvimento
+de suporte a novas tecnologias, de forma que o resultado
+de cada nova extensão é compartilhável por todos os usuários do middleware.
+
+\item Composições de serviços podem ser compostos por serviços
+de diferentes organizações. Um middleware de implantação deve considerar
+a colaboração dos serviços por ele implantado com serviços já existentes.
+
+\item A evolução auto-adaptativa de composições de serviços é assunto bastante estudado.
+A implantação automatizada, robusta e escalável é necessária para o
+desenvolvimento de composições de serviços auto-adaptativas.
+Assim, mesmo que um middleare de implantação não forneça mecanismos
+de evolução auto-adaptativos para suas implantações, ele é peça importante
+que pode facilitar o desenvolvimento de novos sistemas adaptativos.
+
+\end{itemize}
+
+Para evidenciar os benefícios das técnicas aplicadas,
+realizamos avaliações empíricas do desempenho e escalabilidade
+da implantação de composições de serviços de grande escala
+operada pelo EE.
+Os resultados experimentais evidenciam a aplicabilidade da arquitetura proposta
+e que desempenho e escalabilidade satisfatórios podem ser obtidos.
+
+Acreditamos que as conclusões já listadas e mais algumas lições aprendidas
+no desenvolvimento do EE e desta dissertação
+possam auxiliar no desenvolvimento de outras soluções baseadas
+em middleware no contexto de computação de grande escala.
+Listamos agora algumas dessas lições aprendidas:
+
+\begin{itemize}
+
+\item Arquiteturas escaláveis não devem depender de um ponto central de processamento.
+Em versões anteriores do EE, a utilização do Chef Server impunha grandes
+restrições à escalabilidade do processo de implantação.
+Em um estágio mais anterior de nossa pesquisa acreditávamos que o Chef Server
+não seria um problema, pois para cada requisição seu trabalho era extremamente simples
+e rápido. Mas vários detalhes mostraram o contrário, como 1) a grande
+quantidade de requisições feitas ao Chef Server, vindas do EE e dos nós alvos;
+2) a quantidade de memória RAM gasta no EE para se invocar o Chef Server,
+uma vez que pra cada requisição criávamos uma nova instância de um programa
+Ruby (o \emph{knife}); e 3) o sistema de filas utilizado pelo Chef Server
+para receber suas requisições prejudicava o tempo de resposta dessas requisições.
+
+\item Embora defendida pela literatura~\cite{Hamilton2007InternetScale}
+e considerada um valor em nosso grupo,
+a \emph{simplicidade} é difícil de por em prática.
+Desenvolvimento iterativo que a cada iteração procure fornecer \emph{a coisa mais simples que funcione}
+é importante também no desenvolvimento de sistemas de grande escala.
+No caso do EE, o projeto inicial previa a divisão do EE em três módulos
+que se comunicariam por serviços. Com o passar do tempo vimos que esse desenho
+impunha diversas complicações, e em um primeiro momento passamos de três para dois
+módulos, e em um estágio mais final do desenvolvimento reduzimos os dois módulos
+a apenas um. Uma das dificuldades da divisão anterior era a da sincronia
+entre estruturas de dados replicadas em diferentes módulos.
+No fim, essa simplificação arquitetural não impediu a aplicação de um bom projeto
+de classes, e nem impede, no futuro, a possibilidade de se replicar as instâncias
+do EE para que se suporte uma carga maior de requisições.
+
+\end{itemize}
+
+
+\section{Sugestões para trabalhos futuros}
+
+Listamos agora alguns possíveis trabalhos futuros envolvendo o \ee.
+
+\begin{description}
+
+\item[Análise multivariável de fatores que influenciam a escalabilidade.] 
+Outro experimento para melhor entender o desempenho e escalabilidade do EE
+seria aplicar uma análise multivariável para determinar o quanto
+que o tempo de implantação é influenciado por fatores como a quantidade de composições
+sendo implantada, a quantidade de serviços em cada composição e a quantidade
+de nós disponíveis.
+Nesse sentido, começamos a realizar esse experimento utilizando a análise fatorial $2^k$
+com replicação~\cite{Jain20002kr}, mas dificuldades com a distribuição dos dados e o alto custo
+para se obter novas amostras dificultaram a conclusão desse experimento.
+
+\item[Experimentos com desenvolvedores.] 
+Na Seção~\ref{sec:avaliacao_eng_sw} realizamos uma avaliação qualitativa para
+ajudar a expandir nosso entendimento sobre o valor que o EE agrega ao processo de implantação.
+Dada as limitações de nosso experimento, seria interessante expandi-lo
+com a participação de diversos desenvolvedores de software
+e administradores de sistemas assumindo o papel de implantadores de uma composição de serviços.
+Nesse caso, a ideia seria utilizar uma abordagem mais rigorosa,
+dentro das possibilidades de experimentos de engenharia de software.
+Comparações com outros arcabouços de implantação também poderiam ser realizadas.
+
+\item[Algoritmos adaptativos para tratamento de falhas.] 
+Acreditamos que os algoritmos do EE que tratam falhas de terceiros podem ser melhorados.
+Tanto a reserva de nós ociosos quanto o \emph{invoker} são adequados 
+para utilizarem algoritmos adaptativos que aprendem com o histórico de
+execuções. Assim, a reserva de nós ociosos poderia alterar seu tamanho dinamicamente,
+evitando desperdícios de VMs extras. Da mesma forma, o \emph{invoker}
+poderia utilizar valores de \emph{timeout} mais adequados, evitando longas
+esperas desnecessárias ou desistindo de tarefas que logo estariam prontas.
+Um desafio interessante para a adaptação dinâmica do \emph{invoker} é
+considerar a alteração dinâmica de suas três propriedades:
+\emph{timeout}, quantidade de tentativas e tempo de pausa entre as tentativas.
+
+\item[Federação de instâncias do EE.] Uma instância do EE realiza a implantação
+de serviços pertencentes a uma dada organização. Se algum dos serviços implantados
+depende de um serviço pertencente a outra organização, o implantador
+pode modelar esse serviço de terceiros como um \emph{serviço legado}
+na modelagem da composição. O problema é que mudanças nos serviços de
+terceiros, como mudança de URI, podem causar impactos na composição implantada.
+Além disso, se serviços interdependentes de diferentes organizações são implantados em paralelo,
+torna-se difícil utilizar o recurso de \emph{serviço legado},
+uma vez que o implantador de uma organização ainda não dispõe das URIs 
+dos serviços sendo implantados pela outra organização.
+Para tornar a implantação de composições inter-organizacionais mais dinâmica,
+um caminho promissor é a federação de instâncias do EE.
+Assim, uma instância pertencente a uma organização $A$ pode avisar a
+uma outra instância pertencente a uma organização $B$ sobre mudanças 
+nas coreografias de $A$ que possam impactar as coreografias pertencentes a $B$.
+
+\item[Utilização de um balanceador de carga.] Na atual implementação do EE,
+quando um serviço é replicado em várias instâncias, seus clientes
+recebem as URIs de todas as instâncias disponíveis do serviço.
+Assim, cabe a cada cliente distribuir a carga pelas diferentes réplicas disponíveis.
+No entanto, melhor seria que o EE implantasse um balanceador de carga 
+que distribuísse as requisições entre as diferentes instâncias do serviço.
+Assim, os clientes receberiam apenas uma URI, que seria a URI
+do balanceador de carga.
+
+\item[Utilização de um barramento de serviços.] Caso um serviço dependa
+de outro serviço com um protocolo de comunicação diferente, o EE assume que é de
+responsabilidade do serviço cliente conhecer o protocolo do serviço provedor.
+Contudo, para facilitar a implementação dos serviços, a conversão entre
+diferentes protocolos de comunicação poderia ser tratada por um barramento de serviços.
+Assim, uma possibilidade seria de que o EE implantasse automaticamente instâncias
+de um barramento de serviços para interligar serviços de protocolos diferentes.
+No entanto, para essa tarefa é necessário a utilização de um barramento de serviços
+que considere a natureza dinâmica de ambientes de computação em nuvem,
+onde serviços são replicados e passam a possuir múltiplas URIs.
+
+\item[Atualização dinâmica de composições de serviços.] Na atual implementação do EE,
+a atualização de coreografias pode ocasionar falhas em transações correntes,
+o que ocorre mesmo com serviços sem estado.
+Vários trabalhos \cite{Kramer1990Philosophers, Vandewoude2007Tranquility, Xiaoxing2011VersionConsistent} 
+estudam o processo de atualização dinâmica, pelo qual as transações correntes 
+são preservadas durante a atualização de um serviço. 
+Acreditamos que seria muito interessante possibilitar ao administrador do EE
+a definição de políticas e algoritmos de atualização para 
+tratar da adequada finalização das transações correntes.
+Dessa forma, o EE poderia se tornar uma plataforma de apoio
+à comparação empírica entre diferentes estratégias presentes na literatura.
+
+\end{description}
+
+Outras pendências menores estão registradas na página de \emph{issues} 
+do \ee\footnote{\url{https://github.com/choreos/enactment_engine/issues?state=open}}.
+Colaborações técnicas e de pesquisa sobre as possibilidades levantadas
+são bem vindas.
+
+
+\section{Palavras finais}
+
+Composições de serviços se mostram promissoras
+em possibilitar a integração de sistemas de grande escala.
+Tomando um exemplo governamental em que fosse necessário
+uma interação entre governo federal e todos os municípios do Brasil,
+já teríamos um cenário de potencial utilização de composições
+de serviços de grande escala, em que os serviços participantes
+pertencem a organizações diferentes.
+
+Em sistemas de grande escala, as incertezas iniciais são maiores do que
+em pequenos projetos. Portanto, nesse contexto a aplicação de abordagens iterativas se torna
+mais promissora do que grandes planos inicias altamente detalhados. 
+No entanto, implantar sistemas distribuídos de grande escala é tarefa difícil,
+sendo a automação do processo de implantação condição fundamental
+para a capacidade de entrega contínua.
+Na intenção de repetir continuamente o processo de implantação,
+a computação em nuvem surge como poderosa aliada.
+A automação da criação e remoção de nós virtualizados facilita que o
+processo de implantação seja executado continuamente. 
+
+No futuro, esperamos uma maior integração entre as organizações 
+de forma automatizada e em grande escala.
+Para que isso funcione, a capacidade de implantação contínua
+dessas composições será importante para que esses sistemas
+possam evoluir adequadamente.
+Esperamos que as ideias apresentadas nesta dissertação
+possam ser de auxílio a implementadores e implantadores
+de tais integrações de grande escala.
+Acreditamos também que o \ee desenvolvido no contexto desta dissertação
+possa apoiar outras pesquisas sobre composições de serviços, 
+pesquisas essas que também podem auxiliar
+na viabilização do cenário futuro de alta integração entre as organizações. 
+
+

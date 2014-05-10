@@ -1,0 +1,160 @@
+
+\chapter{Trabalhos relacionados}
+\label{cap:relacionados}
+
+Neste capítulo, apresentamos os trabalhos relacionados à implantação automatizada,
+incluindo algumas ferramentas utilizadas por profissionais da indústria.
+
+Ao utilizar ferramentas de \emph{gerência de configuração} como Chef\footnote{\url{http://www.opscode.com/chef}}, Capistrano\footnote{\url{https://github.com/capistrano}} e Nix~\cite{Dolstra2005Configuration}, os usuários devem escrever \scripts que realizem a configuração do ambiente (sistema operacional e middleware) e a implantação do serviço. No caso do Chef, um \script (também chamado de \emph{receita}) configura a máquina na qual o serviço é implantado, enquanto que o Capistrano possibilita a coordenação da implantação de serviços em diferentes nós. Com as expressões do Nix, é possível também unificar a especificação da implantação com o \textit{build} da aplicação em um único \script, possibilitando a edição parametrizada de arquivos de configuração da aplicação em função do local de implantação. 
+
+A abordagem procedimental, com \scripts, fornece uma grande 
+flexibilidade para especificar a implantação de sistemas, 
+mas normalmente requer especialização de seus usuários, 
+pois todos os detalhes do processo devem ser especificados. 
+Wettinger et al.~\cite{Wettinger2013ExtensiblePaaS} 
+afirmam que ferramentas como Chef são usadas
+para a criação de planos de implantação específicos para cada aplicação,
+promovendo pouca reusabilidade.
+Esses \scripts de implantação também deveriam ser desenvolvidos 
+com o mesmo rigor do código da aplicação, inclusive com o uso 
+de testes automatizados~\cite{Humble2011Continuous}. 
+O descumprimento dessa recomendação torna o processo de implantação 
+pouco robusto e até mesmo não confiável. Uma alternativa que evita 
+essa sobrecarga no processo de desenvolvimento é o uso de sistemas 
+especializados na implantação de determinados tipos de aplicações e que recebam, 
+como entrada, uma simples especificação declarativa do sistema a ser implantado.
+
+Um exemplo de abordagem declarativa é o uso de Linguagens de Descrição Arquitetural (ADLs), como a Darwin~\cite{Magee1996Dynamic}. ADLs são uma evolução do conceito de Linguagens de Interconexão de Módulo (MILs)~\cite{DeRemer1976Programming}, que descrevem a interconexão entre módulos de um sistema. A motivação dos autores da MIL era contribuir com novas formas de se produzir software de grande porte, diferenciando essa atividade da programação de pequenos algoritmos. De forma similar, a linguagem Darwin concentra-se nos aspectos estruturais de sistemas distribuídos, descrevendo a conexão entre os módulos do sistema, mas sem descrever implementações ou sequências de interações entre os módulos. Em nosso trabalho, também descrevemos o sistema a ser implantado por meio de sua descrição estrutural, uma vez que é esse o aspecto necessário para que se possa automatizar o processo de implantação. 
+
+Magee e Kramer demonstraram a utilidade prática da linguagem Darwin ao utilizá-la de forma integrada a componentes CORBA~\cite{Magee1997Corba}, padrão de interoperabilidade de sistemas distribuídos dominante no mercado à época. Darwin possui também um ambiente de execução, Regis~\cite{Magee1994Regis}, que realiza a implantação dos sistemas descritos em Darwin. Regis possui duas políticas de distribuição de programas por estações de trabalho. A primeira política é o mapeamento definido pelo usuário de forma estática, abordagem não apropriada para ambientes de computação em nuvem. A segunda opção de política é a alocação automática em função da carga na CPU das estações de trabalho, não havendo flexibilidade para a consideração de outros recursos, como espaço em disco ou memória, por exemplo. Uma similaridade entre Regis e o \ee\ desenvolvido em nossa pesquisa é o uso do middleware para o envio de mensagens contendo referências remotas dos componentes implantados para que eles possam estabelecer ligações dinâmicas entre si.
+
+Olan~\cite{Balter1998Olan} é um ambiente para a descrição, configuração e implantação de aplicações distribuídas em ambientes heterogêneos, e que também utiliza uma ADL própria. Baseando-se na entrada descrita na ADL, Olan gera \scripts de Configuração de Máquina, que definem a execução do processo de implantação dos componentes no ambiente distribuído e o ajuste dos canais de comunicação entre esses componentes. A abordagem de gerar um \script de configuração a partir de uma especificação declarativa é também implementada pelo \ee. A ADL de Olan também possibilita a especificação de restrições sobre a localização da implantação do componente, porém sem flexibilidade para a adoção de estratégias dinâmicas de alocação de nós.
+
+Apesar de os trabalhos sobre Darwin e Olan já falarem sobre software de ``grande porte'', o que se entendia por grande porte já se alterou significativamente desde a época em que esses trabalhos foram feitos. Uma evidência dessa diferente percepção de escala são os exemplos de aplicações fornecidos no artigo sobre Olan, em que se fala sobre componentes muito granulares, como pedaços de interfaces gráficas, e que não consideram possíveis falhas de comunicação que são comuns na Internet. Além disso, os próprios autores do artigo sobre Olan admitem que não se preocuparam com questões de desempenho. 
+Hoje, há novos  desafios e requisitos que precisam ser considerados no desenvolvimento de software 
+de grande escala, inclusive no processo de implantação, conforme visto na Seção~\ref{sec:desafios}.
+
+O trabalho de Akkerman et al.~\cite{Akkerman2005J2EE} concentra-se na implantação distribuída de componentes da plataforma J2EE, oferecendo ligações entre os componentes e suas dependências, especificados por uma ADL, e replicação dos componentes para fins de escalabilidade. No entanto, a solução apresentada para o gerenciamento do processo de implantação baseia-se numa aplicação de interface gráfica, o que dificulta a automação completa do processo. Outros trabalhos, como o de Lan et al.~\cite{Lan2005Architecture}, também tratam o processo de implantação como realizado manualmente por um operador humano, enquanto que nosso objetivo é que o operador inicie o processo de implantação com apenas um comando, conforme defendido por Humble e Farley \cite{Humble2011Continuous}.
+
+O estudo de Quéma et al.~\cite{quema2004hierarchical} é o único encontrado a realizar avaliações empíricas sobre desempenho e escalabilidade do processo de implantação de componentes, além de oferecer tolerância a falhas no processo de implantação. Os autores apresentam uma solução na qual agentes executam de forma distribuída o processo de implantação, comunicando-se de forma assíncrona e hierárquica conforme a estrutura da composição de componentes sendo implantada, que é descrita por uma ADL. Os agentes também possuem propriedades transacionais que garantem a tolerância a falhas do processo de implantação, mas isso não é avaliado no texto. 
+Os autores avaliam o desempenho e escalabilidade do processo de implantação variando a quantidade de componentes, a topologia da composição de componentes e a quantidade de máquinas. O resultado é um crescimento linear no tempo de implantação quando se aumenta na mesma proporção o número de máquinas disponíveis. Os autores explicam que há uma sobrecarga na manutenção das sessões de comunicação entre os agentes, o que impede que o número de agentes seja muito grande. 
+
+A principal limitação do trabalho de Quéma et al. é a restrição de que a composição de componentes deve se organizar em uma estrutura hierárquica. Essa estrutura hierárquica, no entanto, é apenas um caso particular das possibilidades na topologia de uma coreografia de serviços, sendo que nossa solução, o CHOReOS \ee, não impõe essa restrição. Além disso, o ambiente utilizado para a implantação no trabalho de Quéma et al. é um aglomerado, enquanto que nosso estudo é realizado em ambientes de nuvem.
+
+Os trabalhos anteriores apresentam abordagens simples para o problema da distribuição dos componentes implantados pelas máquinas disponíveis. Já o trabalho de Watson et al., apresenta uma abordagem mais completa para esse problema com o uso de grades computacionais~\cite{Watson2006Dynasoar}. O foco dessa solução está em escolher dinamicamente o provedor de infraestrutura e a máquina em que um serviço web deve ser implantado considerando os requisitos não-funcionais do serviço web. Isso é realizado não somente para a primeira implantação do serviço web, mas também para as replicações que ocorrem quando as instâncias existentes não conseguem mais atender aos requisitos não-funcionais. Uma desvantagem dessa abordagem é a carga adicional gerada pela análise dos requisitos não-funcionais a cada troca de mensagens efetuada pelos serviços implantados. Embora Watson et al. avaliem o desempenho de serviços operando com o sistema proposto, não avaliam o desempenho ou escalabilidade do próprio processo de implantação.
+
+Outro trabalho sobre implantação de componentes em um ambiente de grade é o de Lacour et al.~\cite{Lacour2004Corba}, no qual a escolha do nó de implantação é feita dinamicamente de acordo com alguns requisitos do componente. Uma desvantagem desse trabalho é o desenvolvimento específico para componentes CORBA, além de não haver preocupação com falhas no sistema distribuído.
+
+Embora os trabalhos de Watson et al. e Lacour et al. avancem na problemática da distribuição dos serviços, nenhum dos trabalhos analisados considera as potencialidades e desafios dos ambientes de computação em nuvem~\cite{Amazon2012Practices}, que oferecem serviços de infraestrutura para a gerência de recursos virtualizados. Portanto, em nossa pesquisa, procuramos dar um passo além ao explorar como o ambiente de computação em nuvem pode trazer benefícios ao processo de implantação, bem como ao considerar as restrições que esses ambientes impõem, como a falta de previsibilidade dos endereços das máquinas em tempo de configuração do serviço e as falhas da própria plataforma de nuvem.
+
+Uma tendência recente para se atingir os objetivos de uma implantação simples, rápida, automatizada e escalável é a utilização de serviços de computação em nuvem que oferecem Plataforma como um Serviço (PaaS), que se encarregam não só da implantação da aplicação, como também do processo de criação e configuração do ambiente. O Cloud Foundry\footnote{\url{http://www.cloudfoundry.com/}} é um PaaS de código aberto, podendo ser instalado na infraestrutura de uma organização para a oferta de serviços a clientes internos ou externos. O Cloud Foundry oferece suporte a uma grande diversidade de linguagens, arcabouços e bancos de dados a serem utilizados pela aplicação. Operadores do Cloud Foundry podem configurá-lo para utilizar diferentes provedores de Infraestrutura como um Serviço (IaaS), desacoplando as escolhas de IaaS e PaaS, o que é também adotado no \ee. 
+
+O Cloud Foundry tem como objetivo facilitar a implantação de aplicações web, e não a implantação de composições de serviços. Durante a implantação de uma aplicação pelo Cloud Foundry, o operador pode realizar ligações entre a aplicação e serviços tipicamente utilizados por aplicações web, como bancos de dados, que serão criados e configurados pela própria plataforma. Essa escolha deve ser feita dentro de um conjunto fechado de serviços oferecidos (MySQL, MongoDB, etc.). No entanto, ao implantar-se composições de serviços é preciso estabelecer também ligações entre os próprios serviços sendo implantados, cenário não considerado pelos atuais provedores de PaaS.
+
+TOSCA (\emph{Topology and Orchestration Specification for Cloud Applications})
+é um padrão OASIS que utiliza a abordagem guiada por modelos para
+o gerenciamento de recursos e serviços na nuvem~\cite{Wettinger2013Tosca}.
+Ao utilizar o TOSCA, seu usuário define um ``modelo de serviço'' (\emph{service template})
+para especificar, em alto nível, como os serviços são implantados e conectados a outros serviços.
+Contudo, artefatos de implementação ainda são necessários
+para implementar as operação definidas nos modelos.
+A ênfase dada nos trabalhos sobre o TOSCA é na portabilidade
+para que a implantação de um serviço possa utilizar diferentes
+componentes de middleware~\cite{Wettinger2013ExtensiblePaaS} 
+ou diferentes gerenciadores de configuração~\cite{Wettinger2013Tosca}.
+Essa abordagem torna o TOSCA um sistema altamente flexível e portável,
+mas obriga o desenvolvedor a definir os
+artefatos de implementação e a descrever como eles se
+relacionam às operações definidas no modelo.
+Com o CHOReOS \ee, o ambiente de execução e a gerência de configuração são
+abstraídos de forma que os usuários não precisam se preocupar
+com os componentes de middleware utilizados para executar os serviços,
+e nem sequer precisam saber que o Chef é o gerenciador de configuração
+utilizado pelo EE.
+
+Juju\footnote{\url{https://juju.ubuntu.com/}} é uma ferramenta 
+de configuração e implantação de serviços criada pela empresa Canonical.
+Os conceitos utilizados no Juju se assemelham muito ao TOSCA.
+``\emph{Charms}'' encapsulam as configurações da aplicação,
+definem como serviços são implantados, como serviços
+são conectados uns aos outros e como eles escalam.
+A cada operação definida para um serviço na \emph{charm}
+também deve ser associado um artefato que implemente a operação,
+normalmente um \emph{shell script}.
+Uma das limitações apontadas para o Juju é o fato
+de a ferramenta e suas \emph{charms} serem altamente acopladas ao
+sistema operacional Ubuntu.
+Embora a versão atual do nosso CHOReOS \ee também utilize o Ubuntu
+como sistema operacional dos nós alvos,
+a utilização do Chef como gerenciador de configuração
+facilita a eventual utilização de outros sistemas operacionais,
+uma vez que as receitas Chef abstraem as peculiaridades
+do sistema operacional utilizado.
+
+Um arcabouço voltado especificamente para a implantação e encenação
+de coreografias é o Open Knowledge~\cite{Besana2008OpenKnowledge,Siebes2007OK}.
+Nesse arcabouço, o projetista da coreografia define o fluxo global
+de troca de mensagens entre os serviços em uma notação formal
+(\emph{Lightweight Coordination Calculus}).
+A partir dessa descrição, o arcabouço gera \emph{coordenadores}
+para cada participante, decentralizando a lógica de coordenação.
+Assim, o desenvolvedor do serviço implementa apenas a lógica de negócio,
+uma vez que a lógica de coordenação está desacoplada da implementação do serviço.
+O arcabouço Open Knowledge possui uma ênfase no problema
+da descoberta dinâmica de pares que satisfaçam os requisitos
+da interação projetada. Uma desvantagem, porém,
+é o forte acoplamento necessário na implementação dos serviços participantes
+ao arcabouço para que a lógica de coordenação possa ser fornecida ao serviço.
+Uma consequência desse forte acoplamento é que os serviços que
+utilizam o Open Knowledge devem necessariamente ser escritos em Java.
+Outra limitação, do ponto de vista da automação do processo de implantação,
+é que a infraestrutura do Open Knowledge deve já estar disponível nos nos alvos
+antes da implantação dos serviços, pois a implantação é realizada nessa infraestrutura.
+
+A Tabela~\ref{tab:relacionados} realiza uma comparação entre os estudos e ferramentas apresentados nesta seção em relação a características presentes em nossa solução, o \ee. 
+As características, que formam as colunas da tabela, são as seguintes:
+
+\begin{description}
+\item [ADL:] especificação da implantação feita de forma declarativa por meio de alguma linguagem de descrição arquitetural;
+\item [Escala:] implantação escalável e capaz de lidar com os problemas típicos de sistemas de grande escala, principalmente com a falha de componentes de terceiros;
+\item [Composições:] solução voltada para a implantação de composições de serviços, ou de componentes; a principal diferenciação desse item se refere ao enlace entre os serviços implantados;
+\item [Nuvem:] consideração das potencialidades e desafios trazidos por ambientes de computação em nuvem.
+\item [Heterogeneidade:] a solução possibilita a implantação de serviços desenvolvidos com diferentes tecnologias e que utilizem diferentes protocolos de interoperabilidade.
+\end{description}
+
+Os símbolos na tabela possuem os seguintes significados: 
+
+\begin{description}
+\item [\checkmark{}]: possui a característica, 
+\item [x]: não possui a característica, 
+\item [-]: a característica não se aplica e 
+\item [?]: não foi possível determinar. 
+\end{description}
+
+\begin{table}[!t]
+\begin{center}
+    \begin{tabular}{l c c c c c c}
+	 \hline
+	 \itshape{Trabalho} & \itshape{ADL} & \itshape{Escala} & \itshape{Composições} & \itshape{Nuvem} & \itshape{Heterog.} \\ \hline
+    Chef & x  & - & - & - & - \\
+    Capistrano & x  & - & - & - & - \\
+    Nix \cite{Dolstra2005Configuration} & x  & x & \checkmark & x  & - \\
+    Darwin/Regis \cite{Magee1994Regis} & \checkmark  & x & \checkmark & x & x \\
+    Olan \cite{Balter1998Olan} & \checkmark & x & \checkmark & x & x  \\
+    \cite{quema2004hierarchical} & \checkmark & \checkmark & \checkmark & x & x \\
+    \cite{Akkerman2005J2EE} & \checkmark & x & \checkmark & x & x \\
+    \cite{Lacour2004Corba} & \checkmark & x & \checkmark & x & x \\
+    Dynasoar \cite{Watson2006Dynasoar} & - & x & x & x & ? \\
+    Open Knowledge \cite{Besana2008OpenKnowledge} & \checkmark & x & \checkmark & x & x \\
+    TOSCA \cite{Wettinger2013Tosca} & \checkmark & x & \checkmark & \checkmark & \checkmark \\
+	Juju & - & x & x & \checkmark & \checkmark \\
+    Cloud Foundry & - & ? & x & \checkmark & \checkmark \\
+    \ee   & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \end{tabular}
+  \caption{Tabela comparativa com os trabalhos relacionados.}
+   \label{tab:relacionados}
+\end{center}
+\end{table}
+
+
+

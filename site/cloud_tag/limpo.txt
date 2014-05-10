@@ -1,0 +1,2422 @@
+Guia do Usuário do ee
+ape:user_guide
+
+O Guia do Usuário do Enactment Engine contido neste apêndice
+é um documento independente desta dissertação,
+voltado aos interessados em utilizar o EE.
+Ele está aqui presente para fornecer aos leitores
+da dissertação um melhor entendimento sobre
+o Enactment Engine.
+A versão aqui contida é a mais recente em março de 2014,
+mas uma possível versão mais atualizada do guia pode ser encontrada em
+http://ccsl.ime.usp.br/enactmentengine.
+
+O guia possui os seguintes capítulos:
+
+enumerate
+Installation Guide
+Enactment Engine API
+How to package services to be deployed by the Enactment Engine
+Extending Enactment Engine
+Elasticity and QoS management
+enumerate
+
+
+Avaliação
+cap:avaliacao
+
+Neste capítulo, apresentamos experimentos realizados com o Enactment Engine com objetivo de avaliar
+seu uso, contrastando com soluções ad-hoc de implantação automatizada.
+Também avaliamos seu desempenho e escalabilidade para verificar a viabilidade de seu uso
+no contexto de composições de serviços de grande escala.
+
+Implantando coreografias com e sem o EE
+sec:avaliacao_eng_sw
+
+Nesta seção, nós avaliamos como o ee melhora o processo de implantação
+pelo fato de ser uma solução baseada em middleware.
+Para essa avaliação, desenvolvemos uma solução ad-hoc
+para a implantação de uma coreografia particular.
+A ``coreografia do aeroporto'' é um exemplo fornecido por especialistas
+no domínio aeroportuário Choreos2012D6.2 e que contém 15 serviços.
+Também implantamos a mesma coreografia utilizando o EE.
+Ambas as soluções estão disponíveis em https://github.com/choreos/airport_enactment.
+
+Para implantar a coreografia do aeroporto com o EE, escrevemos
+a especificação da coreografia e o programa cliente para invocar o EE,
+disparando assim a implantação.
+A especificação da coreografia foi escrita com objetos Java em 40 minutos,
+contendo 162 linhas de código (LoC), uma média de 11 linhas por serviço.
+O autor dessa especificação foi um aluno de doutorado, já acostumado ao conceito
+de coreografias de serviços web, e que contribuiu com o código do EE.
+O programa cliente, a classe AirportEnact, utiliza a API Java do EE,
+tem apenas 22 linhas de código, e foi escrito pelo autor desta dissertação
+em menos de 5 minutos.
+Depois que essas classes foram escritas, a implantação da coreografia em
+três nós, utilizando o EE, levou apenas 4 minutos.
+
+Para desenvolver a solução ad-hoc foi necessário aproximadamente
+9 horas de desenvolvimento de um programador (o autor desta dissertação), e mais 60 minutos
+para o mesmo programador executar a implantação, distribuindo os 15
+serviços por três nós alvos.
+Essa solução precisou da escrita de 
+100 LoC de shell scripts, 220 LoC de Java, e 85 LoC de Ruby (para o Chef). 
+
+No restante desta seção, descreveremos o processo de criação e execução
+da solução ad-hoc. Destacaremos as dificuldades no processo
+que o implantador encontra sem o uso do EE.
+
+Implementação da solução ad hoc
+A implantação de cada serviço é executada por uma receita Chef contida em um cookbook.
+Nós escrevemos um cookbook modelo, para implantar pacotes JARs,
+e o usamos para gerar cookbooks para os 15 serviços participantes.
+O processo de criar os 15 cookbooks foi parcialmente automatizado
+pelo generate que escrevemos.
+As URLs dos pacotes dos serviços tiveram que ser manualmente inseridas nos
+generate.
+
+Para implementar o enlace entre serviços,
+desenvolvemos um pequeno mas não trivial programa Java, chamado context_sender. 
+Ele é responsável pela invocação da operação setInvocationallowbreak Address de um dado serviço.
+Implementamos o context_sender como um programa Java para
+aproveitar a API SOAP fornecida pelo ambiente Java SE.
+Também desenvolvemos o bind_services,
+responsável por executar o programa context_sender
+para cada dependência presente na coreografia.
+Uma vez que os IPs dos serviços são conhecidos apenas após a implantação,
+o bind_services é na verdade um modelo com lacunas
+que devem ser manualmente preenchidas com os IPs dos serviços implantados.
+
+A execução da solução ad-hoc possui vários passos,
+inclusive alguns manuais.
+Para cada nó alvo, o implantador deve se conectar ao nó (via SSH),
+instalar o git, baixar os install_chef 
+para instalar o Chef, editar alguns arquivos de configuração para definir
+quais serviços serão implantados no nó, e executar o Chef-Solo.
+Após implantar os serviços, o implantador deve editar o script
+bind_services com os IPs dos serviços implantados
+e, finalmente, executar o bind_services.
+Alguns dos problemas dessa solução ad-hoc são:
+
+
+
+ Três diferentes tecnologias são utilizadas:
+shell script, Java e Chef.
+Conhecimento de linha de comando também foi necessária em alguns passos,
+como utilizar o editor ps para verificar
+o estado dos processos dos serviços implantados.
+Isso sugere que se requer uma ampla gama de habilidades técnicas
+do desenvolvedor de soluções de implantação.
+Algumas dessas habilidades, como utilizar o Chef,
+são notoriamente não-fáceis de aprender.
+O código Java utilizado para realizar a invocação de serviços SOAP
+pode também ser considerado como não-trivial para um programador
+não acostumado com o padrão SOAP.
+
+cookbooks gerados.
+Se algo muda no modelo, é preciso regenerar todos os cookbooks
+e realizar a edição manual também.
+Contudo, as edição manuais mencionadas
+poderiam ser evitadas com um script mais complexo.
+Replicação de código poderia também ter sido evitada com a criação de um
+``LWRP'' (light weight resource provider) do Chef,
+mas isso seria uma tarefa para usuários avançados do Chef.
+
+ Para cada nó alvo, o implantador deve realizar alguns passos manuais
+que são demorados. Alguns deles (executar install_chef, por exemplo)
+poderiam ser evitados com a utilização de ferramentas
+que auxiliam na execução de comandos remotos,
+como o Capistranohttp://www.capistranorb.com/} por exemplo,
+mas isso demandaria mais uma tecnologia a ser aprendida.
+Outros passos manuais, como a edição de arquivos de configuração, 
+são bastante propensos a erros.
+Esquecer-se de vírgulas ou digitar errado o nome de serviços
+são erros bem prováveis de acontecerem.
+
+ Há muita pouca paralelização no processo.
+Com os scripts construídos, o implantador poderia melhorar
+um pouco o paralelismo utilizando ferramentas como o
+Byobuhttp://byobu.co/} 
+para digitar o mesmo comando em várias máquinas.
+Mas isso demandaria mais uma habilidade a ser aprendida pelo implantador,
+além de ser uma forma muito limitada de escalar o processo.
+
+
+
+Nesse exemplo, usamos uma composição de apenas 15 serviços.
+Composições de grande escala aumentariam muito mais a complexidade da
+solução ad-hoc.
+Para se obter uma solução completa com a abordagem ad-hoc,
+um esforço extra de desenvolvimento seria necessário
+para implementar funcionalidades já presentes no EE,
+como o tratamento de falhas de terceiros,
+atualização de coreografias, seleção dinâmica de nós,
+implantação concorrente, etc.
+Além disso, para desenvolver a solução ad-hoc,
+utilizamos códigos que já estavam disponíveis no EE,
+tais como os modelos dos context_sender.
+Implantadores teriam que começar tudo do zero.
+
+Nós reconhecemos que essa avaliação por comparação com uma solução ad-hoc
+tem suas limitações, uma vez que os resultados dependem fortemente das
+habilidades técnicas do implantador.
+Conduzir um experimento rigoroso de engenharia de software com vários
+desenvolvedores assumindo o papel de implantador traria uma evidência melhor.
+Contudo, acreditamos que a avaliação descrita aqui já é o suficiente
+para expandir nosso entendimento sobre o valor agregado por uma solução
+com suporte de middleware, como o ee, uma vez que temos agora uma avaliação preliminar
+do esforço necessário para se implantar composições de serviços.
+
+Análise de desempenho e escalabilidade
+
+Conduzimos experimentos para avaliar o desempenho e escalabilidade do
+Enactment Engine em função de sua capacidade de implantar um número significativo
+de composições em uma plataforma de nuvem utilizada no mercado.
+
+Nossos experimentos utilizam uma carga sintética modelada conforme ilustrado na Figure fig:eval_composition.
+A direção das flechas vão do serviço consumidor para o provedor.
+Embora respostas não sejam representadas por questão de simplicidade,
+elas são sempre enviadas sincronamente.
+Essa topologia foi escolhida porque 1) é um exemplo representativo de processos de negócios
+(potencialmente compostos por ramificações -- chamadas para outros sistemas -- e junções correspondentes)
+e 2) segue um padrão repetitivo que pode ser usado para aumentar suavemente o tamanho da composição,
+para que possamos analisar o desempenho do EE conforme a carga aumenta.
+
+
+h
+  
+  eval_composition.pdf
+  Topologia das composições utilizadas em nossos experimentos.
+  fig:eval_composition
+
+
+
+Inicialmente, conduzimos um experimento
+de desempenho do EE implantando composições nos seguintes cenários:
+1) um pequeno conjunto de pequenas composições;
+2) um pequeno conjunto de composições maiores;
+3) um conjunto maior de pequenas composições;
+4) uma razão maior de serviços por nó.
+A Tabela tab:cases quantifica cada cenário.
+
+h!
+
+Cenários de implantação para o experimento de desempenho.
+tab:cases
+r r r r c hline
+Serviços/Nós \ \hline
+1 &  10 &  10 &  9 & 11 ou 12 \
+2 &  10 & 100 & 90 & 11 ou 12 \
+3 & 100 &  10 & 90 & 11 ou 12 \
+4 &  10 &  10 &  5 &       20 \
+
+
+
+Nesse experimento, a política de alocação de nós foi ``cria nós até um limite, e depois faz rodízio entre eles'',
+na qual a quantidade de nós utilizados é configurada antes de cada execução.
+Se a quantidade de nós não é divisível pelo número de nós,
+alguns nós hospedarão um serviço a mais que outros nós.
+O tamanho da reserva de nós ociosos era 5,
+e o timeout de criação de nós era 300 segundos.
+Utilizamos a Amazon EC2 como provedor de infraestrutura,
+com instâncias do tipo small,
+cada uma com 1.7 GiB of RAM, uma vCPU com processamento
+equivalente a 1.0--1.2 GHz, e executando Ubuntu GNU/Linux 12.04.
+O EE foi executado em uma máquina com 8 GB de RAM,
+com processador Intel Core i7 CPU de 2.7 GHz e GNU/Linux kernel 3.6.7.
+A versão do EE utilizada e os dados coletados estão disponíveis 
+on-linehttp://ccsl.ime.usp.br/enactmentengine}
+para garantir a reprodutibilidades dos resultados.
+
+Cada cenário foi executado 30 vezes e a Tabela tab:results
+apresenta, para cada cenário, o tempo necessário para implantar
+todas as composições mais o tempo para invocá-las, o que é feito
+para certificar que elas foram corretamente implantadas.
+Os valores são médias com intervalo de confiança de 95%.
+A tabela também mostra quantas composições e serviços foram corretamente implantados.
+
+
+
+Resultados do experimento de desempenho.
+tab:results
+ $pm$ }l \hline
+
+Serviços}\
+                 & com sucesso}\
+hline
+1 &  467.9 &  34.8 & 10.0 & 0   & 100.0 & 0   (100%) \\
+2 & 1477.1 & 130.0 &  9.3 & 0.3 & 999.3 & 0.4 (99.9%)\\
+3 & 1455.2 & 159.1 & 98.9 & 0.8 & 998.5 & 1.3 (99.9%)\\
+4 &  585.2 &  38.1 & 10.0 & 0.1 & 100.0 & 0.1 (100%)\\
+
+
+
+Os resultados mostram que o EE escala relativamente bem em termos de serviços sendo implantados.
+Do cenário 1 para os cenários 2 e 3, o número de serviços (Composições * Tamanho) 
+foi multiplicado por 10 (Tabela tab:cases),
+e em ambas as situações o tempo de implantação cresceu aproximadamente apenas 3 vezes
+(Tabela tab:results). 
+Parte da explicação para esse incremento no tempo de implantação
+está na ocorrência de falhas da infraestrutura.
+Quanto maior a quantidade de serviços implantados, 
+maiores são as chances da ocorrência dessas falhas.
+E para cada falha que acontece, uma nova tentativa de execução
+da rotina correspondente é necessária 
+(ver sobre o sec:falhas).
+
+Indo do cenário 1 para o cenário 4, o número de serviços por nó dobrou
+(Tabela tab:results) 
+mostram que o tempo de implantação cresceu aproximadamente 25%. Parte dessa sobrecarga foi causada
+pelo incremente no número de receitas Chef que devem ser executadas (sequencialmente) nos nós.
+
+Nesse experimento, observamos que, graças aos mecanismos de tolerância a falhas do EE,
+a quantidade de falhas na implantação foi baixa: todos os serviços foram corretamente implantados em mais
+de 75% das execuções.
+Por ``falha'' consideramos que um serviço não foi corretamente implantado.
+O cenário 1 não apresentou falhas,
+enquanto que no cenário 4 houve apenas uma falha.
+No cenário 2, a pior situação, foram 3 falhas dentre 1000 serviços.
+No cenário 3, houve uma execução com 20 falhas, mas esse foi um evento excepcional,
+uma vez que a segunda pior situação contou com apenas 3 falhas.
+
+Finalmente, observamos que 80% das execuções não utilizaram a reserva de nós ociosos.
+Quando a reserva foi usada, houve um acesso máximo por execução de 6 nós,
+mas na maioria das vezes o acesso foi de apenas 1 nó.
+Também observamos que o tempo de implantação não foi significativamente afetado
+quando falhas no ambiente de nuvem ocorriam,
+uma vez que novos nós eram imediatamente recuperados da reserva.
+
+
+
+Também conduzimos um segundo experimento para avaliar o desempenho e escalabilidade do ee
+em termos de sua capacidade de implantar grandes composições de serviços.
+Esse experimento foi realizado em 5 cenários, nos quais se variou o tamanho das composições sendo implantadas
+e a quantidade de nós disponíveis no ambiente de nuvem, enquanto manteve-se a razão de 20 serviços implantados por nó.
+Cada cenário foi executado 10 vezes.
+
+A topologia utilizada na composição foi a mesma de antes (Figura fig:eval_composition).
+O EE foi executado em uma máquina virtual (8 GiB de RAM e 4 vCPUs)
+hospedada na infraestrutura de nossa Universidade.
+Os nós alvos criados pelo EE eram instâncias timeout de criação dos nós era de 250 segundos.
+Os tempos médios de implantação, com intervalo de confiança de 95fig:ee_scalability.
+
+Sobre as falhas de implantação,
+as piores execuções de cada cenário tiveram 1, 1, 2, 2, e 4 serviços não implantados corretamente
+dentre, 200, 600, 1000, 1400 e 1800 serviços, respectivamente.
+
+h
+  
+  scalability.pdf
+  Tempos médios de implantação com aumento constante na quantidade de serviços implantados, mantendo-se constante a razão serviços implantados / nós.
+  fig:ee_scalability
+
+
+Esses resultados mostram uma boa escalabilidade em termos de serviços implantados.
+Aumentandoallowbreak -se 9 em vezes o número de serviços implantados, o tempo de implantação aumentou 3,5 vezes.
+Em números absolutos, cada incremento em 400 serviços implantados foi responsável pelo incremento
+de 180 a 460 segundos no tempo de implantação.
+
+
+
+
+Para termos uma melhor ideia do impacto causado pela utilização dos mecanismos 
+de tratamento de falhas do EE, realizamos mais um experimento.
+Nesse experimento realizamos 10 execuções em que 1 coreografia de 100 serviços
+é implantada em 10 nós. Esse procedimento foi realizado com duas variações:
+na primeira variação o invoker e a reserva de nós ociosos estavam ativados,
+enquanto que na segunda variação ambos estavam desativados.
+
+Nesse experimento, a topologia utilizada na composição foi a mesma 
+dos experimentos anteriores (Figura fig:eval_composition).
+O EE foi executado em uma máquina virtual (4 GB de RAM e 2 vCPUs de 2.3 GHz)
+hospedada na infraestrutura de nossa Universidade.
+Os nós alvos criados pelo EE eram instâncias small da Amazon EC2 
+e o timeout de criação dos nós era de 300 segundos.
+
+h
+  
+  error_handling.pdf
+  Comparação da execução do EE com e sem os mecanismos de tratamento de falhas de terceiros.
+  fig:error_handling
+
+
+Os resultados podem ser vistos na Figura fig:error_handling.
+Ao utilizar os mecanismos de tratamento de falhas de terceiros fornecidos pelo EE,
+todos os serviços foram adequadamente implantados em todas as execuções.
+Por outro lado, ao não utilizar esses mecanismos, obtivemos execuções em que nem todos
+os serviços foram corretamente implantados.
+
+Para as execuções realizadas, observamos que
+a quantidade de serviços falhos por execução foram múltiplos de 10
+(10 ou 30 serviços falhos).
+Esse padrão sugere que as falhas observadas
+ocorreram devido à falha na criação de máquinas virtuais,
+uma vez que cada nó deveria hospedar 10 serviços.
+Essa consideração evidencia como a falha de criação de VMs é um
+dos tipos de falhas mais importantes a serem tratados,
+justificando o tratamento especial que demos a esse tipo de falha
+ao criar a reserva de nós ociosos.
+
+
+
+
+
+
+
+
+
+
+Conceitos básicos
+cap:conceitos
+
+Neste capítulo apresentaremos conceitos que fundamentam esta pesquisa.
+Os conceitos apresentados abordam serviços web e suas composições, 
+implantação de sistemas e, por fim, os desafios particulares da implantação
+de sistemas de grande escala.
+
+Serviços web
+sec:servicos
+
+Serviços são entidades autônomas e independentes de plataforma, que podem ser descritas, publicadas, encontradas e compostas Szyperski2003Component define componente como uma unidade de composição, possuindo uma especificação contratual de interface e declaração explícita de suas dependências. 
+
+Uma das utilidades fundamentais de componentes e serviços é proporcionar a ligação entre sistemas heterogêneos.
+Em busca desse objetivo, a OMG liderou esforços para a construção de uma solução para a comunicação de objetos
+codificados em diferentes linguagens e executados em diferentes plataformas Szyperski2002Components.
+Desse esforço nasceu o Common Object Request Broker Architecture (CORBA).
+A especificação CORBA objeto como uma ``entidade encapsulada e identificável que fornece um ou mais serviços que podem ser requisitados por um cliente''. Ainda na especificação CORBA, uma interface é definida como uma ``descrição do conjunto de possíveis operações que um cliente pode requisitar para um objeto por essa interface''. Uma interface de um componente CORBA é concretamente descrita utilizando-se a Interface Description Language (IDL). 
+Além da definição de objetos, há também a definição de componentes CORBA, cujas principais características são 
+a presença de conjuntos de interface providas, interfaces requiridas, eventos emitidos e eventos recebidos Szyperski2002Components.
+
+As características apresentadas dos objetos CORBA têm muito em comum com o conceito de serviços: 
+interfaces bem definidas e acessíveis remotamente.
+Dessa forma, um serviço também pode ser considerado um componente, porém com algumas peculiaridades, 
+como ser acessível pela Internet e expor operações relacionadas a funcionalidades do negócio Hewitt2009JavaSOA.
+
+Como muitos dos trabalhos sobre implantação de componentes são diretamente aplicáveis na implantação de serviços, tratamos os termos ``componente'' e ``serviço'' como sinônimos, assim como Fowler Watson2006Dynasoar. Damos preferência ao termo ``serviço web'' para evitar os significados mais gerais que a palavra ``serviço'' pode assumir. Exceção pode haver ao descrever trabalhos de terceiros que utilizam o termo ``serviço'' com algum significado mais amplo que o de ``serviço web''. 
+
+Um ponto de acesso (W3C2004Addressing. 
+Um ponto de acesso é referenciado por uma URI (Uniform Resource Identifier).
+Uma URI é uma sequência de caracteres que identifica um recurso, sendo que pode também ser chamada de URL (rfc3986.
+Assim como Smith e Murray Smith2010Evolution, em geral também utilizamos a palavra serviço como simplificação para o ponto de acesso do serviço. 
+
+Por questões de desempenho e disponibilidade, um serviço pode ter várias réplicas,
+em execução. Cada réplica possui seu próprio ponto de acesso, mas normalmente um conjunto de réplicas é apresentado
+ao mundo por meio de uma única URI. Essa única URI aponta para um balanceador de carga que conhece
+as URIs de cada uma das réplicas e distribui as requisições entre essas réplicas.
+
+Os padrões mais utilizados atualmente para a implementação e acesso de serviços são Pautasso2008Restful. 
+
+O W3C chama os serviços SOAP como ``serviços web'', fornecendo a seguinte definição: ``serviços web possibilitam a comunicação interoperável entre máquinas pela rede, utilizando padrões abertos para a troca de mensagens e descrição da interface dos serviços CORBA1995. 
+
+Serviços SOAP descrevem suas interfaces com a Web Service Descritption Language (WSDL), interagem entre si pela troca de mensagens SOAP e são publicados e descobertos em repositórios UDDI. Uma interface de um serviço web descrita em WSDL é um arquivo XML com uma estrutura padronizada, o que possibilita a outros sistemas analisarem as possíveis formas de interação com esse serviço. Mensagens SOAP também são estruturadas em XML, sendo normalmente enviadas no corpo de requisições e respostas HTTP. O envelope de uma mensagem SOAP codifica a requisição ou resposta à operação de um serviço web, descrevendo também os tipos de dados e valores envolvidos na operação. 
+
+Além dos padrões mencionados (WSDL, SOAP, UDDI), há vários outros padrões que formam o conjunto chamado de WS-*, que inclui especificações para a realização de transações entre serviços (WS-Transaction Papazoglou2007State, SOA é uma forma de projetar sistemas que forneçam serviços com interfaces publicadas que possam ser descobertas, de modo que funcionalidades da aplicação sejam reutilizáveis como serviços por outras aplicações ou serviços em um ambiente distribuído. 
+
+Serviços REST utilizam como recursos. 
+Recursos são entidades do domínio do negócio que são de interesse dos clientes, e são identificados por URIs. Por exemplo, a URI http://livraria.com/livros/2 identifica o recurso ``livro com ID 2''. 
+As representações dos recursos não estão presas a um formato de troca de mensagens, pois em cada mensagem o formato é descrito por um tipo MIME (p.ex: xml, json, png, txt). Os tipos mais comuns de representação de dados são JSON e XML. A Listagem /livros/2.
+
+frame=trbl, label=lst:json, caption=Representação JSON do recurso /livros/2.
+{
+  "id" : 2,
+  "nome" : "Continuous Delivery",
+  "autores" : "Jez Humble and David Farley",
+  "editora" : "Addison-Wesly",
+  "ano" : "2011"
+}
+lstlisting
+
+As operações REST são definidas em função dos conceitos da interface uniforme, recursos e representações. Assim, um exemplo de operação REST é o cadastro de um novo livro, que é implementada como uma requisição HTTP do tipo POST para a URI http://en.wikipedia.org/wiki/List_of_HTTP_status_codes} que informa o resultado da operação. 
+Informações adicionais também podem ser transmitidas pelos cabeçalhos da resposta HTTP.
+Em nosso exemplo, esperamos o código 201 para indicar o sucesso da criação do novo recurso, além do cabeçalho location contendo a URI desse recurso recém criado.
+Diferentemente de SOAP, em REST não existe a noção de registro de serviços, pois a identificação de recursos por URIs e o uso de hyperlinks nas próprias mensagens REST possibilitam que os serviços necessários para a aplicação sejam encontrados Pautasso2008Restful.
+
+Geralmente serviços REST são considerados mais simples e escaláveis
+que serviços SOAP por utilizarem diretamente o HTTP como protocolo de 
+aplicação Pautasso2008Restful.
+Mais simples pela existência de um grande conjunto de ferramentas e bibliotecas
+que já entendem o HTTP. Mais escaláveis, dentre outros motivos,
+porque o cache de serviços REST são diretamente
+gerenciados pelos servidores web Tong2010CXF.
+
+Por outro lado, serviços que utilizam a tecnologia WS-* ainda são mais propensos a uma série de manipulações automatizadas que se tornam mais difíceis nos serviços REST, como por exemplo a geração automatizada de clientes para uma dada linguagem de programação. Isso se deve principalmente pelo alto nível de padronização da tecnologia WS-* e pela existência de interfaces bem definidas e processáveis por software (WSDL). 
+
+Composições de serviços web
+sec:composicoes
+
+Serviços podem ser compostos para implementar sofisticados processos de negócios BPEL2007.
+
+O modelo de composição de serviços web que possui um coordenador central que coordena o fluxo de controle da composição é denominado Barker2009Choreographing.
+
+Exemplos de linguagens e notações de descrição de coreografias são WSCI BPMN2011. 
+Essa ideia de contrato está presente também nos trabalhos sobre o arcabouço Open Knowledge Besana2008OpenKnowledge,
+no qual serviços compartilham um modelo de interação que deve ser conhecido por todos os participantes da interação.
+Apesar da perspectiva global, como ressalta a especificação do BPMN2, uma coreografia não possui um controle de execução centralizado e participantes não compartilham um espaço de dados global. Dessa forma, um participante conhece o estado de outro participante apenas pela observação de seu comportamento externo, que consiste nas trocas de mensagens efetuadas BPMN2011.
+
+Embora a especificação de uma coreografia represente um modelo global de interação entre participantes,
+não é necessário que a implementação de cada participante tenha conhecimento do fluxo de negócio completo da coreografia,
+basta que ele tenha conhecimento de sua parte nesse fluxo.
+Assim, cada participante da coreografia pode ter o seu comportamento modelado por uma linguagem de orquestração. Dessa forma, uma coreografia pode também ser modelada como um conjunto de orquestrações distribuídas que interagem entre si, de forma que apenas os orquestradores precisam estar cientes de condições impostas pela coreografia Poulin2011Collaboration. 
+
+Um diagrama BPMN2 de coreografia especifica passos na execução da coreografia, que são denominados fig:bpmn1 ilustra os elementos explicados em um exemplo de uma pequena coreografia com apenas dois serviços.
+
+!h
+  
+  bpmn1.pdf 
+  Exemplo de uma pequena coreografia de serviços em notação BPMN2.
+  fig:bpmn1 
+
+
+Serviços podem ser projetados para participarem de uma determinada composição, mas também é possível que uma composição seja projetada para utilizar serviços já existentes. No segundo caso, é necessária a criação de serviços de coordenação (Autili2013Synthesis. 
+
+Em artigos acadêmicos também é comum a modelagem de coreografias com notações mais formais, tais como álgebras de processos Cicirelli2010Dynamically. 
+
+Como uma orquestração é um caso particular de uma coreografia, neste trabalho utilizamos os termos ``coreografia'' e ``composição de serviços'' indistintamente. 
+Além disso, para fins da atividade de implantação, utilizando o middleware por nós desenvolvido,
+não há diferença em implantar uma coreografia ou uma orquestração,
+uma vez que orquestradores ou eventuais coordenadores são implementados como serviços web.
+
+O processo de implantação de sistemas
+sec:implantacao
+
+A ``Especificação de implantação e configuração de aplicações distribuídas baseadas em componentes'' (DEPL DEPL2006) é um padrão da OMG (Object Management Group). 
+A implantação é definida pelo DEPL como um processo, que se inicia após a aquisição de um componente, e vai até o momento em que o componente está em execução, pronto para processar chamadas. 
+Embora o DEPL utilize o conceito de ``componente'', suas definições são aplicáveis e úteis ao contexto de implantação de serviços.
+
+
+Os principais termos definidos no DEPL e utilizados neste trabalho são os seguintes:
+
+description
+Implantador: é a pessoa, ou organização, que é a ``dona'' do componente, e que será responsável pelo processo de implantação. Não é o software que propriamente realiza o processo de implantação.
+Ambiente alvo: a máquina, ou conjunto de máquinas, onde os componentes serão implantados.
+Nó: um recurso computacional onde se implanta um componente, 
+como por exemplo uma máquina virtual; faz parte do ambiente alvo.
+Pacote: artefato executável que contém o código binário do componente.
+É por meio do pacote que um serviço pode ser instalado e executado em um determinado
+sistema operacional. Existem pacotes dependentes de sistema operacional (p.ex: deb, rpm),
+e pacotes independentes de sistema operacional (p.ex: jar, war).
+description
+
+No caso de um processo de implantação automatizado, o implantador
+é o responsável por desenvolver os scripts de implantação.
+Em contrapartida, utilizamos o termo desenvolvedor para se referir ao
+desenvolvedor das composições de serviços web.
+
+Ainda segundo o DEPL, o processo de implantação é composto pelas seguintes fases:
+
+description
+Instalação: o implantador transfere o componente adquirido para sua própria infraestrutura; a instalação está relacionada ao processo de aquisição do componente, e não se trata de mover o componente para o ambiente alvo, no qual será executado. Consideramos, portanto, que essa fase normalmente não se aplica à implantação de serviços, pois normalmente o serviço é implantado pela própria organização que o desenvolveu.
+Configuração: edição de arquivos de configuração para alterar o comportamento do software; 
+o código compilado do componente junto de sua configuração são os insumos para a produção do pacote do componente.
+plano de implantação, que mapeia como os componentes serão distribuídos pelos nós do ambiente alvo.  
+Preparação: procedimentos no ambiente alvo para preparar a execução do componente. Envolve configurações do sistema operacional, instalação de middlewares (p.ex. Tomcat), e a transferência do componente para a máquina onde será executado. 
+enlace entre os componentes de uma composição, para que os componentes conheçam a localização dos componentes dos quais dependem.
+description
+
+Profissionais da acadêmia e da indústria levantam a necessidade de se automatizar o processo de implantação, uma vez que o processo de implantação manual se torna moroso e propenso a erros, principalmente na implantação de sistemas distribuídos Dolstra2005Configuration. 
+Esses problemas fazem da implantação em produção um momento de grande apreensão
+e mais trabalho nas organizações Humble2011Continuous.
+A solução para esses sintomas, segundo esses autores, é a automação do processo de implantação.
+Em um processo de implantação automatizado tudo o que for possível é executado de forma automatizada,
+geralmente por meio de scripts. O objetivo de um processo de implantação automatizado
+é proporcionar um processo de implantação Humble2011Continuous.
+
+Todo o processo que vai desde o commit do código-fonte até a implantação em produção
+chamaremos de processo de lançamento de uma determinada versão do sistema.
+Esse processo de lançamento pode ser automatizado por um 
+``Humble2011Continuous,
+no qual o sistema passa por uma sequência de etapas,
+sendo que em cada etapa um aspecto do sistema é testado.
+A cada etapa, mais confiança se tem sobre o candidato a lançamento.
+Vencidas todas as etapas, o sistema pode ser implantado no ambiente de produção,
+ou em alguns casos em um ambiente de homologação.
+Cada etapa do pipeline de implantação pode precisar de uma nova implantação do sistema.
+Um exemplo básico de pipeline de implantação pode ser visto na Figura fig:pipeline_implantacao.
+
+!h
+  
+  pipeline_implantacao.pdf 
+  Exemplo básico de pipeline de implantação.
+  fig:pipeline_implantacao 
+
+
+
+A automação discutida nos trabalhos de Humble afeta principalmente as fases de preparação e inicialização do modelo de implantação do DEPL. A automação dessas fases normalmente é realizada com a escrita de scripts, com ou sem ferramentas específicas. Mas há também muitos trabalhos acadêmicos sobre a fase de planejamento, envolvendo a escolha automática da máquina alvo de um componente baseado em seus requisitos não-funcionais. Por fim, não discutimos a automação da fase de configuração, por considerar que os pacotes fornecidos ao processo de implantação já estão configurados. Exemplo de configuração são credenciais de acesso ao banco de dados.
+
+Um processo de implantação pode ser automatizado de várias maneiras.
+Pode-se utilizar linguagens de script de propósito geral (Python, shell script),
+ferramentas gerais voltados para o processo de implantação (p.ex: 
+Chefhttps://github.com/capistrano/capistrano})
+ou sistemas de middleware especializados em determinados tipos de artefatos implantáveis,
+entre os quais se enquadram as soluções de Plataforma como um Serviço,
+sobre as quais discutimos na Seção sec:cloud.
+Humble e Farley recomendam a utilização de sistemas especializados, preterindo 
+a utilização de linguagens de scripts de propósito geral.
+
+Um processo de implantação automatizado depende bastante da
+integração de diferentes papéis em uma organização, principalmente da integração entre desenvolvedores
+e operadores, uma vez que o desenvolvimento dos scripts de implantação requer
+habilidades de ambos os perfis.
+Essa percepção levou à criação do conceito de uma cultura 
+denominada DevOps Humble2011DevOps, na qual equipes inter-funcionais
+viabilizam a implantação automatizada.
+
+A discussão a seguir sobre as vantagens do processo de implantação automatizado
+são baseadas no livro ``Humble2011Continuous.
+
+Muitos problemas na implantação manual se dão por causa de documentação incompleta,
+contendo pressupostos não compartilhados por todo o time responsável por um produto ou serviço.
+Dessa forma, é comum que a organização se torne dependente de uma única
+pessoa para realizar a tarefa de implantação.
+Por outro lado, um script de implantação é uma documentação completa e precisa de todos os passos
+do processo. Caso um script fique desatualizado, o impacto será imediato, pois
+não será possível implantar o sistema. Dessa forma, na prática,
+dificilmente tais scripts estarão desatualizados,
+diferentemente do que ocorre com a documentação convencional.
+
+A facilidade de se implantar o sistema com um simples comando
+leva a sua utilização contínua por diferentes atores.
+O time de desenvolvimento, por exemplo, estará constantemente utilizando esse script 
+para realizar testes de integração e aceitação. 
+Essa execução contínua do processo de implantação nos testes trará os seguintes benefícios:
+
+
+ Os testes se tornam mais confiáveis por serem executados em um ambiente garantidamente similar ao ambiente de produção.
+ A quantidade de execuções de testes de integração e aceitação será maior, o que auxilia na garantia de qualidade do sistema.
+ A implantação em produção se torna mais confiável, 
+pois o sistema já terá sido implantado várias vezes
+antes de chegar à produção.
+ Em particular, espera-se que defeitos no script de implantação já tenham sido detectados e corrigidos antes de ser aplicado em produção.
+
+
+A utilização da implantação automatizada na execução de testes também
+facilita a execução concorrente de múltiplos testes em ambientes isolados.
+Isso, por sua vez, contribui para o aumento da bateria de testes, fazendo com que
+a cobertura dos testes aumente e, por fim, a própria qualidade do sistema testado também melhore.
+
+Com a implantação manual, normalmente o sistema é executado no ambiente
+de produção ou homologação apenas nas fases finais do desenvolvimento.
+Nesse estágio, grandes mudanças arquiteturais podem ser economicamente inviáveis.
+Por outro lado, a implantação automatizada favorece a prática da implantação contínua desde as versões
+embrionárias do sistema. 
+Isso ajuda a garantir desde o início que as decisões arquiteturais são adequadas.
+Também evita a necessidade de
+alterações emergenciais para adequar o sistema ao ambiente de produção.
+
+A implantação contínua e confiável do sistema é determinante no apoio ao lançamento
+contínuo de novas versões. Isso é importante para que se consiga o feedback do cliente
+o quanto antes sobre as últimas alterações no sistema.
+Esse feedback é importante tanto do ponto de vista técnico para o aprimoramento do sistema,
+quanto do ponto de vista de negócio, pois pode redefinir os objetivos do sistema.
+O encurtamento do tempo entre desenvolvimento e feedback do cliente
+é uma prática pregada pelo movimento Ries2011Lean.
+
+Na próxima seção falamos sobre a computação em nuvem,
+um conjunto de modernas tecnologias
+com grande impacto sobre a implantação de sistemas.
+
+Computação em nuvem
+sec:cloud
+
+O Instituto Nacional de Padrões e Tecnologias dos Estados Unidos (NIST) define computação em nuvem como um ``modelo para possibilitar acesso ubíquo, conveniente e sob demanda pela rede a um conjunto compartilhado de recursos computacionais (p.ex. redes, servidores, discos, aplicações e serviços) que possam ser rapidamente provisionados e liberados com o mínimo de esforço gerencial ou interação com o provedor do serviço'' Nist2011Cloud. 
+
+Zhang et al. Zhang2010Cloud destacam as seguintes características da computação em nuvem: i) separação de responsabilidades entre o dono da infraestrutura de nuvem e o dono do serviço implantado na nuvem; ii) compartilhamento de recursos (serviços de diferentes organizações hospedados na mesma máquina, por exemplo); iii) geodistribuição e acesso aos recursos pela Internet; iv) orientação a serviço como modelo de negócio; v) provisionamento dinâmico de recursos; vi) cobrança baseada no uso de recursos, de forma análoga à conta de eletricidade.
+
+Os serviços de computação em nuvem podem ser oferecidos a clientes internos ou externos à organização administradora da plataforma de nuvem. Uma nuvem é considerada pública quando os clientes são externos, como no caso da nuvem da Amazon; ou é considerada privada quando os clientes são internos,  situação na qual a organização pode utilizar ambientes baseados em um middleware como o OpenStack Zhang2010Cloud.
+
+À computação em nuvem são atribuídos os seguintes modelos de negócio Nist2011Cloud: Infraestrutura como um Serviço (IaaS), Plataforma como um Serviço (PaaS) e Software como um Serviço (SaaS). 
+
+O modelo de Infraestrutura como Serviço (IaaS) fornece acesso aos recursos virtualizados, como máquinas virtuais, de forma programática. Um dos principais fornecedores de IaaS na época da escrita deste texto é a Amazon, com os serviços Amazon Web Services (AWS). Dentre os vários serviços fornecidos pela plataforma, destaca-se o EC2, que possibilita a criação e gerenciamento de máquinas virtuais na nuvem da Amazon. Na utilização de IaaS, uma das considerações chaves é ``tratar hospedeiros como efêmeros e dinâmicos'' Amazon2012Practices. Conforme a demanda da aplicação cresce ou diminui, máquinas podem ser dinamicamente acrescentadas ou removidas desses grupos de replicação, o que proporciona escalabilidade horizontal à aplicação. Naturalmente, essa replicação depende de um prévio preparo da aplicação para esse cenário, pois se deve levar em conta a distribuição, replicação e particionamento dos dados. 
+
+O uso de recursos virtualizados, proporcionado pelo modelo IaaS,
+potencializa a automação do processo de implantação Humble2011Continuous.
+Novos ambientes são criados dinamicamente, em poucos minutos,
+com a configuração de um sistema operacional recém instalado em uma máquina.
+Isso traz as seguintes vantagens para o processo de implantação:
+
+
+ Evita-se a burocracia e custos necessários para o provisionamento de novo hardware.
+ A implantação se torna facilmente reprodutível no mesmo ambiente, não é preciso reinstalar o sistema operacional ou limpar as configurações do sistema para se obter uma nova implantação do serviço.
+ Se executados em diferentes máquinas virtuais, dois serviços podem dividir um mesmo servidor físico sem que a implantação e execução de um serviço afete a execução do outro serviço anteriormente implantado.
+
+
+Na utilização de serviços IaaS para a implantação de serviços há duas abordagens possíveis:
+1) a máquina virtual deve ser criada com base em uma 
+imagemImagens} são sistemas de arquivo somente-leitura contendo um sistema operacional, aplicações e dados a serem instanciados em uma ou mais máquinas virtuais. 
+que já contenha
+o serviço implantado, ou 2) deve ser criada com base em uma imagem contendo apenas um
+sistema operacional recém instalado, de forma que a implantação do serviço seja feita
+por scripts. O modelo de imagem pronta proporciona implantações mais rápidas,
+porém a segunda abordagem é mais flexível, pois para implantar uma nova versão do sistema
+evita-se a publicação de uma nova imagem, o que é um processo demorado,
+já que imagens são arquivos com vários gigabytes.
+Um compromisso entre as duas abordagens também é possível:
+se todos os serviços implantados são WARs, por exemplo, então a imagem base
+pode conter não só o sistema operacional, mas também o ambiente de execução
+dos serviços, o Tomcat no caso.
+
+No modelo de Plataforma como Serviço (PaaS), os desenvolvedores da aplicação não precisam preocupar-se diretamente com a gerência dos recursos virtualizados ou com a configuração dos ambientes nos quais a aplicação será implantada, concentrando-se no desenvolvimento do código da aplicação.
+Um exemplo típico de PaaS é o Google App Enginehttps://developers.google.com/appengine/}, que oferece implantação transparente a projetos em Python, Java ou Go. O App Engine também oferece escalabilidade automática de modo mais simples que os serviços de IaaS, uma vez que a configuração prévia e as alterações na infraestrutura ocorrem de modo totalmente transparente ao desenvolvedor da aplicação. Uma desvantagem presente nos serviços PaaS são as restrições de linguagens, bibliotecas e ambientes impostas aos desenvolvedores da aplicação.
+
+Um exemplo de SaaS é o Google Docs ou qualquer outro aplicativo online que seja diretamente utilizado pelo usuário final. Uma das aplicações desse tipo é o armazenamento de dados na nuvem, como fornecido pelo Dropboxhttp://dropbox.com/}. Uma confusão comum é definir o conceito de nuvem como se fosse estritamente ligado a esse tipo de serviço de armazenamento de dados.
+
+Com as vantagens aqui apresentadas, é cada vez mais comum o uso dos recursos de nuvem por empresas que desenvolvem software, pois assim seus esforços concentram-se no desenvolvimento do produto, aliviando as preocupações com infraestrutura. A computação em nuvem também possibilita que organizações evitem grandes investimentos antecipados em infraestrutura, pois os recursos virtualizados são dinamicamente acrescentados conforme a carga da aplicação requeira. Pode-se então considerar o uso da nuvem uma realidade do mercado de software atual. Dessa forma, é natural esperar que a implantação de composições de serviços também se dê no ambiente de computação em nuvem, que é a abordagem deste trabalho. 
+
+Desafios na implantação de sistemas de grande escala
+sec:desafios
+
+Na visão proposta pelo Instituto de Engenharia de Software da Universidade Carnegie Mellon, sistemas de ultra grande escala são ultra grandes em relação a todas as dimensões possíveis: linhas de código, pessoas, dados, dispositivos, etc. Leemhuis2012Statistics. Com isso, talvez o único sistema da atualidade que se assemelha aos sistemas de escala ultra grande previstos é a Internet. 
+
+Por outro lado, a característica mais importante de um sistema de grande escala não é seu tamanho, mas o fato de ser caracterizado como um ``ecossistema sociotécnico'' CarnegieMellon2006ULS, em que pessoas são parte integrante do sistema, interagindo com diferentes objetivos, de modo decentralizado e independente, porém seguindo restrições impostas. A analogia proposta é de que o desenvolvimento dos atuais sistemas de grande escala equipara-se a construção de prédios, enquanto que o desenvolvimento de sistemas de escala ultra grande equivaleriam a construção de cidades, o que é naturalmente um processo contínuo e decentralizado.
+
+
+A grande escala afeta os processos envolvidos no ciclo de vida dos sistemas.
+Estudando a literatura que aborda e discute desafios, princípios e práticas de
+sistemas de grande escala, identificamos os seguintes desafios que essa nova
+realidade traz ao processo de implantação de sistemas:
+
+description
+
+Processo:
+
+Como já foi discutido neste capítulo, a automação do processo de implantação
+vem se firmando como uma tendência crucial na capacidade
+das equipes de TI entregarem valor o mais continuamente possível,
+evitando as dificuldades e problemas presentes no processo manual de implantação.
+Tais dificuldade e problemas se tornam muito mais complicados em ambientes distribuídos
+e de grande escala. Por isso, nesse caso a automação dos processos se torna
+ainda mais fundamental.
+Hamilton Hamilton2007InternetScale lista uma série de boas práticas acumuladas 
+por anos de experiência no desenvolvimento de serviços de grande escala.
+Dentre elas, Hamilton destaca a automação de todos os processos de operações dos serviços,
+alegando que processos automatizados são mais confiáveis
+por evitar erros humanos na operação dos serviços.
+
+Falhas de terceiros: 
+
+Sistemas distribuídos de grande escala devem esperar e tratar falhas
+de componentes de terceiros Hamilton2007InternetScale,Helland2009Quicksand,CarnegieMellon2006ULS.
+Mesmo se a chance de falhas de cada componente é pequena,
+a grande quantidade de componentes e interações aumenta as chances de 
+falhas em algum lugar do sistema CarnegieMellon2006ULS.
+Mais do que ser projetado para não falhar, um componente operando em um ambiente  de grande escala deve ser projetado para tratar adequadamente situações de exceção e indisponibilidade, tanto do próprio componente, quanto de outros componentes dos quais depende.
+
+Um exemplo de falha típica em um processo de implantação automatizado
+utilizando um serviço de IaaS envolve o provisionamento de máquinas virtuais.
+Quando um novo nó é requisitado para o provedor de infraestrutura,
+há uma chance de que o provisionamento falhe.
+Além disso, alguns nós podem levar um tempo muito maior que a média para ficarem prontos.
+Outras operações que podem falhar durante o processo de implantação são
+conexões SSH e a execução de scripts nos nós alvos.
+
+A Figura fig:ec2_boxplot mostra a distribuição por nós observada 
+empiricamente do tempo de criação de VMs no Amazon EC2. 
+Cada um dos dez boxplots corresponde ao resultado
+observado para 100 requisições concorrentes ao EC2,
+cada uma requisitando a criação uma nova VM.
+Nós contamos o tempo que vai da requisição de criação do nó
+até o momento em que a VM se encontra apta a receber conexões SSH,
+que é quando ela se torna pronta para uso na prática.
+Os dados utilizados para gerar a Figura fig:ec2_boxplot
+foram coletados em maio de 2013. As máquinas virtuais, 
+do tipo us-east-1b.
+
+ht
+
+ec2_boxplot.pdf
+Tempos de criação de instâncias EC2 observados, em segundos.
+fig:ec2_boxplot
+
+
+Na Figura fig:ec2_boxplot podemos observar, 
+pelas regiões interquartis dos boxplots, que
+o tempo de criação de VMs possui uma mediana estável.
+Observamos também que ao se criar ao mesmo tempo uma grande quantidade de nós,
+é esperado a existência de algumas tempos de criação bem mais demorados,
+observados nos pontos acima dos whiskers superiores.
+
+Apenas o tempo
+das requisições que foram completadas com sucesso são observadas na
+Figura fig:ec2_boxplot.
+No entanto, a cada tentativa de se criar simultaneamente várias VMs,
+nem todas as VMs requisitadas são criadas.
+Nos experimentos realizados para a produção da Figura fig:ec2_boxplot,
+nós observamos uma taxa de falha de 0.6%.
+Nesses experimentos, falhas e tempos longos de provisionamento 
+(acima dos whiskers superiores)
+afetaram 7% das requisições de criação de nós.
+
+Nygard timeouts, que evita que um cliente fique eternamente esperando uma resposta; 2) a interrupção de tentativas do cliente quando há sintomas de indisponibilidade do provedor; 3) criação de recursos exclusivos para diferentes clientes, evitando que uma falha em um recurso compartilhado afete todos os clientes; e 4) a ``falha rápida'', que faz com que um provedor forneça uma resposta de erro tão logo quanto seja possível saber que a operação não terá sucesso. 
+
+Quando um sistema faz uma requisição a outro serviço, não é possível distinguir um idempotente. 
+Uma operação é idempotente quando executá-la várias vezes produz o mesmo resultado 
+que uma única execução produziria Weider2007QoSWS.
+Isso implica na capacidade do sistema em tolerar requisições duplicadas,
+importante para o tratamento eficiente de falhas de comunicação 
+ou de processamento Ramalingam2013Idempotence.
+Em interfaces REST, por exemplo, todas as operações que não sejam POST devem ser idempotentes Allamaraju2010REST. A idempotência de scripts
+de implantação é um dos principais destaques dentre as funcionalidades do 
+Chefhttp://docs.opscode.com/chef_why.html}.
+
+Disponibilidade:
+
+Embora serviços em um sistema distribuído tenham que estar preparados para lidar
+com a falha de outros serviços do sistema,
+cada serviço deve ter sua disponibilidade aumentada tanto quanto possível. 
+Para isso é preciso aplicar técnicas que
+aumentem o tempo médio entre falhas e/ou diminuam o tempo médio de reparo após uma falha.
+
+O balanceamento de carga entre réplicas de um serviço é uma das práticas mais importantes e 
+recomendados atualmente para aumentar a disponibilidade e escalabilidade de sistemas Amazon2012Practices.
+Com a replicação do serviço, a falha em uma réplica não implica na indisponibilidade
+do serviço. Além disso, com a utilização das tecnologias de nuvem,
+caso a quantidade de requisições aumente, pode-se requisitar um aumento na quantidade de réplicas,
+o que evita uma indisponibilidade por incapacidade de se atender a todas as requisições.
+
+Outra prática importante para o aumento da disponibilidade é a replicação de dados Brewer2001GiantScale.
+No entanto, a replicação síncrona de dados é inviável para sistemas de grande escala Helland2009Quicksand.
+O Teorema CAP Brewer2012Cap prevê que um sistema não mantém os níveis de consistência e de disponibilidade na presença de particionamentos de rede. Considerando que particionamentos de rede são intrínsecos ao ambiente da Internet, o aumento no tamanho dos sistemas inviabilizou uma consistência total com tempo de resposta satisfatório. 
+Essa mudança representou uma quebra de paradigma na área de bancos de dados,
+pois agora os bancos de dados projetados para fornecer as propriedades ACID,
+que garantem consistência total, cedem lugar aos cada vez mais populares
+bancos de dados não-relacionais (NoSQL).
+Essa nova categoria sacrifica a consistência dos dados para obter maior disponibilidade ou escalabilidade Cattell2011NoSql.
+
+O processo de implantação deve considerar as necessidades de replicação de serviços e dados,
+para que ele possa configurar adequadamente as múltiplas instâncias dos serviços e das bases de dados.
+Deve ser possível também alterar em tempo de execução a quantidade de réplicas para
+a adequação à demanda observada.
+
+Um processo utilizado para reduzir drasticamente o tempo de reparo após uma falha
+é o ``roll-back'' automatizado do sistema: se o ambiente de produção encontra-se em algum estado inválido, 
+é feito uma reversão rápida e segura do sistema e do ambiente para 
+o último estado estável Hamilton2007InternetScale, Brewer2001GiantScale. 
+Nygard Nygard2009Release advoga que em caso de falha no sistema a prioridade deve ser 
+a reversão imediata do sistema para a sua última versão estável, 
+deixando para depois as investigações sobre as razões do problema, 
+mesmo que a reversão custe a perda de eventuais pistas para o diagnóstico. 
+
+Escalabilidade:
+
+Quando se implanta uma grande quantidade de serviços em um ambiente distribuído,
+não é desejável que as implantações dos diferentes serviços sejam sequenciais.
+Uma vez que a implantação de diferentes serviços são tarefas independentes,
+implantá-los concorrentemente aumenta drasticamente a escalabilidade
+do processo de implantação da composição.
+
+Uma arquitetura é perfeitamente escalável
+se ela continua a apresentar o mesmo desempenho por recurso,
+mesmo que usado em um problema de tamanho maior, conforme o número
+de recursos aumenta Quinn1994Scalability.
+No contexto de implantação, isso significa que, idealmente,
+o tempo de implantação deveria permanecer constante quando há um
+aumento proporcional no número de serviços a serem implantados e
+no número de nós alvos.
+
+O número de serviços a ser implantado aumenta em duas situações:
+1) quando se implanta composições maiores e 2) quando se implanta
+mais composições simultaneamente. 
+A primeira situação ocorre na implantação de sistemas de grande escala.
+A segunda situação ocorre, por exemplo,
+quando se executa uma bateria de testes de aceitação de uma composição de serviços.
+Nesse caso um teste de aceitação pode levar um tempo considerável,
+já que engloba o provisionamento de um novo nó e a preparação do sistema.
+Em tal situação, é desejável que testes de aceitação sejam executados em paralelo,
+o que requer implantação concorrente de múltiplas instâncias da mesma composição.
+Quanto maior a capacidade de paralelização desse processo,
+mais testes poderão ser admitidos na bateria de testes.
+
+Heterogeneidade:
+
+Componentes de sistemas de grande escala normalmente são construídos com diferentes tecnologias
+e hospedados em diferentes tipos de ambientes.
+Um dos principais caminhos para viabilizar a coexistência dessa pletora tecnológica
+é a Arquitetura Orientada a Serviços, incluindo as composições de serviços web.
+
+Embora serviços web tenha surgido para resolver os problemas de heterogeneidade
+entre sistemas e organizações, hoje em dia há mais de um mecanismo para
+implementar o conceito de serviços, principalmente SOAP e REST, além de outros.
+Portanto, dar suporte à heterogeneidade é importante para sistemas baseados em serviços.
+A falta de flexibilidade para a escolha de tecnologia para o desenvolvimento de serviços
+e o provedor de infraestrutura (camada IaaS) ocorre em muitas soluções PaaS atualmente disponíveis.
+
+Múltiplas organizações:
+
+Sistemas de grande escala não possuem um único dono Steen2011VeryLarge, 
+sendo que seus componentes pertencem a diferentes organizações que interagem de forma coordenada. 
+O conceito de coreografias de serviços web e notações como o BPMN surgem para 
+formalizar a interação em tempo de execução entre serviços de organizações diferentes.
+
+Em uma composição inter-organizacional a coordenação do processo de implantação se torna um desafio. Normalmente não se admite que um coordenador em uma organização possa tomar decisões 
+sobre a implantação de serviços de outra organização, pois esse processo envolve
+custos, acesso à infraestrutura e acesso ao pacote do serviço.
+Dessa forma, não é possível o uso de um orquestrador para coordenar o processo de implantação.
+As organizações devem agir de forma colaborativa para que o processo de implantação
+da composição tenha sucesso.
+No entanto, isso não é tão simples, pois no caso de implantação simultânea,
+é preciso haver algum protocolo de comunicação para que uma organização receba
+por notificação os endereços de serviços recém implantados por outra organização,
+quando esses serviços são dependências de seus próprios serviços sendo também implantados.
+
+Adaptabilidade:
+
+No futuro, sistemas deverão operar em um mundo altamente dinâmico,
+sendo preciso lidar com alterações imprevistas, como condições ambientais, incluindo desastres naturais, 
+adequação legal, etc. Papazoglou2008Journey.
+É de se esperar que em sistemas de grande escala a capacidade de agir autonomicamente 
+seja vital para manter um funcionamento adequado, uma vez que a intervenção manual
+se torna mais custosa.
+
+Quando requisitos funcionais ou não-funcionais são violados, 
+algumas das possíveis ações a serem tomadas são:
+1) substituição de versão de serviços; 2) aumento na quantidade de réplicas de um serviço; e
+3) migração da instância de um serviço para outro hospedeiro.
+Uma vez que todas essas ações tem relação com o processo de implantação,
+pode-se dizer que sistemas auto-adaptativos precisam estar cientes
+e ter pleno controle das atividades do processo de implantação.
+
+Para tomar as decisões de adaptação, um sistema auto-adaptativo precisa monitorar
+a si próprio para coletar métricas a serem utilizadas por algum algoritmo adaptativo.
+Um exemplo de métrica a ser coletada é a taxa de utilização de CPU no hospedeiro do serviço.
+Coletar tais métricas requer a utilização de um sistema de monitoramento
+que deve ser implantado na infraestrutura alvo.
+Portanto, o processo de implantação de sistemas auto-adaptativos
+também deve considerar a implantação de sistemas auxiliares que realizam esse monitoramento.
+
+
+description
+
+
+
+Conclusões
+cap:conclusoes
+
+Nesta dissertação, nós introduzimos o CHOReOS ee,
+um novo sistema de middleware que facilita a implantação de composições
+de serviços de grande escala em um ambiente de computação em nuvem.
+
+Embora a automação do processo de implantação de composições de serviços
+possa ser implementada de maneiras ad-hoc,
+esse tipo de solução normalmente requer do implantador
+uma grande gama de conhecimentos técnicos.
+Por meio de experimentos, procuramos evidenciar como
+uma abordagem baseada em middleware, como o EE,
+reduz o tempo de trabalho necessário para a automação
+do processo de implantação, considerando tanto o tempo
+de desenvolvimento da solução de implantação,
+quanto o tempo de implantação de cada composição.
+
+Ao revisar a literatura, identificamos desafios na implantação
+de sistemas de grande escala. 
+Procuramos atender tais desafios ao aplicar no EE
+técnicas e soluções espalhadas na literatura,
+bem como refinar tais soluções com base em 
+nossas experimentações empíricas.
+Listamos a seguir considerações sobre os desafios na
+implantação de sistemas de grande escala
+e sobre como o uso de uma solução de implantação
+baseadas em middleware contribui para a superação
+de tais desafios.
+
+
+
+ Identificamos que a automação é essencial
+para a implantação de sistemas de grande escala.
+Para isso é importante que o middleware de implantação
+forneça uma API remota para disparar as implantações.
+Nesse sentido, também contribui a especificação das
+composições por meio de descrições declarativas de
+suas arquiteturas.
+
+ Ao se tratar de software distribuído de grande escala,
+falhas nas interações com componentes e serviços de terceiros
+se tornam comum. Implementar estratégias de tratamento
+de falhas de terceiros na camada do middleware é um
+grande auxílio no desenvolvimento de uma solução robusta 
+e escalável.
+
+ Não só o tratamento de falhas de terceiros,
+mas o tratamento de concorrência pelo middleware é importante também
+para a obtenção de um resultado robusto e escalável,
+sem que o implantador tenha que entender a fundo essas
+questões complicadas.
+
+ad-hoc levam vantagem na questão de suportar soluções heterogêneas.
+Contudo, soluções baseadas em middleware podem oferecer
+suporte pronto para as tecnologias mais utilizadas do mercado.
+Além disso, uma arquitetura extensível auxilia no desenvolvimento
+de suporte a novas tecnologias, de forma que o resultado
+de cada nova extensão é compartilhável por todos os usuários do middleware.
+
+ Composições de serviços podem ser compostos por serviços
+de diferentes organizações. Um middleware de implantação deve considerar
+a colaboração dos serviços por ele implantado com serviços já existentes.
+
+ A evolução auto-adaptativa de composições de serviços é assunto bastante estudado.
+A implantação automatizada, robusta e escalável é necessária para o
+desenvolvimento de composições de serviços auto-adaptativas.
+Assim, mesmo que um middleare de implantação não forneça mecanismos
+de evolução auto-adaptativos para suas implantações, ele é peça importante
+que pode facilitar o desenvolvimento de novos sistemas adaptativos.
+
+
+
+Para evidenciar os benefícios das técnicas aplicadas,
+realizamos avaliações empíricas do desempenho e escalabilidade
+da implantação de composições de serviços de grande escala
+operada pelo EE.
+Os resultados experimentais evidenciam a aplicabilidade da arquitetura proposta
+e que desempenho e escalabilidade satisfatórios podem ser obtidos.
+
+Acreditamos que as conclusões já listadas e mais algumas lições aprendidas
+no desenvolvimento do EE e desta dissertação
+possam auxiliar no desenvolvimento de outras soluções baseadas
+em middleware no contexto de computação de grande escala.
+Listamos agora algumas dessas lições aprendidas:
+
+
+
+ Arquiteturas escaláveis não devem depender de um ponto central de processamento.
+Em versões anteriores do EE, a utilização do Chef Server impunha grandes
+restrições à escalabilidade do processo de implantação.
+Em um estágio mais anterior de nossa pesquisa acreditávamos que o Chef Server
+não seria um problema, pois para cada requisição seu trabalho era extremamente simples
+e rápido. Mas vários detalhes mostraram o contrário, como 1) a grande
+quantidade de requisições feitas ao Chef Server, vindas do EE e dos nós alvos;
+2) a quantidade de memória RAM gasta no EE para se invocar o Chef Server,
+uma vez que pra cada requisição criávamos uma nova instância de um programa
+Ruby (o knife); e 3) o sistema de filas utilizado pelo Chef Server
+para receber suas requisições prejudicava o tempo de resposta dessas requisições.
+
+Hamilton2007InternetScale
+e considerada um valor em nosso grupo,
+a simplicidade é difícil de por em prática.
+Desenvolvimento iterativo que a cada iteração procure fornecer a coisa mais simples que funcione
+é importante também no desenvolvimento de sistemas de grande escala.
+No caso do EE, o projeto inicial previa a divisão do EE em três módulos
+que se comunicariam por serviços. Com o passar do tempo vimos que esse desenho
+impunha diversas complicações, e em um primeiro momento passamos de três para dois
+módulos, e em um estágio mais final do desenvolvimento reduzimos os dois módulos
+a apenas um. Uma das dificuldades da divisão anterior era a da sincronia
+entre estruturas de dados replicadas em diferentes módulos.
+No fim, essa simplificação arquitetural não impediu a aplicação de um bom projeto
+de classes, e nem impede, no futuro, a possibilidade de se replicar as instâncias
+do EE para que se suporte uma carga maior de requisições.
+
+
+
+
+Sugestões para trabalhos futuros
+
+Listamos agora alguns possíveis trabalhos futuros envolvendo o ee.
+
+description
+
+Análise multivariável de fatores que influenciam a escalabilidade. 
+Outro experimento para melhor entender o desempenho e escalabilidade do EE
+seria aplicar uma análise multivariável para determinar o quanto
+que o tempo de implantação é influenciado por fatores como a quantidade de composições
+sendo implantada, a quantidade de serviços em cada composição e a quantidade
+de nós disponíveis.
+Nesse sentido, começamos a realizar esse experimento utilizando a análise fatorial $2^k$
+com replicação Jain20002kr, mas dificuldades com a distribuição dos dados e o alto custo
+para se obter novas amostras dificultaram a conclusão desse experimento.
+
+Experimentos com desenvolvedores. 
+Na Seção sec:avaliacao_eng_sw realizamos uma avaliação qualitativa para
+ajudar a expandir nosso entendimento sobre o valor que o EE agrega ao processo de implantação.
+Dada as limitações de nosso experimento, seria interessante expandi-lo
+com a participação de diversos desenvolvedores de software
+e administradores de sistemas assumindo o papel de implantadores de uma composição de serviços.
+Nesse caso, a ideia seria utilizar uma abordagem mais rigorosa,
+dentro das possibilidades de experimentos de engenharia de software.
+Comparações com outros arcabouços de implantação também poderiam ser realizadas.
+
+Algoritmos adaptativos para tratamento de falhas. 
+Acreditamos que os algoritmos do EE que tratam falhas de terceiros podem ser melhorados.
+Tanto a reserva de nós ociosos quanto o invoker são adequados 
+para utilizarem algoritmos adaptativos que aprendem com o histórico de
+execuções. Assim, a reserva de nós ociosos poderia alterar seu tamanho dinamicamente,
+evitando desperdícios de VMs extras. Da mesma forma, o invoker
+poderia utilizar valores de timeout mais adequados, evitando longas
+esperas desnecessárias ou desistindo de tarefas que logo estariam prontas.
+Um desafio interessante para a adaptação dinâmica do invoker é
+considerar a alteração dinâmica de suas três propriedades:
+timeout, quantidade de tentativas e tempo de pausa entre as tentativas.
+
+Federação de instâncias do EE. Uma instância do EE realiza a implantação
+de serviços pertencentes a uma dada organização. Se algum dos serviços implantados
+depende de um serviço pertencente a outra organização, o implantador
+pode modelar esse serviço de terceiros como um serviço legado
+na modelagem da composição. O problema é que mudanças nos serviços de
+terceiros, como mudança de URI, podem causar impactos na composição implantada.
+Além disso, se serviços interdependentes de diferentes organizações são implantados em paralelo,
+torna-se difícil utilizar o recurso de serviço legado,
+uma vez que o implantador de uma organização ainda não dispõe das URIs 
+dos serviços sendo implantados pela outra organização.
+Para tornar a implantação de composições inter-organizacionais mais dinâmica,
+um caminho promissor é a federação de instâncias do EE.
+Assim, uma instância pertencente a uma organização $A$ pode avisar a
+uma outra instância pertencente a uma organização $B$ sobre mudanças 
+nas coreografias de $A$ que possam impactar as coreografias pertencentes a $B$.
+
+Utilização de um balanceador de carga. Na atual implementação do EE,
+quando um serviço é replicado em várias instâncias, seus clientes
+recebem as URIs de todas as instâncias disponíveis do serviço.
+Assim, cabe a cada cliente distribuir a carga pelas diferentes réplicas disponíveis.
+No entanto, melhor seria que o EE implantasse um balanceador de carga 
+que distribuísse as requisições entre as diferentes instâncias do serviço.
+Assim, os clientes receberiam apenas uma URI, que seria a URI
+do balanceador de carga.
+
+Utilização de um barramento de serviços. Caso um serviço dependa
+de outro serviço com um protocolo de comunicação diferente, o EE assume que é de
+responsabilidade do serviço cliente conhecer o protocolo do serviço provedor.
+Contudo, para facilitar a implementação dos serviços, a conversão entre
+diferentes protocolos de comunicação poderia ser tratada por um barramento de serviços.
+Assim, uma possibilidade seria de que o EE implantasse automaticamente instâncias
+de um barramento de serviços para interligar serviços de protocolos diferentes.
+No entanto, para essa tarefa é necessário a utilização de um barramento de serviços
+que considere a natureza dinâmica de ambientes de computação em nuvem,
+onde serviços são replicados e passam a possuir múltiplas URIs.
+
+Atualização dinâmica de composições de serviços. Na atual implementação do EE,
+a atualização de coreografias pode ocasionar falhas em transações correntes,
+o que ocorre mesmo com serviços sem estado.
+Vários trabalhos Kramer1990Philosophers, Vandewoude2007Tranquility, Xiaoxing2011VersionConsistent 
+estudam o processo de atualização dinâmica, pelo qual as transações correntes 
+são preservadas durante a atualização de um serviço. 
+Acreditamos que seria muito interessante possibilitar ao administrador do EE
+a definição de políticas e algoritmos de atualização para 
+tratar da adequada finalização das transações correntes.
+Dessa forma, o EE poderia se tornar uma plataforma de apoio
+à comparação empírica entre diferentes estratégias presentes na literatura.
+
+description
+
+Outras pendências menores estão registradas na página de issues 
+do https://github.com/choreos/enactment_engine/issues?state=open}.
+Colaborações técnicas e de pesquisa sobre as possibilidades levantadas
+são bem vindas.
+
+
+Palavras finais
+
+Composições de serviços se mostram promissoras
+em possibilitar a integração de sistemas de grande escala.
+Tomando um exemplo governamental em que fosse necessário
+uma interação entre governo federal e todos os municípios do Brasil,
+já teríamos um cenário de potencial utilização de composições
+de serviços de grande escala, em que os serviços participantes
+pertencem a organizações diferentes.
+
+Em sistemas de grande escala, as incertezas iniciais são maiores do que
+em pequenos projetos. Portanto, nesse contexto a aplicação de abordagens iterativas se torna
+mais promissora do que grandes planos inicias altamente detalhados. 
+No entanto, implantar sistemas distribuídos de grande escala é tarefa difícil,
+sendo a automação do processo de implantação condição fundamental
+para a capacidade de entrega contínua.
+Na intenção de repetir continuamente o processo de implantação,
+a computação em nuvem surge como poderosa aliada.
+A automação da criação e remoção de nós virtualizados facilita que o
+processo de implantação seja executado continuamente. 
+
+No futuro, esperamos uma maior integração entre as organizações 
+de forma automatizada e em grande escala.
+Para que isso funcione, a capacidade de implantação contínua
+dessas composições será importante para que esses sistemas
+possam evoluir adequadamente.
+Esperamos que as ideias apresentadas nesta dissertação
+possam ser de auxílio a implementadores e implantadores
+de tais integrações de grande escala.
+Acreditamos também que o ee desenvolvido no contexto desta dissertação
+possa apoiar outras pesquisas sobre composições de serviços, 
+pesquisas essas que também podem auxiliar
+na viabilização do cenário futuro de alta integração entre as organizações. 
+
+
+Introdução
+cap:introducao
+
+Princípios que ganharam destaque com os métodos ágeis de desenvolvimento
+de software vêm expandindo suas fronteiras e se aderindo a outros aspectos
+do desenvolvimento de um produto. A importância da iteratividade
+é um desses princípios que se tornam evidentes em abordagens modernas de
+desenvolvimento de produtos, como o Brown2009DesignThinking,
+ou em abordagens de modelos de negócios, como o Ries2011Lean.
+Um dos benefícios em se acelerar o ciclo de iterações é o aumento
+de feedback recebido, o que pode ser usado
+para se redirecionar e refinar tanto o o que fazer, 
+quanto o como fazer.
+
+A implantação de um software é o
+processo que vai da aquisição à
+execução desse software DEPL2006,
+sendo que a aquisição pode corresponder 
+a um desenvolvimento interno na organização que irá implantar o software.
+Na implantação de sistemas, 
+o princípio de iteratividade
+ganhou força com as ideias de entrega contínua de software Humble2011Continuous,
+o que é uma evolução da prática de integração contínua Duvall2007Integration, 
+já incorporada à métodos ágeis como o XP Beck1999XP.
+Entregar software continuamente significa que normalmente cada commit
+no código-fonte, que seja aprovado por uma bateria de testes,
+corresponde a uma versão potencialmente implantável.
+E a capacidade de se implantar software continuamente é passo fundamental
+para que se possa entregar valor mais rapidamente ao negócio.
+
+Serviços web possibilitam a comunicação interoperável entre máquinas pela rede W3C2004WS
+e podem ser compostos para implementar sofisticados processos de negócios Papazoglou2007State.
+Especialistas do setor aéreo, por exemplo, propõem o uso de composições de serviços
+para automatizar os processos de negócios entre diferentes organizações
+que coabitam um aeroporto Choreos2012D6.2.
+Considerando os atuais números relativos a grandes
+aeroportoshttp://www.heathrowairport.com} em Londres, por exemplo, 
+possui mais de 80 compahias aéreas, 190.000 passageiros por dia (picos de 230.000),
+6.000 empregados, 1.000 pousos e decolagens por dia, e 40 serviços de refeição.}
+e o crescimento futuro desses números, espera-se que
+composições de serviços envolvam um grande número de participantes,
+conforme já sugerido por 
+pesquisadores Valerie2011FutureInternet,Papadimitriou2009FutureInternet.
+
+No entanto, o desenvolvimento de colaborações entre serviços 
+trazem desafios para a formulação de mecanismos que funcionem, 
+escalem e que sejam eficientemente implementados 
+em um ambiente distribuído de Steen2011VeryLarge.
+Nesse cenário de grande escala,
+o processo de implantação enfrenta diversas dificuldades, 
+tais como falhas corriqueiras na infraestrutura, 
+heterogeneidade tecnológica, 
+distribuição do sistema por diferentes organizações
+e atualização frequente dos serviços em operação.
+Com essas dificuldades, torna-se muito difícil manter a escalabilidade do processo de implantação
+sem a utilização de um processo de implantação totalmente automatizado,
+uma vez que processos de implantação manuais tendem a ser
+morosos, propensos a erros e não reprodutíveis, principalmente
+na implantação de sistemas distribuídos Dolstra2005Configuration.
+
+Esses desafios podem ser tratados por soluções ad-hoc,
+nas quais um processo de implantação é automatizado tendo em vista
+uma composição de serviço específica.
+Contudo, esse caminho leva ao baixo reúso de soluções
+dentro de uma organização e entre as organizações participantes.
+Outro caminho é a utilização de soluções baseadas em um middleware,
+que resolvem os problemas comuns de implantação,
+fornecendo soluções potencialmente mais sofisticadas e mais bem testadas.
+Isso ocorre pois contribuidores interessados no problema de implantação
+trabalham juntos para fornecer uma infraestrutura mais robusta,
+enquanto usuários do middleware escrevem código menor e mais simples
+para automatizar o processo de implantação de composições específicas.
+Embora apresentem vantagens, sistemas apoiados por middleware
+também apresentam desvantagens, principalmente no que diz respeito
+às restrições impostas ao desenvolvimento da aplicação.
+
+Nesta dissertação, estudamos o processo de implantação automatizada baseado em um middleware. 
+Investigamos o quanto e como essa opção
+contribui à implantação de composições de serviço de grande escala
+quando confrontada com soluções ad-hoc.
+Para responder à questão colocada, nosso objetivo nesta dissertação é 
+projetar, implementar e avaliar
+um middleware que forneça suporte à implantação automatizada de composições de serviços web
+de grande escala.
+Esse middleware, quando comparado a soluções ad-hoc,
+deve facilitar a automação da implantação de composições diversas.
+Nesse caso, facilitar significa reduzir o tempo e/ou quantidade de trabalho
+para a codificação e/ou execução da solução de implantação.
+Avaliamos o tempo em homens-horas e a quantidade de trabalho
+em linhas de código.
+Também espera-se que a automação do processo fornecida por esse middleware
+contribua para a escalabilidade do processo de implantação.
+Nesse caso, ser escalável significa ser capaz de implantar uma maior quantidade
+de serviços sem aumentar o tempo de implantação, dado que se aumente também,
+proporcionalmente, a quantidade de servidores disponíveis para hospedar esses serviços.
+
+A computação em nuvem possibilita o acesso a um conjunto compartilhado de recursos computacionais que podem ser providos rapidamente Nist2011Cloud.
+A gerência programática de recursos virtualizados, fornecidos pela nuvem, favorece a criação de processos totalmente automatizados para a implantação de sistemas Humble2011Continuous.   
+Além disso, sistemas distribuídos já estão migrando para ambientes de nuvem, onde são compostos e mantidos de modo descentralizado por várias organizações Steen2011VeryLarge.
+Baseando-se nessas considerações, nosso middleware foi projetado em função dos modelos de computação em nuvem.
+
+O middleware desenvolvido no contexto deste trabalho é o CHOReOS ee 
+http://ccsl.ime.usp.br/EnactmentEngine} (EE),
+que funciona no modelo de Plataforma como um Serviço (PaaS), 
+um dos modelos de funcionamento da computação em nuvem.
+O EE fornece uma API remota para disparar o processo de implantação.
+Essa API recebe uma especificação declarativa da composição a ser implantada.
+O EE interpreta a especificação recebida e realiza as tarefas de implantação
+em um conjunto de máquinas virtuais.
+Essas máquinas virtuais são criadas por provedores de infraestrutura que funcionam
+de acordo com o modelo de computação em nuvem denominado Infraestrutura como um Serviço (IaaS).
+Ao fim da implantação, as composições de serviços estão disponíveis para serem consumidas
+por usuários, operando no modelo de Software como um Serviço (SaaS).
+A relação entre os modelos de computação em nuvem e nossa solução
+pode ser observada na Figura fig:modelos_nuvem. 
+
+!h
+  
+  nuvem_modelos.pdf 
+  Modelos da computação em nuvem associadas ao CHOReOS ee.
+  fig:modelos_nuvem 
+
+
+Esta pesquisa foi feita no contexto e com financiamento dos projetos CHOReOScoreografias, em ambientes de grande escala. O projeto CHOReOS, financiado pela Comissão Europeia e composto por diversas instituições acadêmicas e industriais da Europa conjuntamente com o IME-USP, objetivou desenvolver um processo dinâmico e centrado no usuário para o desenvolvimento e execução de coreografias em um ambiente de escala ultra grande, no qual milhares de serviços são compostos e coordenados por um middleware distribuído. O projeto Baile, uma parceria entre IME-USP e HP Brasil, estudou a solução de problemas para o desenvolvimento de coreografias, como a adoção de Desenvolvimento Guiado por Testes (TDD) no contexto de coreografias e o suporte da Computação em Nuvem à implantação de coreografias. 
+
+newpage
+
+As contribuições deste trabalho são: 
+
+
+ A implementação de um middleware que possibilita a implantação automatizada de composições de serviços. Além de possuir aplicabilidade direta para profissionais da indústria, nosso middleware facilita a condução de avaliações empíricas ligadas à implantação de composições de serviço, tendo assim potencial para alavancar diversas outras pesquisas sobre composições de serviços. 
+ad-hoc e implementadas com suporte por middleware.
+
+
+Os esforços iniciais desta pesquisa, focando na implantação de composições de serviços em um ambiente de computação em nuvem, ainda sem considerar os desafios de grande escala, resultaram na seguinte publicação: \
+
+15cm
+Leonardo Leite, Nelson Lago, Marco Aurélio Gerosa e Fabio Kon. Um Middleware para Encenação Automatizada de Coreografias de Serviços Web em Ambientes de Computação em Nuvem. Em 31º Simpósio Brasileiro de Redes de Computadores e Sistemas Distribuídos (SBRC), 2013.
+shadowblock
+
+Durante o desenvolvimento do software Enactment Engine, o autor desta dissertação utilizou nos testes de unidade um padrão de software que foi documentado em um artigo de sua autoria: \
+
+15cm
+Leonardo Leite. Fábrica dinâmica de dublês: testando classes que possuem dependências não injetáveis. Em Miniconferência Latino-Americana de Linguagens de Padrões para Programação (MiniPlop Brasil), 2013.
+shadowblock
+
+Ainda no contexto deste mestrado, foi realizado um estudo sobre adaptação dinâmica de coreografias, o que resultou na publicação do seguinte artigo: \ 
+
+15cm
+Leonardo Leite, Gustavo Oliva, Guilherme Nogueira, Marco Aurélio Gerosa, Fabio Kon e Dejan Milojicic. A systematic literature review of service choreography adaptation. Service Oriented Computing and Applications, 3(7):201--218, 2013.
+shadowblock
+
+
+Esta dissertação foi organizada da seguinte forma: as fundamentações teóricas sobre composição de serviços, o processo de implantação e a computação em nuvem são apresentadas no Capítulo cap:conclusoes, apresentamos nossas conclusões.
+
+
+
+
+
+Trabalhos relacionados
+cap:relacionados
+
+Neste capítulo, apresentamos os trabalhos relacionados à implantação automatizada,
+incluindo algumas ferramentas utilizadas por profissionais da indústria.
+
+Ao utilizar ferramentas de build da aplicação em um único script, possibilitando a edição parametrizada de arquivos de configuração da aplicação em função do local de implantação. 
+
+A abordagem procedimental, com scripts, fornece uma grande 
+flexibilidade para especificar a implantação de sistemas, 
+mas normalmente requer especialização de seus usuários, 
+pois todos os detalhes do processo devem ser especificados. 
+Wettinger et al. Wettinger2013ExtensiblePaaS 
+afirmam que ferramentas como Chef são usadas
+para a criação de planos de implantação específicos para cada aplicação,
+promovendo pouca reusabilidade.
+Esses scripts de implantação também deveriam ser desenvolvidos 
+com o mesmo rigor do código da aplicação, inclusive com o uso 
+de testes automatizados Humble2011Continuous. 
+O descumprimento dessa recomendação torna o processo de implantação 
+pouco robusto e até mesmo não confiável. Uma alternativa que evita 
+essa sobrecarga no processo de desenvolvimento é o uso de sistemas 
+especializados na implantação de determinados tipos de aplicações e que recebam, 
+como entrada, uma simples especificação declarativa do sistema a ser implantado.
+
+Um exemplo de abordagem declarativa é o uso de Linguagens de Descrição Arquitetural (ADLs), como a Darwin DeRemer1976Programming, que descrevem a interconexão entre módulos de um sistema. A motivação dos autores da MIL era contribuir com novas formas de se produzir software de grande porte, diferenciando essa atividade da programação de pequenos algoritmos. De forma similar, a linguagem Darwin concentra-se nos aspectos estruturais de sistemas distribuídos, descrevendo a conexão entre os módulos do sistema, mas sem descrever implementações ou sequências de interações entre os módulos. Em nosso trabalho, também descrevemos o sistema a ser implantado por meio de sua descrição estrutural, uma vez que é esse o aspecto necessário para que se possa automatizar o processo de implantação. 
+
+Magee e Kramer demonstraram a utilidade prática da linguagem Darwin ao utilizá-la de forma integrada a componentes CORBA Magee1994Regis, que realiza a implantação dos sistemas descritos em Darwin. Regis possui duas políticas de distribuição de programas por estações de trabalho. A primeira política é o mapeamento definido pelo usuário de forma estática, abordagem não apropriada para ambientes de computação em nuvem. A segunda opção de política é a alocação automática em função da carga na CPU das estações de trabalho, não havendo flexibilidade para a consideração de outros recursos, como espaço em disco ou memória, por exemplo. Uma similaridade entre Regis e o ee\ desenvolvido em nossa pesquisa é o uso do middleware para o envio de mensagens contendo referências remotas dos componentes implantados para que eles possam estabelecer ligações dinâmicas entre si.
+
+Olan Balter1998Olan é um ambiente para a descrição, configuração e implantação de aplicações distribuídas em ambientes heterogêneos, e que também utiliza uma ADL própria. Baseando-se na entrada descrita na ADL, Olan gera scripts de Configuração de Máquina, que definem a execução do processo de implantação dos componentes no ambiente distribuído e o ajuste dos canais de comunicação entre esses componentes. A abordagem de gerar um \script de configuração a partir de uma especificação declarativa é também implementada pelo \ee. A ADL de Olan também possibilita a especificação de restrições sobre a localização da implantação do componente, porém sem flexibilidade para a adoção de estratégias dinâmicas de alocação de nós.
+
+Apesar de os trabalhos sobre Darwin e Olan já falarem sobre software de ``grande porte'', o que se entendia por grande porte já se alterou significativamente desde a época em que esses trabalhos foram feitos. Uma evidência dessa diferente percepção de escala são os exemplos de aplicações fornecidos no artigo sobre Olan, em que se fala sobre componentes muito granulares, como pedaços de interfaces gráficas, e que não consideram possíveis falhas de comunicação que são comuns na Internet. Além disso, os próprios autores do artigo sobre Olan admitem que não se preocuparam com questões de desempenho. 
+Hoje, há novos  desafios e requisitos que precisam ser considerados no desenvolvimento de software 
+de grande escala, inclusive no processo de implantação, conforme visto na Seção sec:desafios.
+
+O trabalho de Akkerman et al. Humble2011Continuous.
+
+O estudo de Quéma et al. quema2004hierarchical é o único encontrado a realizar avaliações empíricas sobre desempenho e escalabilidade do processo de implantação de componentes, além de oferecer tolerância a falhas no processo de implantação. Os autores apresentam uma solução na qual agentes executam de forma distribuída o processo de implantação, comunicando-se de forma assíncrona e hierárquica conforme a estrutura da composição de componentes sendo implantada, que é descrita por uma ADL. Os agentes também possuem propriedades transacionais que garantem a tolerância a falhas do processo de implantação, mas isso não é avaliado no texto. 
+Os autores avaliam o desempenho e escalabilidade do processo de implantação variando a quantidade de componentes, a topologia da composição de componentes e a quantidade de máquinas. O resultado é um crescimento linear no tempo de implantação quando se aumenta na mesma proporção o número de máquinas disponíveis. Os autores explicam que há uma sobrecarga na manutenção das sessões de comunicação entre os agentes, o que impede que o número de agentes seja muito grande. 
+
+A principal limitação do trabalho de Quéma et al. é a restrição de que a composição de componentes deve se organizar em uma estrutura hierárquica. Essa estrutura hierárquica, no entanto, é apenas um caso particular das possibilidades na topologia de uma coreografia de serviços, sendo que nossa solução, o CHOReOS ee, não impõe essa restrição. Além disso, o ambiente utilizado para a implantação no trabalho de Quéma et al. é um aglomerado, enquanto que nosso estudo é realizado em ambientes de nuvem.
+
+Os trabalhos anteriores apresentam abordagens simples para o problema da distribuição dos componentes implantados pelas máquinas disponíveis. Já o trabalho de Watson et al., apresenta uma abordagem mais completa para esse problema com o uso de grades computacionais Watson2006Dynasoar. O foco dessa solução está em escolher dinamicamente o provedor de infraestrutura e a máquina em que um serviço web deve ser implantado considerando os requisitos não-funcionais do serviço web. Isso é realizado não somente para a primeira implantação do serviço web, mas também para as replicações que ocorrem quando as instâncias existentes não conseguem mais atender aos requisitos não-funcionais. Uma desvantagem dessa abordagem é a carga adicional gerada pela análise dos requisitos não-funcionais a cada troca de mensagens efetuada pelos serviços implantados. Embora Watson et al. avaliem o desempenho de serviços operando com o sistema proposto, não avaliam o desempenho ou escalabilidade do próprio processo de implantação.
+
+Outro trabalho sobre implantação de componentes em um ambiente de grade é o de Lacour et al. Lacour2004Corba, no qual a escolha do nó de implantação é feita dinamicamente de acordo com alguns requisitos do componente. Uma desvantagem desse trabalho é o desenvolvimento específico para componentes CORBA, além de não haver preocupação com falhas no sistema distribuído.
+
+Embora os trabalhos de Watson et al. e Lacour et al. avancem na problemática da distribuição dos serviços, nenhum dos trabalhos analisados considera as potencialidades e desafios dos ambientes de computação em nuvem Amazon2012Practices, que oferecem serviços de infraestrutura para a gerência de recursos virtualizados. Portanto, em nossa pesquisa, procuramos dar um passo além ao explorar como o ambiente de computação em nuvem pode trazer benefícios ao processo de implantação, bem como ao considerar as restrições que esses ambientes impõem, como a falta de previsibilidade dos endereços das máquinas em tempo de configuração do serviço e as falhas da própria plataforma de nuvem.
+
+Uma tendência recente para se atingir os objetivos de uma implantação simples, rápida, automatizada e escalável é a utilização de serviços de computação em nuvem que oferecem Plataforma como um Serviço (PaaS), que se encarregam não só da implantação da aplicação, como também do processo de criação e configuração do ambiente. O Cloud Foundryhttp://www.cloudfoundry.com/} é um PaaS de código aberto, podendo ser instalado na infraestrutura de uma organização para a oferta de serviços a clientes internos ou externos. O Cloud Foundry oferece suporte a uma grande diversidade de linguagens, arcabouços e bancos de dados a serem utilizados pela aplicação. Operadores do Cloud Foundry podem configurá-lo para utilizar diferentes provedores de Infraestrutura como um Serviço (IaaS), desacoplando as escolhas de IaaS e PaaS, o que é também adotado no ee. 
+
+O Cloud Foundry tem como objetivo facilitar a implantação de aplicações web, e não a implantação de composições de serviços. Durante a implantação de uma aplicação pelo Cloud Foundry, o operador pode realizar ligações entre a aplicação e serviços tipicamente utilizados por aplicações web, como bancos de dados, que serão criados e configurados pela própria plataforma. Essa escolha deve ser feita dentro de um conjunto fechado de serviços oferecidos (MySQL, MongoDB, etc.). No entanto, ao implantar-se composições de serviços é preciso estabelecer também ligações entre os próprios serviços sendo implantados, cenário não considerado pelos atuais provedores de PaaS.
+
+TOSCA (Topology and Orchestration Specification for Cloud Applications)
+é um padrão OASIS que utiliza a abordagem guiada por modelos para
+o gerenciamento de recursos e serviços na nuvem Wettinger2013Tosca.
+Ao utilizar o TOSCA, seu usuário define um ``modelo de serviço'' (service template)
+para especificar, em alto nível, como os serviços são implantados e conectados a outros serviços.
+Contudo, artefatos de implementação ainda são necessários
+para implementar as operação definidas nos modelos.
+A ênfase dada nos trabalhos sobre o TOSCA é na portabilidade
+para que a implantação de um serviço possa utilizar diferentes
+componentes de middleware Wettinger2013ExtensiblePaaS 
+ou diferentes gerenciadores de configuração Wettinger2013Tosca.
+Essa abordagem torna o TOSCA um sistema altamente flexível e portável,
+mas obriga o desenvolvedor a definir os
+artefatos de implementação e a descrever como eles se
+relacionam às operações definidas no modelo.
+Com o CHOReOS ee, o ambiente de execução e a gerência de configuração são
+abstraídos de forma que os usuários não precisam se preocupar
+com os componentes de middleware utilizados para executar os serviços,
+e nem sequer precisam saber que o Chef é o gerenciador de configuração
+utilizado pelo EE.
+
+Jujuhttps://juju.ubuntu.com/} é uma ferramenta 
+de configuração e implantação de serviços criada pela empresa Canonical.
+Os conceitos utilizados no Juju se assemelham muito ao TOSCA.
+``Charms'' encapsulam as configurações da aplicação,
+definem como serviços são implantados, como serviços
+são conectados uns aos outros e como eles escalam.
+A cada operação definida para um serviço na charm
+também deve ser associado um artefato que implemente a operação,
+normalmente um shell script.
+Uma das limitações apontadas para o Juju é o fato
+de a ferramenta e suas charms serem altamente acopladas ao
+sistema operacional Ubuntu.
+Embora a versão atual do nosso CHOReOS ee também utilize o Ubuntu
+como sistema operacional dos nós alvos,
+a utilização do Chef como gerenciador de configuração
+facilita a eventual utilização de outros sistemas operacionais,
+uma vez que as receitas Chef abstraem as peculiaridades
+do sistema operacional utilizado.
+
+Um arcabouço voltado especificamente para a implantação e encenação
+de coreografias é o Open Knowledge Besana2008OpenKnowledge,Siebes2007OK.
+Nesse arcabouço, o projetista da coreografia define o fluxo global
+de troca de mensagens entre os serviços em uma notação formal
+(Lightweight Coordination Calculus).
+A partir dessa descrição, o arcabouço gera coordenadores
+para cada participante, decentralizando a lógica de coordenação.
+Assim, o desenvolvedor do serviço implementa apenas a lógica de negócio,
+uma vez que a lógica de coordenação está desacoplada da implementação do serviço.
+O arcabouço Open Knowledge possui uma ênfase no problema
+da descoberta dinâmica de pares que satisfaçam os requisitos
+da interação projetada. Uma desvantagem, porém,
+é o forte acoplamento necessário na implementação dos serviços participantes
+ao arcabouço para que a lógica de coordenação possa ser fornecida ao serviço.
+Uma consequência desse forte acoplamento é que os serviços que
+utilizam o Open Knowledge devem necessariamente ser escritos em Java.
+Outra limitação, do ponto de vista da automação do processo de implantação,
+é que a infraestrutura do Open Knowledge deve já estar disponível nos nos alvos
+antes da implantação dos serviços, pois a implantação é realizada nessa infraestrutura.
+
+A Tabela tab:relacionados realiza uma comparação entre os estudos e ferramentas apresentados nesta seção em relação a características presentes em nossa solução, o ee. 
+As características, que formam as colunas da tabela, são as seguintes:
+
+description
+ADL: especificação da implantação feita de forma declarativa por meio de alguma linguagem de descrição arquitetural;
+Escala: implantação escalável e capaz de lidar com os problemas típicos de sistemas de grande escala, principalmente com a falha de componentes de terceiros;
+Composições: solução voltada para a implantação de composições de serviços, ou de componentes; a principal diferenciação desse item se refere ao enlace entre os serviços implantados;
+Nuvem: consideração das potencialidades e desafios trazidos por ambientes de computação em nuvem.
+Heterogeneidade: a solução possibilita a implantação de serviços desenvolvidos com diferentes tecnologias e que utilizem diferentes protocolos de interoperabilidade.
+description
+
+Os símbolos na tabela possuem os seguintes significados: 
+
+description
+}: possui a característica, 
+x: não possui a característica, 
+-: a característica não se aplica e 
+?: não foi possível determinar. 
+description
+
+!t
+center
+    l c c c c c c
+	 hline
+	 Heterog. \ \hline
+    Chef & x  & - & - & - & - \
+    Capistrano & x  & - & - & - & - \
+    Nix Dolstra2005Configuration & x  & x & checkmark & x  & - \\
+    Darwin/Regis Magee1994Regis & checkmark  & x & \checkmark & x & x \\
+    Olan Balter1998Olan & checkmark & x & \checkmark & x & x  \\
+    quema2004hierarchical & checkmark & \checkmark & \checkmark & x & x \\
+    Akkerman2005J2EE & checkmark & x & \checkmark & x & x \\
+    Lacour2004Corba & checkmark & x & \checkmark & x & x \\
+    Dynasoar Watson2006Dynasoar & - & x & x & x & ? \
+    Open Knowledge Besana2008OpenKnowledge & checkmark & x & \checkmark & x & x \\
+    TOSCA Wettinger2013Tosca & checkmark & x & \checkmark & \checkmark & \checkmark \\
+	Juju & - & x & x & checkmark & \checkmark \\
+    Cloud Foundry & - & ? & x & checkmark & \checkmark \\
+    ee   & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+    
+  Tabela comparativa com os trabalhos relacionados.
+   tab:relacionados
+center
+
+
+
+
+Solução proposta: o ee
+cap:solucao
+
+O CHOReOS ee (EE) é um middleware implementado no contexto deste trabalho.
+Uma vez instanciado, ele fornece serviços que automatizam
+a implantação de composições de serviçossec:composicoes, utilizamos os termos 
+``composição de serviço'' e ``coreografia'' indistintamente.} 
+em ambientes de computação em nuvem,
+funcionando no modelo denominado Plataforma como um Serviço (PaaS).
+O EE possui funcionalidades e características que foram projetadas para auxiliar o
+implantador de composições de grande escala.
+
+Para utilizar o EE, o implantador, usuário do EE, descreve a composição a ser implantada
+na Linguagem de Descrição Arquitetural do EE, uma especificação de alto nível que
+diz como. 
+Finalmente, o usuário deve fornecer essa descrição ao EE por meio de sua API remota.
+
+As funcionalidades fornecidas pelo ee ao usuário são as seguintes:
+
+
+ API para automatizar a implantação de composições de serviços em ambientes de computação em nuvem.
+ Criação automatiza de infraestrutura virtualizada (nós na nuvem).
+ Implantação escalável de coreografias de grande escala.
+ Suporte a implantação multi-nuvem.
+ Utilização de serviços de terceiros na composição a ser implantada.
+ Implantação automatizada de infraestrutura de monitoramento dos recursos utilizados.
+ Remoção automática de recursos da nuvem não utilizados.
+ API para escalamento vertical e horizontal.
+
+
+Para a implementação do arcabouço Enactment Engine contribuíram os alunos de pós-graduação Daniel Cuckier, Carlos Eduardo do Santos, Felipe Pontes, Alfonso Phocco, Nelson Lago, Paulo Moura, Thiago Furtado e demais colegas dos projetos Baile e CHOReOS. O ee é software livre 
+sob a Licença Pública Mozilla 2http://www.mozilla.org/MPL/2.0/} 
+e está disponível em http://ccsl.ime.usp.br/enactmentengine. 
+
+Neste capítulo, apresentamos a arquitetura e aspectos de implementação do ee.   
+Destacamos ao final do capítulo
+como as decisões arquiteturais e de implementação auxiliam o implantador
+a superar os desafios presentes na implantação de composições de grande escala.
+Alguns aspectos aqui discutidos são tratados em alto nível,
+priorizando o que é importante para o entendimento das contribuições
+acadêmicas deste trabalho.
+Detalhes técnicos sobre o middleware, principalmente do ponto de vista do
+usuário, são encontrados no guia do usuário (Apêndice ape:user_guide).
+
+Execução do ee
+
+O administrador.
+Uma vez em execução, a instância do EE fornece serviços que podem ser consumidos por algum sistema cliente, desenvolvido
+e operado pela figura do implantador. O administrador e o implantador podem pertencer à mesma organização,
+mas é possível que o administrador forneça o EE como um serviço (SaaS) a terceiros, cobrando por sua utilização.
+Para esses terceiros, a vantagem seria evitar o trabalho de instalação e configuração do EE.
+O ambiente de execução do EE é exibido na Figura fig:arquitetura e os componentes envolvidos são descritos a seguir.
+
+ht
+
+arquitetura.pdf
+Ambiente de execução do choreos \ee.
+fig:arquitetura
+
+
+
+
+provedor de infraestrutura é um serviço capaz de criar e destruir máquinas virtuais 
+(também chamadas de nós), normalmente em um ambiente de computação em nuvem. 
+Atualmente, o ee oferece suporte para o Amazon EC2 e o OpenStack.
+
+agente de configuração é executado nos nós alvos
+e dispara os scripts que implementam as fases de preparação
+e inicialização da implantação dos serviçossec:implantacao}..
+O http://docs.opscode.com/chef_solo.html}
+como seu agente de configuração.
+
+cliente do ee é um programa ou \script desenvolvido
+pelo implantador, no qual a especificação da composição de serviços é definida.
+Esse programa deve enviar a especificação da composição para o ee
+por meio das operações REST fornecidas pelo ee.
+Uma opção para implementar essas chamadas é utilizar
+a biblioteca Java por nós fornecida, que abstrai os detalhes
+das chamadas REST.
+
+ee implanta os serviços de uma composição
+com base na especificação enviada pelo cliente.
+O processo implementado pelo ee para efetuar a implantação
+é descrito na Figura fig:processo, e explicado logo em seguida. 
+
+ 
+
+A Figura fig:processo exibe o processo de implantação de composições
+de serviços implementado pelo ee:
+
+ht
+
+processo.pdf
+Processo de implantação implementado pelo ee.
+fig:processo
+
+
+enumerate
+
+Requisição do cliente: o EE recebe a especificação da composição a ser implantada.
+O formato dessa especificação é descrito na Seção sec:spec.
+
+Seleção/criação de nós: para cada serviço especificado, o EE seleciona um ou mais nós 
+onde o serviço será implantado (um serviço pode ter várias réplicas implantadas). 
+Se preciso, o EE requisitará ao provedor de infraestrutura a criação de novos nós.
+Esse processo de seleção/criação de nós pode levar em conta os requisitos não-funcionais
+dos serviços a serem implantados.
+A política de seleção de nós é definida pelo administrador do EE, sendo que novas políticas podem ser criadas.
+
+Geração de scripts: para cada serviço da composição, 
+o EE gera dinamicamente os scripts de preparação do ambiente e inicialização do serviço. 
+O EE acessa então o nó alvo selecionado para o serviço,
+e configura o agente de configuração desse nó para executar o script gerado.
+
+Atualização dos nós: para cada nó alvo que receberá serviços da composição,
+o EE dispara a execução do agente de configuração, que por sua vez executa os scripts 
+de preparação e inicialização dos serviços atribuídos ao nó.
+Dessa forma, os serviços entram em estado de execução na infraestrutura alvo.
+
+Enlace entre serviços: após os serviços terem sido iniciados, 
+para cada relação de dependência na coreografia (p.ex: serviço TravelAgency
+depende do serviço Airline), o EE fornece o endereço da dependência 
+(p.ex: http://airline.com/ws) ao serviço dependente.
+Mais informações sobre o processo de enlace são fornecidas na Seção sec:ligacao.
+
+Resposta para o cliente: o EE responde ao seu cliente,
+informando em que nó cada serviço foi implantado
+e as URIs de acesso a cada serviço da composição.
+O formato da resposta é descrito na Seção sec:spec.
+
+enumerate
+
+Há também alguns outros passos opcionais que não descrevemos por estarem fora
+do escopo deste trabalho. Um exemplo é a implantação da infraestrutura de monitoramento
+dos nós alvos. O agente de monitoramento 
+(Gangliahttp://ganglia.sourceforge.net})
+é implantado nos nós alvos pelo EE e
+coleta valores de uso de CPU, memória e disco dos nós.
+
+Especificação da composição de serviços
+sec:spec
+
+O ee recebe de seus clientes a especificação da composição na forma 
+de uma descrição arquitetural com as informações necessárias e suficientes para 
+que se possa realizar a implantação da composição. 
+O EE também devolve, ao seu cliente, informações sobre o resultado da implantação, 
+em especial as localizações de acesso aos serviços. As descrições da composição e de sua 
+especificação são feitas por meio de uma linguagem de descrição arquitetural (ADL), 
+assim como a dos trabalhos vistos no Capítulo cap:relacionados. 
+A ADL do EE define a estrutura de classes apresentada na Figura fig:adl. 
+Em nossa implementação, representações de instâncias desse modelo 
+são trocadas entre o EE e seu cliente em formato XML. 
+A descrição detalhada de cada atributo e o esquema XML da linguagem
+são apresentados no guia do usuário (Apêndice ape:user_guide).
+
+!h
+  
+  adl.pdf 
+  Estrutura da descrição arquitetural de uma coreografia.
+  fig:adl 
+
+
+A especificação da coreografia fornece todas as informações para a implantação da composição,
+possibilitando que o implantador descreva em alto-nível apenas o que deve ser implantado,
+e não os detalhes de implementação de como deve ser implantado.
+Assim, a escrita de uma especificação declarativa se contrapõe à escrita de um script,
+no qual normalmente são descritos os passos de como o sistema deve ser implantado.
+
+Na ADL do EE, para cada serviço, especifica-se de onde o pacote do serviço pode ser baixado, 
+qual o tipo do pacote (WAR, JAR, etc.), quantas réplicas devem ser implantadas, etc.
+Pode-se especificar também a existência de serviços
+de terceiros que já estão disponíveis na Internet e que devem
+ser consumidos por serviços da composição.
+
+O implantador pode escrever a especificação da coreografia diretamente em XML
+ou utilizando objetos Java (POJOs).
+A Listagem lst:service_spec apresenta um trecho da especificação escrita em Java,
+no qual um dos serviços participantes é definido,
+incluindo sua dependência de outro serviço participante.
+
+lstset{
+language=Java,
+}
+
+{scriptsize
+lst:service_spec}
+airportBusCompanySpec =
+  new DeployableServiceSpec(AIRPORT_BUS_COMPANY_NAME, 
+  							ServiceType.SOAP, 
+  							PackageType.COMMAND_LINE, 
+  							resourceImpact, 
+  							serviceVersion, 
+  							AIRPORT_BUS_COMPANY_JAR_URL, 
+  							AIRPORT_BUS_COMPANY_PORT, 
+  							AIRPORT_BUS_COMPANY_ENDPOINT, 
+  							numberOfReplicas);
+
+airportBusCompanySpec.setRoles(
+  Collections.singletonList(AIRPORT_BUS_COMPANY_ROLE));
+
+airportBusCompanySpec.addDependency(
+  new ServiceDependency(AIRPORT_NAME, AIRPORT_ROLE));
+lstlisting
+}
+
+Enlace entre serviços
+sec:ligacao
+
+Em uma composição de serviços, alguns serviços se comunicam com outros serviços para implementar o fluxo de negócio.
+Quando um serviço $A$ invoca um serviço $B$, dizemos que o serviço $A$ depende do serviço $B$. 
+Dizemos também que $A$ é dependência de $A$,
+ou ainda que $A$ é provedor de $A$.
+Para que uma coreografia funcione, cada serviço precisa saber o endereço de suas dependências;
+o processo pelo qual os serviços recebem os endereços de suas dependências é denominado enlace.
+
+Segundo Dearle http://spring.io}, no qual o middleware passa ao componente referências de suas dependências. No entanto, Dearle ainda alega que há uma falta de arcabouços para a aplicação da injeção de dependência de forma distribuída.
+
+A solução adotada no Magee1996Dynamic, Magee1994Regis. 
+Note que nessa solução, a ``inteligência'' em determinar quais serviços satisfazem as necessidades de outros serviços está na camada que produz a entrada do EE.
+As dependências entre os serviços são definidas na especificação da coreografia,
+pela lista de objetos ServiceSpec.
+Cada serviço na coreografia que possua dependências deve implementar uma operação denominada setInvocationAddress. 
+Essa operação, por nós padronizada, recebe como argumentos as seguintes informações sobre a dependência: 
+
+description
+
+Papel: é um nome associado a uma interface, ou seja, define as operações fornecidas por um serviço. A associação entre o nome e 
+a interface deve ser previamente acordada pelas organizações participantes da coreografia e a implementação do serviço
+deve estar ciente dos nomes e interfaces de suas dependências.
+
+Nome: é um nome que identifica univocamente o serviço no contexto de uma coreografia. Serve para que o serviço dependente possa 
+diferenciar serviços com o mesmo papel. Exemplo: se um serviço de pesquisa de preços utiliza serviços do papel supermercado,
+ele utilizará o nome do serviço para diferenciar os serviços de supermercados diferentes. Com essa semântica, o EE pode atualizar
+os endereços de um supermercado com uma nova chamada ao setInvocationAddress, sem que o serviço dependente considere
+que se trata de um novo supermercado.
+
+Endereços: são as URIs das réplicas pelas quais pode-se acessar a dependência.
+
+description
+
+Assim, em uma coreografia em que, por exemplo, um serviço de agência de viagem dependa do serviço de uma companhia aérea, o EE executa a seguinte invocação ao serviço da agência de viagens :  'http://nimbus.com/ws/' ]). 
+
+A descrição fornecida até aqui é abstrata e independente de tecnologia.
+A definição exata da assinatura da operação deve ser definida de acordo com a tecnologia utilizada.
+A versão atual do EE já define essa assinatura para serviços SOAP.
+Para detalhes, ver o guia do usuário (Apêndice ape:user_guide).
+
+Apesar dos benefícios da solução adotada no EE, Dearle setInvocationAddress e conhecer os papéis de suas dependências, o que implica em conhecer as operações de cada papel. Dessa forma, nossa solução não restringe o serviço a nenhuma linguagem e não impede a utilização do serviço em outro middleware.
+
+Mapeamento dos serviços na infraestrutura alvo
+sec:mapeamento
+
+Em algum momento do processo de implantação, é preciso definir em que nó cada instância de serviço será hospedado.
+Chamamos de planejamento, mapeamento, ou seleção de nós, essa fase do processo de implantação.
+Na forma mais simples de seleção de nó, o IP do nó alvo é definido estaticamente no script de implantação do serviço.
+O trabalho de Magee e Kramer brokers personalizados.
+
+Para avançar em relação às limitações dos trabalhos anteriormente citados, 
+a seleção de nós no ee
+considera os requisitos de dinamicidade do ambiente de nuvem, que nos impede de conhecer os IPs das máquinas 
+em tempo de desenvolvimento ou configuração do script de implantação.
+O EE utiliza um seletor de nós automatizado que escolhe em tempo de implantação os nós alvos para um dado serviço.
+A escolha de uma política ótima para o seletor é assunto de diversas pesquisas.
+Portanto, adotamos aqui uma abordagem extensível, com o fornecimento inicial de políticas como
+``sempre cria um novo nó'' ou ``cria nós até um limite, e depois faz rodízio entre eles''.
+
+Interface do ee
+sec:interface
+
+Os clientes do ee utilizam suas funcionalidades por meio de uma API REST, que é descrita nesta seção. 
+Por se tratar de uma API REST, o cliente pode ser implementado em qualquer linguagem 
+e ambiente que possua alguma biblioteca HTTP. 
+Também disponibilizamos um cliente na forma de uma biblioteca na linguagem Java, 
+tornando o uso do EE ainda mais simples para os usuários da linguagem Java, 
+atualmente uma das mais utilizadas na indústria. 
+Seguimos agora com uma descrição de alto nível de cada uma das operações disponíveis 
+na API REST do EE. Detalhes da API, como os códigos de estado HTTP retornados, 
+são fornecidos no guia do usuário (Apêndice ape:user_guide). 
+
+description
+
+Criar coreografia: registra a especificação de uma coreografia no EE. 
+Essa especificação é a descrição arquitetural da coreografia, 
+estruturada de acordo com a classe fig:adl). 
+Essa operação não realiza a implantação da coreografia.
+
+Obter coreografia: obtém informações sobre uma coreografia registrada no EE. 
+Essas informações referem-se à especificação da coreografia e ao estado da implantação 
+de seus serviços, como os nós em que os serviços foram implantados.
+
+Implantar coreografia: realiza a implantação de uma coreografia já registrada no EE. 
+Ao fim do processo, detalhes do resultado da implantação são retornados de forma estruturada 
+de acordo com a classe fig:adl).
+A implementação dessa operação deve possuir duas importantes propriedades: 
+1) a falha na implantação de parte da coreografia não deve interromper a implantação do resto da coreografia; 
+2) a operação deve ser idempotente, ou seja, uma nova requisição para a implantação da mesma 
+coreografia não deve reimplantar os serviços já implantados, 
+mas somente aqueles cujas implantações falharam na última execução. 
+Para que serviços sejam atualizados, é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço.
+
+Atualizar coreografia: registra uma nova versão de uma coreografia no EE. 
+Os serviços atualizados na nova versão da coreografia devem possuir 
+um novo número de versão em suas especificações. 
+Essa operação, assim como a criação da coreografia, não implanta a nova coreografia. 
+Para isso, é preciso invocar novamente a operação de implantação.
+
+A atualização de serviços não é o foco de nosso trabalho.
+Dessa forma, em nosso trabalho a atualização dos serviços será feita da forma mais simples possível: 
+apenas substituindo o serviço existente por sua nova versão. 
+Contudo, tal procedimento pode provocar falhas na comunicação entre os serviços de uma coreografia. 
+Vários trabalhos Kramer1990Philosophers, Vandewoude2007Tranquility, Xiaoxing2011VersionConsistent 
+estudam o processo de atualização dinâmica, pelo qual as transações correntes 
+são preservadas durante a atualização de um serviço. 
+Embora não esteja no escopo de nosso trabalho, esperamos que a arquitetura do EE possa ser 
+evoluída para que a operação de atualização de coreografia utilize procedimentos seguros de 
+atualização dinâmica, dentre os quais destacamos a proposta de Xiaoxing et al. Xiaoxing2011VersionConsistent.
+
+description
+
+Na Listagem lst:java_chor_enactment, fornecemos um exemplo de 
+um programa Java invocando o EE para implantar uma coreografia.
+Nesse exemplo, a classe MyChorSpec encapsula a 
+especificação da coreografia.
+
+lst:java_chor_enactment}
+public class Deployment {
+
+    public static void main(String[] args) throws DeploymentException, ChoreographyNotFoundException {
+
+        final String EE_URI = "http://myhost:9102/enactmentengine";
+        EnactmentEngine ee = new EnactmentEngineClient(EE_URI);
+        ChoreographySpec chorSpec = MyChorSpec.getChorSpec();
+
+        String chorId = ee.createChoreography(chorSpec);
+        Choreography chor = ee.deployChoreography(chorId);
+
+        System.out.println(chor); // vamos ver o que aconteceu...
+    }
+}
+lstlisting
+
+
+Pontos de extensão
+sec:extensao
+
+Para lidar com as particularidades do ambiente de cada organização, o Enactment Engine fornece alguns pontos de extensão. Esses pontos de extensão são classes que desenvolvedores devem escrever na linguagem Java e que, de acordo com as configurações do sistema, poderão ser executadas pelo arcabouço.
+Nesta seção descreveremos os pontos de extensão de nosso middleware, 
+mostrando as interface associadas a cada um deles.
+Para mais detalhes sobre todos os passos necessários para implementar
+uma extensão, verificar o guia do usuário (Apêndice ape:user_guide).
+
+description
+
+lst:cloud_provider) 
+é possível acrescentar ao EE o suporte a novos provedores de infraestrutura. 
+Atualmente, o EE oferece suporte para o serviço EC2 do AWS e o OpenStack como provedores de infraestrutura.
+Cada um deles possui sua própria implementação de CloudProvider.
+
+frame=trbl, label=lst:cloud_provider, caption=Interface CloudProvider.
+public interface CloudProvider {
+
+  public String getCloudProviderName();
+
+  public CloudNode createNode(NodeSpec nodeSpec) throws NodeNotCreatedException;
+
+  public CloudNode getNode(String nodeId) throws NodeNotFoundException;
+
+  public List<CloudNode> getNodes();
+
+  public void destroyNode(String id) throws NodeNotDestroyed, NodeNotFoundException;
+
+  public CloudNode createOrUseExistingNode(NodeSpec nodeSpec) throws NodeNotCreatedException;
+
+  public void setCloudConfiguration(CloudConfiguration cloudConfiguration);
+
+}
+lstlisting
+
+Os métodos da interface CloudProvider referem-se basicamente às operações de CRUD de máquinas virtuais
+em uma infraestrutura de nuvem. Além disso, a implementação pode acessar configurações específicas 
+através do objeto cloudConfiguration. Tais configurações podem incluir 
+credenciais de acesso de uma conta de nuvem (quem paga pelos nós), tipo das instâncias de VMs a serem criadas (afeta preço),
+chave de acesso aos nós criados, etc. A Listagem lst:cloud_configuration apresenta um exemplo de configurações
+fornecidas à implementação AmazonCloudProvider. 
+Essas informações são definida pelo administrador em um arquivo de configuração do EE.
+
+AmazonCloudProvider}.
+LEO_AWS_ACCOUNT.CLOUD_PROVIDER=AWS
+LEO_AWS_ACCOUNT.AMAZON_ACCESS_KEY_ID=secret!
+LEO_AWS_ACCOUNT.AMAZON_SECRET_KEY=secret_too!
+LEO_AWS_ACCOUNT.AMAZON_KEY_PAIR=leofl
+LEO_AWS_ACCOUNT.AMAZON_PRIVATE_SSH_KEY=/home/leonardo/.ssh/leoflaws.pem
+LEO_AWS_ACCOUNT.AMAZON_IMAGE_ID=us-east-1/ami-3337675a
+LEO_AWS_ACCOUNT.AMAZON_INSTANCE_TYPE=m1.medium
+lstlisting
+ 
+Para facilitar o desenvolvimento de novas implementações,
+nós fornecemos uma implementação base, a classe JCloudsCloudProvider.
+Ela utiliza a biblioteca JCloudshttp://jclouds.incubator.apache.org/},
+que já é apta a acessar uma ampla gama de provedores de infraestrutura disponíveis no mercado.
+Essa implementação base foi utilizada para a implementação das classes 
+OpenStackKeyStoneCloudProvider,
+que contaram, respectivamente, com 79 e 96 linhas de código-fonte.
+
+
+lst:node_selector)
+define uma nova política de alocação de serviços em nós da nuvem, que pode levar em conta os requisitos não-funcionais do serviço e 
+propriedades dos nós à disposição.
+Algumas políticas já fornecidas são ``sempre cria um novo nó'' e 
+``cria novos nós até um certo limite, depois faz rodízio entre eles''.
+
+frame=trbl, label=lst:node_selector, caption=Interface NodeSelector acompanhada de sua classe pai Selector.
+public interface NodeSelector extends Selector<CloudNode, DeployableServiceSpec> {
+}
+
+public interface Selector<T, R> {
+    public List<T> select(R requirements, int objectsQuantity) throws NotSelectedException;
+}
+lstlisting
+
+As implementações de NodeSelector devem criar novos nós ou devolver nós já cadastrados no EE.
+Os requisitos não-funcionais podem ser acessados pelo objeto deployableServiceSpec fornecido pelo
+middleware à implementação do NodeSelector.
+A implementação deve tomar especial cuidado com concorrência, já que o EE mantêm apenas uma instância
+por tipo de NodeSelector. Essa característica é importante para que políticas como
+rodízio de nós funcionem adequadamente.
+
+
+Tipos de pacotes de serviços: um serviço pode ser distribuído por diferentes tipos de pacotes, como em um JAR ou em um WAR, por 
+exemplo. Como existem muitas outras opções, é preciso que esse seja um ponto de flexibilidade. Para cada novo tipo de pacote, escreve-se 
+um modelo de um cookbook possui vários 
+arquivos, mas os principais são os arquivos da receita, que é o script de instalação em si, e o arquivo que define \emph
+{atributos} a serem usados nas receitas. A Listagem cookbook modelo
+para implantação de WARs, enquanto que a Listagem cookbook.
+
+newpage
+frame=trbl, label=lst:recipe_template, caption=Receita modelo para a implantação de WARs.
+include_recipe "apt" 
+include_recipe "tomcat::choreos"
+
+remote_file "war_file" do
+   source "#{node['CHOReOSData']['serviceData']['$NAME']['PackageURL']}"
+   path "#{node['tomcat']['webapp_dir']}/$NAME.war"
+   mode "0755"
+   action :create_if_missing
+end
+
+file "#{node['tomcat']['webapp_dir']}/$NAME.war" do
+   action :nothing
+end
+lstlisting
+
+frame=trbl, label=lst:attributes_template, caption=Arquivo modelo de atributos para a implantação de WARs.
+default['CHOReOSData']['serviceData']['$NAME']['PackageURL'] = "$PACKAGE_URL"
+lstlisting
+
+Os arquivos listados acima são modelos não executáveis, uma vez que apenas em tempo de implantação 
+os símbolos $PACKAGE\_URL serão substituídos por valores adequados.
+Essa substituição é feita pelo próprio EE.
+Ou seja, criar um novo modelo de cookbok Chef
+utilizando adequadamente os símbolos $PACKAGE\_URL.
+O símbolo $PACKAGE\_URL será substituído pela URL do pacote do serviço,
+enquanto que o $NAME será substituído por uma identificação única dentro do EE.
+
+A complexidade de se criar uma nova receita Chef vai depender do tipo de tecnologia utilizada,
+mas a comunidade Chef já fornece diversas receitas prontas para a implantação dos ambientes
+de execução mais populares. Além disso, pode-se encontrar também na Internet
+exemplos de implantação de serviços utilizando as tecnologias mais populares.
+
+
+Tipos de serviços: o enlace entre serviços de uma composição depende da passagem de endereços que é feita do ee para os 
+serviços. Para isso, o EE precisa invocar a operação setInvocationAddres dos serviços. A implementação de tal invocação se dá 
+de forma diferente de acordo com o tipo de tecnologia de serviço empregada (SOAP ou REST, por exemplo). 
+A implementação da interface setInovcationAddress é invocada. 
+Atualmente, o EE possui uma implementação de ContextSender, utilizada para serviços SOAP.
+Nota-se que, para cada nova implementação, é preciso definir uma convenção para a assinatura sintática da operação texttt
+{setInvocationAddres}.
+
+frame=trbl, label=lst:context_sender, caption=Interface ContextSender.
+public interface ContextSender {
+    public void sendContext(String serviceEndpoint, 
+                            String partnerRole, 
+                            String partnerName, 
+                            List<String> partnerEndpoints) throws ContextNotSentException;
+}
+lstlisting
+
+description
+
+Tratamento de falhas de terceiros
+sec:falhas
+
+Seguindo recomendações gerais feitas por Nygard Nygard2009Release,
+adotamos no ee uma abordagem simples para tratar falhas externas.
+A lógica de invocação a sistemas externos foi encapsulada em uma classe, 
+chamada fig:invoker).
+Toda vez que se deve acessar um sistema externo, o EE utiliza um invoker.
+O Invoker recebe os seguintes parâmetros:
+uma tarefa, que é uma rotina que se comunicará com algum sistema externo,
+a quantidade de tentativas para executar a tarefa,
+o intervalo entre as tentativas.
+
+Uma instância do Invoker deve ser configurada 
+de acordo com sua tarefa (por exemplo, nós descobrimos que três tentativas
+não é o suficiente para transferência de arquivos por SCP).
+Em vez de ter esses valores fixados no código-fonte, eles são explicitamente
+ajustados em arquivos de configuração.
+Desta forma, pode-se ajustar esses valores de acordo com 
+as características do ambiente alvo.
+Portanto, essa abordagem é também uma estratégia para colaborar 
+com a heterogeneidade de plataformas e tecnologias.
+
+ht
+
+invoker.pdf
+Invoker} é parametrizada com uma tarefa, uma quantidade de tentativas, um timeout por tentativa e um intervalo de tempo entre as tentativas.
+fig:invoker
+
+
+As invocações externas tratadas pelo Invoker no EE são as seguintes:
+
+
+ Criação de nó alvo.
+ Conexão SSH.
+ Envio de arquivo por SCP.
+ Instalação do Chef em nó alvo. 
+ Geração de receitas Chef em nó alvo.
+ Execução de receitas em nó alvo.
+setInvocationAddress na fase de enlace.
+
+
+Mais informações sobre a flexibilidade oferecida pelo
+Invoker, incluindo possibilidade de extensão para adaptação dinâmica
+dos valores de configuração dos invokers,
+podem ser vistas na Seção sec:implementacao.
+
+O EE adota uma estratégia particular par lidar com falhas durante a criação de novas VMs.
+Quando uma requisição chega, o EE tenta criar um novo nó.
+Se a criação falha ou demora muito, um nó já criado é recuperado de uma reserva de nós ociosos.
+Essa estratégia evita que se tenha que esperar novamente pelo tempo de se criar um novo nó.
+A capacidade inicial da reserva é definida por configuração,
+sendo a reserva preenchida cada vez que a criação de um nó é requisitada.
+Se o tamanho da reserva é reduzido e alcança um dado limite inferior,
+a capacidade é aumentada, de forma a tentar evitar uma situação futura
+de se encontrar uma reserva vazia em um momento de necessidade.
+
+A abordagem da reserva impõe um custo extra de se manter algumas VMs a mais
+em execução em um estado ocioso. Contudo, esse problema é tratado
+pelo EE por um algoritmo de gerenciamento distribuído em cada nó:
+se o nó está em um estado ocioso por $N-1$ minutos, onde $N$ é um limite
+de tempo que implica custo adicional, o nó envia ao EE um pedido para 
+sua própria finalização. Assim, depois de um tempo de inatividade no EE,
+a reserva se torna vazia em algum momento, sendo preenchida novamente
+somente quando chegam novas requisições de criação de nós.
+
+
+
+Aspectos gerais de implementação
+sec:implementacao
+
+Nesta seção, descrevemos alguns detalhes sobre a implementação do ee que 
+podem ser especialmente úteis a eventuais desenvolvedores de nosso middleware.
+Leitores não interessados nesses aspectos, podem pular diretamente para a Seção sec:discussao.
+
+description
+
+Linguagem: 
+
+O EE é desenvolvido na linguagem Java 6. 
+Durante o desenvolvimento utilizamos como ambiente de execução
+a JVM OpenJDK 7. O EE é compilado com o Maven 3.
+
+Chef-solo: 
+
+O Chef é o sistema voltado à implantação de sistemas sobre o qual construímos o ee.
+De certa forma, o EE é uma camada de abstração que facilita o uso do Chef.
+A versão utilizada do Chef-Solo é a 11.8.0.
+Em versões anteriores do EE, utilizamos o Chef Server,
+mas acabamos por abandoná-lo, devido ao gargalo na escalabilidade
+que ele gerava, além do pouco benefício funcional que ele agregava.
+As receitas Chef são escritas em uma Linguagem Específica de Domínio (DSL) 
+que permite a livre
+utilização da linguagem Ruby, mas que possui construtos
+específicos para as tarefas de implantação, visando proporcionar
+principalmente mecanismos de idempotência. Um exemplo pode ser
+observado na Listagem lst:chef_idempotente, no qual
+se especifica o download de um arquivo que será
+baixado somente caso ele ainda não exista no sistema alvo.
+
+frame=trbl, label=lst:chef_idempotente, caption=Trecho de receita Chef que ilustra uso de idempotência.
+remote_file "#{node['easyesb']['downloaded_file']}" do
+  source "#{node['easyesb']['url']}"
+  action :create_if_missing
+end
+lstlisting
+
+Invoker
+
+As classes criadas para a utilização do fig:invoker_lib)
+foram projetadas para fornecer uma utilização flexível
+do conceito de invoker.
+Pode-se adotar diferentes estratégias para determinar os
+valores de configuração de um invoker,
+assim como diferentes estratégias de tratamento de erro
+implementada pelo invoker.
+
+ht
+
+invoker_lib.pdf
+Biblioteca de classes para a utilização do Invoker.
+fig:invoker_lib
+
+
+A implementação utilizada de invokers
+utilizando os valores configurados no arquivo invoker.properties.
+Para que os valores de configuração dos invokers
+sejam ajustados dinamicamente,
+pode-se implementar um novo InvokerConfigurator
+que utilize algum algoritmo adaptativo com base no histórico
+de execução dos Invoker.
+
+Pode-se também desejar a criação de novas implementações de Invoker.
+Se, por exemplo, o sistema for portado pra um ambiente mais confiável,
+como um aglomerado utilizando infiniband,
+podemos fazer com que a fábrica de invokers retorne
+um ``invoker curto-circuito'', que nada fará
+a não ser invocar a tarefa especificada.
+Tratamentos mais complexos que o da implementação atual também podem
+ser concebidos.
+A vantagem do desenho utilizado é que essa troca de estratégia
+pode ser realizada sem que seja preciso alterar
+o código dos clientes do invoker.
+
+Apache CXF:
+
+Uma das principais bibliotecas utilizadas pelo EE é o Apache CXF,
+que traz uma série de utilidades para o desenvolvimento de serviços em Java,
+dentre elas a implementação do padrão JAX-RS, voltado ao desenvolvimento de serviços REST.
+
+Configuração por imagem:
+
+Na gerência de configuração de ambientes, há duas abordagens, 
+já discutidas na Seção sec:cloud, sobre como configurar um ambiente:
+1) utilização de imagem de disco já contendo serviço a ser implantado
+e 2) utilização de scripts para instalação do serviço.
+Enquanto a primeira abordagem prima pelo desempenho,
+a segunda opção oferece maior flexibilidade e facilidade de evolução.
+A abordagem padrão no ee é se utilizar a configuração por \scripts (gerados pelo EE).
+Mas o EE fornece a opção de que o administrador con qual imagem será
+utilizada para criar os nós alvos.
+Isso possibilita que o administrador con uma imagem 
+que já contenha o middleware sobre o qual os serviços serão executados.
+Assim, se o administrador sabe que o EE será utilizado para implantar WARs,
+ele pode configurar uma imagem que já contenha o Tomcat instalado.
+Essa abordagem reduz o tempo de implantação.
+
+Testes: 
+
+Os testes de unidade do mvn test.
+Embora o EE contenha vários testes de unidade e isso seja fundamental,
+há uma limitação considerável desses testes, já que executar comandos que
+provoquem efeitos colaterais no sistema operacional não é adequado
+em testes de unidade. Tais ``efeitos colaterais'' são sempre provocados
+durante a execução das receitas Chef.
+
+Por isso, o EE possui também vários testes de integração automatizados,
+no qual máquinas virtuais são utilizados para a execução de testes nos
+quais o EE possa interagir com um sistema operacional.
+Esses testes incluem a implantação completa de coreografias.
+Embora esses testes sejam importantes para validar o correto funcionamento do sistema,
+eles são muito custosos, tanto em termos financeiros quanto de tempo,
+uma vez que máquinas virtuais são criadas durante esses testes.
+
+De nossa experiência neste trabalho, acreditamos que
+o desenvolvimento de tecnologias de máquinas virtuais
+voltadas para o ambiente de teste de aceitação,
+de forma que as máquinas sejam criadas mais rapidamente,
+seja uma contribuição relevante para a prática de desenvolvimento de software.
+
+Idempotência: a implementação da operação implantação de forma idempotente considera
+que falhas podem acontecer no processo de implantação em cada uma dessas três etapas: 
+1) preparação do nó, que consiste na seleção do nó para uma instância, 
+incluindo a transferência dos scripts de implantação para o nó selecionado;
+2) a atualização do nó, que é quando os scripts são executados;
+e 3) o enlace entre serviços.
+
+Caso a falha ocorra na preparação do nó,
+o problema poderá ser corrigido na próxima execução da implantação,
+pois o EE sempre tenta criar $n_{spec} - n_{instancias}$ instâncias do serviço, 
+onde $n_{spec}$ é a quantidade de instâncias que um serviço deve ter
+e $n_{instancias}$ é a quantidade de instâncias que um serviço possui no momento.
+
+Para tratar falhas ocorridas na atualização do nó,
+a cada execução da implantação o processo de atualização
+é executado em todos os nós novamente.
+Nesse passo, o EE está se aproveitando da idempotência dos scripts
+de implantação gerados que, no caso, são receitas Chef.
+As receitas utilizam recursos específicos da linguagem do Chef para implementar a idempotência.
+
+Por fim, falhas no enlace entre serviços são recuperadas pois todas
+as invocações à operação setInvocationAddress são refeitas.
+Nesse passo, a idempotência é garantida pela assinatura idempotente
+da própria operação setInvocationAddress.
+
+Software livre: por fim, todas as bibliotecas 
+utilizadas pelo ee são software livre.
+
+description
+
+Discussão: auxiliando implantações em grande escala
+sec:discussao
+
+Nesta seção discutimos como as características arquiteturais e de implementação do ee
+impactam na implantação de composições de serviço de grande escala.
+Explicamos como o EE contribui para a resolução de cada um dos desafios
+apresentados na Seção sec:desafios.
+Durante a discussão, destacamos como uma solução de middleware traz vantagens
+sobre abordagens ad-hoc de implantação em nosso contexto.
+Essa discussão, apoiada pelo efetivo funcionamento do EE demonstrado por sua avaliação
+(Capítulo cap:avaliacao), fornece também subsídios para a implementação de novos sistemas
+de implantação de grande escala, mesmo que não voltados a composições de serviços,
+e até mesmo para soluções ad-hoc.
+
+description
+
+Processo:
+
+Automatizar a implantação de sistemas 
+é necessário para que a implantação se torne testável, flexível e confiável Hamilton2007InternetScale,
+conforme discutido na Seção sec:implantacao.
+O EE possibilita a automação do processo de implantação
+graças à sua interface remota (REST), que recebe a especificação
+da composição a ser implantada e devolve o resultado do processo.
+Embora uma interface gráfica para a implantação de composições seja viável,
+tal opção não favorece a implantação automatizada,
+e, por isso, não foi priorizada em nosso trabalho.
+
+O uso de uma especificação declarativa,
+como já utilizado em outros trabalhos Balter1998Olan,Magee1996Dynamic,
+também facilita o desenvolvimento do script de implantação
+para cada nova composição a ser implantada.
+Isso ocorre porque, com uso de uma linguagem declarativa, o implantador descreve em alto nível apenas
+como deve ser implantado.
+O uso de linguagens declarativas requer algum tipo de middleware que interprete
+a descrição declarativa, executando as ações adequadas.
+Portanto, soluções ad-hoc dificilmente usariam linguagens declarativas,
+sendo em geral orientadas ao uso de scripts.
+
+O EE segue a tendência atual na implantação de sistemas de grande escala, que é o uso
+de recursos elásticos possibilitados pela computação em nuvem.
+Recursos virtualizados fornecidos pela nuvem potencializam
+a automação do processo de implantação Humble2011Continuous.
+Diferentemente dos cenários estudados em trabalhos anteriores sobre
+implantação de sistemas baseados em componentes Balter1998Olan,Magee1996Dynamic,
+em uma infraestrutura de nuvem, os nós alvos são mais dinâmicos. 
+Não é possível conhecer os endereços IPs
+dos nós alvos quando se está escrevendo a especificação da composição a ser implantada.
+O enlace entre serviços é feita em tempo de execução, o que o EE faz via setInvocationAddress,
+e a política de alocação de nós deve ser flexível, i.e.,
+um serviço não deve ser alocado a um IP estático antes do tempo de implantação.
+O EE possibilita que políticas de alocação de nós
+escolham, em tempo de implantação, em que nós um serviço deve ser implantado,
+considerando inclusive o casamento de requisitos não-funcionais do serviço
+com características dos nós disponíveis.
+
+Falhas de terceiros:
+
+Conforme apresentado na Seção sec:falhas,
+o ee adota duas principais estratégias para lidar com falhas
+de componentes de terceiros ou falhas na rede.
+Essas estratégias são o uso do invoker e da
+reserva de nós ociosos.
+
+O uso dessas estratégias caracterizam a aplicação de interesses transversais
+durante a invocação de um sistema externo.
+Deixar que o middleware implemente interesses transversais
+traz uma maior robustez ao sistema, pois evita-se que o implantador
+esqueça de utilizar tais mecanismos em alguns pontos do sistema.
+
+Outra prática importante relacionada a tolerância a falhas é a 
+Brewer2001GiantScale,Hamilton2007InternetScale.
+Em nosso contexto, degradação suave significa que se um serviço não foi 
+implantado apropriadamente, não é aceitável que o processo de implantação
+de toda a composição seja interrompido.
+Com o EE, se algum serviço não é implantado, o processo de implantação continua,
+e a resposta do EE fornece informações sobre os problemas ocorridos,
+possibilitando ações de recuperação.
+
+Contudo, é importante destacar que a responsabilidade pela degradação suave
+deve ser compartilhada com a implementação dos serviços, uma vez que cada serviço
+deve saber como se comportar na ausência de uma ou mais de suas dependências.
+De outra forma, cada serviço se tornaria um ponto de falha único na composição,
+o que é altamente indesejável.
+
+Por fim, a operação de implantação fornecida pelo EE foi implementada de forma idempotente. 
+Isso garante que caso a resposta à requisição 
+de implantação de coreografia não chegue ao cliente, o cliente possa repetir a requisição
+sem alterar o resultado do processo de implantação. 
+Caso a operação de implantação seja chamada pela segunda vez, o EE não implantará
+instâncias adicionais de um serviço caso ele já esteja corretamente implantado, mas 
+implantará somente as instâncias necessárias para a correta finalização da implantação 
+da coreografia. Mais detalhes sobre a implementação da garantia de idempotência, ver a Seção sec:implementacao.
+
+Disponibilidade:
+
+A especificação de um serviço na ADL do ee possibilita a definição da quantidade de réplicas
+de um serviço a ser implantado pelo EE.
+Essa quantidade inicial de réplicas pode ser alterada pelo implantador em tempo de execução
+com a atualização da especificação da coreografia.
+A definição da quantidade adequada de réplicas, definida pelo implantador, possibilita não só uma melhora
+de desempenho, mas também um aumento na disponibilidade do serviço, já que uma falha em uma réplica
+específica não afeta as outras réplicas disponíveis.
+
+Por questões de simplificação, em nosso trabalho omitimos a relação que serviços possuem com bancos de dados.
+Dessa forma, é importante que versões futuras do EE contemplem a automação da implantação de bancos de dados
+a serem utilizados pelos serviços implantados. Nesse estágio, deverá ser considerado também a replicação
+do banco de dados, e que os dados são utilizados simultaneamente por várias réplicas do serviço.
+
+Escalabilidade:
+
+Para implementar o EE, em matéria de programação concorrente, 
+não foi preciso saber muito mais que coordenar a abertura e encerramento de múltiplas threads,
+além de sincronizar o acesso a recursos compartilhados por diferentes threads.
+Assim, depreendemos que o nível de conhecimento de programação concorrente para implementar
+um processo de implantação escalável seja básico.
+Contudo, programação concorrente por si própria é reconhecida como difícil e propensa a erros. 
+Muitas vezes, linguagens de scripts não oferecem um bom suporte à programação concorrente.
+O tratamento adequado de falhas de terceiros também é um requisito importante
+para a obtenção de um sistema escalável.
+Portanto, implementar concorrência e tratamento a falhas na camada de middlware
+é um passo significativo para facilitar a implementação efetiva de um
+processo de implantação escalável.
+
+Uma lição aprendida na prática para se atingir a escalabilidade
+foi evitar componentes que se tornem gargalos no sistema.
+Em versões anteriores do EE, o Chef Server era um ponto central
+constantemente requisitado por processos em outros nós.
+A mudança da arquitetura do EE da utilização do Chef Server
+para o Chef Solofootnote{Na versão Chef Solo, o EE passa os \scripts de implantação
+diretamente ao nó onde o script será executado. Já com o Chef Server, esses \scripts eram
+primeiro armazenados no Chef Server, para depois serem acessados 
+pelos nós envolvidos na implantação.} 
+foi essencial para se obter desempenhos razoáveis
+com uma grande quantidade de serviços implantados..
+
+No Capítulo cap:avaliacao, apresentamos a avaliação em detalhes da 
+escalabilidade fornecida pelo ee.
+
+Heterogeneidade:
+
+Na Seção sec:extensao, apresentamos os pontos de extensão do ee,
+que possibilitam mais facilmente adaptá-lo para diversos provedores de infraestrutura
+e tecnologias de desenvolvimento e empacotamento de serviços.
+Essa flexibilidade ajuda a superar
+as atuais limitações de soluções de Plataformas como um Serviço
+que restrigem as opções tecnológicas disponíveis aos desenvolvedores de aplicações.
+Essas restrições normalmente se aplicam justamente sobre
+provedor de infraestruturas e a linguagem de programação da aplicação.
+Exemplos: para utilizar o PaaS da Amazon (Elastic Beanstalk) é preciso utilizar
+o IaaS da Amazon, enquanto que para utilizar o PaaS do Google (App Engine)
+é preciso escolher entre as linguagens Java, Pyhton, PHP ou Go.
+
+Oferecer suporte a variações de um padrão é um desafio para sistemas de middleware.
+Adequar um middleware para a particularidade de uma aplicação pode não ser fácil.
+No suporte a diferentes tecnologias, as abordagens ad-hoc encontram realmente um espaço de importância.
+No entanto, uma vez que a adequação para uma nova tecnologia seja feita no middleware,
+o esforço para o desenvolvimento de futuras aplicações utilizando a mesma tecnologia
+se torna menor.
+
+Múltiplas organizações:
+
+O ee possui dois principais mecanismos para implantar composições cujos serviços
+pertencem a diferentes organizações.
+O primeiro mecanismo é a definição da ``conta de nuvem'' a ser usada na implantação de um serviço.
+Essa definição é feita na especificação do serviço e deve bater com configurações
+previamente feitas pelo administrador no EE.
+Uma ``conta de nuvem'' não indica apenas a nuvem alvo (Amazon, por exemplo),
+mas também quem vai pagar pela infraestrutura (qual conta da Amazon será utilizada, por exemplo).
+Uma vez que os serviços de cada organização sejam configurados para serem implantados
+nas contas de nuvem adequadas, o EE irá implantar adequadamente uma composição
+multi-organizacional.
+No entanto essa abordagem ainda apresenta limitações sérias no quesito de segurança,
+pois a configuração da conta de nuvem deve ser fornecida ao administrador do EE,
+que seria uma das organizações ou um terceiro.
+Esse e outros problemas surgem do fato que diferentes organizações teriam que
+compartilhar uma mesma instância do EE.
+
+O segundo mecanismo é a utilização da entidade serviço legado na especificação da composição.
+O serviço legado é um serviço já existente na Internet, e que portanto
+não será implantado pelo EE.
+A utilidade de utilizar esse mecanismo está na fase de enlace
+entre serviços, pois o EE irá fornecer
+aos serviços implantados os endereços dos serviços legados declarados como suas dependências.
+A maior limitação dessa abordagem é a dificuldade em se lidar com a alteração de URIs
+dos serviços legados.
+Quando isso ocorre, uma nova especificação da composição deve ser feita e enviada ao EE,
+mas o problema é saber quando isso deve ser feito.
+
+Considerando as limitações dos mecanismos até aqui implementados,
+divisamos como importante trabalho futuro uma arquitetura de federação entre instâncias do EE.
+Caso um serviço $S_A$, implantado com o EE pela organização $O_A$, dependa de um serviço legado $S_B$,
+também implantado com o EE, mas para a organização $O_B$, a instância do EE em $O_B$ poderia
+manter a instância do EE em $O_A$ informada sobre o estado de $S_B$.
+Para que essa funcionalidade seja implementada é preciso projetar um protocolo
+de comunicação entre instâncias do EE.
+
+Nesse estágio proposto (federação dos sistemas implantadores de cada organização) uma abordagem
+orientada a middleware se torna importante por questão de padronização.
+Abordagens ad-hoc deveriam ser desenvolvidas de forma coordenada entre as diferentes organizações,
+o que seria mais custoso do que a adoção de uma plataforma comum.
+
+Adaptabilidade:
+
+O ee por si só não garante que uma composição será autônoma ou auto-adaptativa.
+Contudo, ele fornece suporte para o desenvolvimento de tais sistemas.
+
+Sistemas auto-adaptativos e autonômicos precisam estar cientes
+e ter pleno controle das atividades de implantação.
+Para equipar tais sistemas, o EE fornece informação e controle
+das seguintes funcionalidades:
+
+
+ atualização das composições;
+ migração de serviços;
+ replicação de serviços;
+ implantação de infraestrutura de monitoramento.
+
+
+Atualizações de composições de serviços podem ser necessárias quando
+as regras de negócio ou os requisitos não-funcionais mudam.
+O EE possibilita, por uma API REST, a adição, remoção e reconfiguração dos serviços
+e seus recursos computacionais associados.
+
+A migração de um serviço para um nó com mais recursos computacionais
+é uma funcionalidade oferecida pelo EE chamada de Pritchett2008Base.
+No entanto, para a construção de sistemas escaláveis se recomenda 
+a replicação de serviços associada ao balanceamento de carga Amazon2012Practices,
+o que é conhecido como Pritchett2008Base.
+
+O EE possibilita a replicação de serviço por meio da implantação de
+múltiplas instâncias do serviço e da notificação aos serviços consumidores
+sobre a existência dessas réplicas durante a fase de enlace de serviços.
+A quantidade inicial de réplicas é definida por atributo na especificação
+do serviço fornecida ao EE, e, depois, pode ser redefinida dinamicamente.
+Um trabalho futuro é configurar automaticamente um balanceamento de carga
+entre réplicas de um serviço, de forma que o consumidor de um serviço
+não tenha necessidade de saber sobre suas diversas réplicas.
+
+Por fim, o EE fornece opcionalmente a implantação de uma infraestrutura de monitoramento na infraestrutura alvo.
+Utilizamos o Ganglia, que coleta métricas do sistema operacional, como consumo de CPU, por exemplo.
+As métricas coletadas são enviadas a um serviço previamente configurado no EE.
+Esse serviço de monitoramento pode então disparar ações de adaptação com base
+nos dados recebidos. Uma ação de adaptação envolve a geração de uma nova especificação
+de composição e a atualização da composição em execução de acordo com a nova especificação.
+
+O CHOReOS ee é uma ferramenta útil a profissionais da indústria e pesquisadores para
+a implantação de composições de serviços, especialmente no contexto de grande escala.
+Mas as funcionalidades relacionadas à adaptação são de especial interesse
+aos pesquisadores que trabalham com a auto-adaptação de composições de serviços.
+O EE facilita a implementação de sistemas adaptativos
+por possibilitar que pesquisadores se foquem mais nos problemas de adaptação em
+alto nível, abstraindo detalhes altamente específicos do gerenciamento de implantação.
+Diferentes pesquisadores desse campo de pesquisa podem se beneficiar ao utilizarem uma plataforma comum,
+potencializando a troca de experiência sobre o processo de implantação. 
+
+description
+
