@@ -1,0 +1,96 @@
+/* CSS3 */
+
+html {
+    background: #ecece6;
+}
+
+
+header, footer, article {
+  /* se navegador não suportar header, trata header como block */
+  display:block;
+}
+
+header {
+  font-size:30px;
+}
+
+.sub-header {
+  font-size:14px;
+  font-style:italic;
+}
+
+
+body {
+
+/* gradiente generated with http://gradients.glrzad.com/ */
+background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.24, rgb(240,228,149)),
+    color-stop(0.51, rgb(252,250,232)),
+    color-stop(0.94, rgb(249,250,190))
+);
+background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(240,228,149) 24%,
+    rgb(252,250,232) 51%,
+    rgb(249,250,190) 94%
+);
+
+
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-size:16px;
+font-family: 'Droid Serif', arial, serif;
+
+  /* borda */
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-width: .3em;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-color: #000;
+    height: 100%;
+    padding: 1em;
+    margin-top: 3%;
+    margin-bottom: 3%;
+    margin-left: 8%;
+    margin-right: 8%;
+}
+
+h1 {
+  font-size: 20px;
+  font-family: 'Architects Daughter', arial, serif;
+}
+
+footer {
+  font-size: 11px;
+  font-style:italic;  
+}
+
+.leo {
+  font-family: 'Orbitron';
+}
+
+.estrangeiro {
+  font-style:italic;
+}
+
+.foto {
+  float:right;
+}
+
+.flag {
+  border:0;
+}
+
+.flags{
+  float:right;
+}
+
+.resumo{
+  text-align:justify
+}
