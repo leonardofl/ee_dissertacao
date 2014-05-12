@@ -49,9 +49,18 @@ Uma vez em execução, a instância do EE fornece serviços que podem ser consum
 e operado pela figura do \emph{implantador}. O administrador e o implantador podem pertencer à mesma organização,
 mas é possível que o administrador forneça o EE como um serviço (SaaS) a terceiros, cobrando por sua utilização.
 Para esses terceiros, a vantagem seria evitar o trabalho de instalação e configuração do EE.
-O ambiente de execução do EE é exibido na Figura~\ref{fig:arquitetura} e os componentes envolvidos são descritos a seguir.
+Os atores envolvidos no uso do EE são exibidos na Figura~\ref{fig:atores}. 
+O ambiente de execução do EE é exibido na Figura~\ref{fig:arquitetura} 
+e os componentes envolvidos são descritos a seguir.
 
-\begin{figure}[ht]
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{atores.pdf}
+\caption{Atores envolvidos no uso do \ee.}
+\label{fig:atores}
+\end{figure}
+
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.7\linewidth]{arquitetura.pdf}
 \caption{Ambiente de execução do \choreos \ee.}
@@ -178,6 +187,8 @@ ou utilizando objetos Java (POJOs).
 A Listagem~\ref{lst:service_spec} apresenta um trecho da especificação escrita em Java,
 no qual um dos serviços participantes é definido,
 incluindo sua dependência de outro serviço participante.
+
+\newpage
 
 \lstset{
 language=Java,
@@ -410,6 +421,8 @@ propriedades dos nós à disposição.
 Algumas políticas já fornecidas são ``sempre cria um novo nó'' e 
 ``cria novos nós até um certo limite, depois faz rodízio entre eles''.
 
+\newpage
+
 \begin{lstlisting}[frame=trbl, label=lst:node_selector, caption=Interface NodeSelector acompanhada de sua classe pai Selector.]
 public interface NodeSelector extends Selector<CloudNode, DeployableServiceSpec> {
 }
@@ -434,7 +447,6 @@ arquivos, mas os principais são os arquivos da \emph{receita}, que é o \script
 {atributos} a serem usados nas receitas. A Listagem~\ref{lst:recipe_template} mostra a receita do \emph{cookbook} modelo
 para implantação de WARs, enquanto que a Listagem~\ref{lst:attributes_template} mostra o arquivo de atributos do mesmo \emph{cookbook}.
 
-\newpage
 \begin{lstlisting}[frame=trbl, label=lst:recipe_template, caption=Receita modelo para a implantação de WARs.]
 include_recipe "apt" 
 include_recipe "tomcat::choreos"
