@@ -131,45 +131,7 @@ Coorientador: Fabio Kon
 
 %\subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
 
-\begin{frame}
-\frametitle{}
-\begin{center}
-\huge
-Implantação automatizada \\ de composições de serviços web \\ de grande escala
-\end{center}
-\end{frame}
 
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{}
-\begin{center}
-\huge
-\textbf{Implantação automatizada} \\ de composições de serviços web \\ de grande escala
-\end{center}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{}
-\begin{center}
-\huge
-\textbf{Implantação} automatizada \\ de composições de serviços web \\ \textbf{de grande escala}
-\end{center}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{}
-\begin{center}
-\huge
-\textbf{Implantação} automatizada \\ \textbf{de composições de serviços web} \\ de grande escala
-\end{center}
-\end{frame}
-
-%------------------------------------------------
 
 \begin{frame}
 \frametitle{Implantação de sistemas}
@@ -192,23 +154,13 @@ principalmente na implantação de sistemas distribuídos.}
 \item Fácil de ser executado
 \end{itemize}
 
-\begin{itemize}
-\item Entrega contínua
-\item DevOps
-\end{itemize}
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Implantação de sistemas}
-
-\subtitulo{Processo de implantação automatizada}
+\subtitulo{Abordagens}
 
 \begin{itemize}
-\item Abordagens \adhoc vs baseadas em middleware
+\item scripts vs especificação declarativa
+\item \adhoc vs baseadas em middleware
 \end{itemize}
+
 
 \end{frame}
 
@@ -220,7 +172,7 @@ principalmente na implantação de sistemas distribuídos.}
 \begin{itemize}
 \item Interfaces acessíveis por máquinas
 \item Automação de fluxos de negócios
-\item Aeroporto do Futuro
+\item Coreografias
 \end{itemize}
 
 \begin{figure}
@@ -262,22 +214,10 @@ principalmente na implantação de sistemas distribuídos.}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Computação em nuvem}
-
-\begin{figure}
-\includegraphics[width=0.5\linewidth]{img/cloud}
-\end{figure}
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Computação em nuvem}
-
-\subtitulo{Implicações na implantação}
+\frametitle{Virtualização e nuvem na implantação}
 
 \begin{itemize}
+\item Torna implantação facilmente reprodutível
 \item Não se conhece os IPs antes da implantação
 \item Servidores são efêmeros
 \end{itemize}
@@ -309,7 +249,7 @@ principalmente na implantação de sistemas distribuídos.}
 \frametitle{Questão}
 
 \frase{O quanto e como soluções de implantação baseadas em middleware  
-trazem benefícios no dado contexto
+trazem benefícios nesse contexto
 quando confrontadas com soluções \adhoc?}
 
 \end{frame}
@@ -389,10 +329,10 @@ quando confrontadas com soluções \adhoc?}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Atores}
+\frametitle{Ambiente de execução do EE}
 
 \begin{figure}
-\includegraphics[width=0.8\linewidth]{img/atores}
+\includegraphics[width=0.8\linewidth]{img/arquitetura}
 \end{figure}
 
 \end{frame}
@@ -400,11 +340,31 @@ quando confrontadas com soluções \adhoc?}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Ambiente de execução do EE}
+\frametitle{Estrutura da descrição arquitetural de uma coreografia}
 
 \begin{figure}
-\includegraphics[width=0.8\linewidth]{img/arquitetura}
+\includegraphics[width=1\linewidth]{img/chor_spec}
 \end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Enlace entre serviços}
+
+\begin{itemize}
+\item Serviço $A$ depende de Serviço $B$
+\item EE realiza a seguinte invocação ao Serviço $A$:
+\end{itemize}
+
+\begin{block}{}
+\begin{lstlisting}
+setInvocationAddress('Airline', 
+                     'Nimbus Airline', 
+                     ['http://nimbus.com/ws/' ])
+\end{lstlisting}
+\end{block}
 
 \end{frame}
 
@@ -422,111 +382,19 @@ quando confrontadas com soluções \adhoc?}
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Estrutura da descrição arquitetural de uma coreografia}
-
-\begin{figure}
-\includegraphics[width=0.6\linewidth]{img/adl}
-\end{figure}
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile]
-\frametitle{Exemplo de descrição arquitetural de uma coreografia}
-
-\begin{block}{}
-{\scriptsize
-\begin{lstlisting}[breaklines]
-airportBusCompanySpec =
-  new DeployableServiceSpec(AIRPORT_BUS_COMPANY_NAME, 
-  							ServiceType.SOAP, 
-  							PackageType.COMMAND_LINE, 
-  							resourceImpact, 
-  							serviceVersion, 
-  							AIRPORT_BUS_COMPANY_JAR_URL, 
-  							AIRPORT_BUS_COMPANY_PORT, 
-  							AIRPORT_BUS_COMPANY_ENDPOINT, 
-  							numberOfReplicas);
-
-airportBusCompanySpec.setRoles(
-  Collections.singletonList(AIRPORT_BUS_COMPANY_ROLE));
-
-airportBusCompanySpec.addDependency(
-  new ServiceDependency(AIRPORT_NAME, AIRPORT_ROLE));
-\end{lstlisting}
-}
-\end{block}
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile]
 \frametitle{Interface remota}
 
-\begin{block}{}
-{\scriptsize
-\begin{lstlisting}[breaklines]
-public interface EnactmentEngine {
-
-    public String createChoreography(ChoreographySpec chor);
-
-    public Choreography getChoreography(String chorId) throws ChoreographyNotFoundException;
-
-    public Choreography deployChoreography(String chorId) throws DeploymentException, ChoreographyNotFoundException;
-
-    public void updateChoreography(String chorId, ChoreographySpec spec) throws DeploymentException, ChoreographyNotFoundException;
-}
-\end{lstlisting}
-}
-\end{block}
-
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Pontos de extensão}
-
 \begin{itemize}
-\item Provedores de infraestrutura
-\item Políticas de seleção de nós
-\item Tipos de pacotes
-\item Tipos de serviços
+\item Criar coreografia
+\item Obter coreografia
+\item Implantar coreografia
+\item Atualizar coreografia
 \end{itemize}
 
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}
-\frametitle{Tratando falhas de terceiros}
-
-\begin{figure}
-\includegraphics[width=0.4\linewidth]{img/invoker}
-\end{figure}
-
-\end{frame}
-
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Tratando falhas de terceiros}
-
-\subtitulo{Reserva de nós ociosos}
-
-\begin{figure}
-\includegraphics[width=1\linewidth]{img/ec2_boxplot}
-\end{figure}
-
-
-\end{frame}
-
-
-%------------------------------------------------
 
 \begin{frame}
 \frametitle{O EE e os desafios de implantação em grande escala}
@@ -555,7 +423,7 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 
 \begin{itemize}
 \item Automação
-\item Interface REST
+\item Interface remota (REST)
 \item Descrição declarativa
 \item Infraestrutura virtualizada
 \end{itemize}
@@ -570,6 +438,9 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 
 \subtitulo{Falhas}
 
+\begin{columns}[c]
+
+\column{.45\textwidth}
 \begin{itemize}
 \item Invoker
 \item Reservoir
@@ -577,6 +448,12 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 \item Idempotência
 \end{itemize}
 
+\column{.4\textwidth}
+\begin{figure}
+\includegraphics[width=0.8\linewidth]{img/invoker}
+\end{figure}
+
+\end{columns}
 \end{frame}
 
 
@@ -603,7 +480,7 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 \subtitulo{Escalabilidade}
 
 \begin{itemize}
-\item Concorrência
+\item Concorrência (linguagem declarativa)
 \item Tratamento de falhas
 \item Evitar gargalos (Chef Server $\rightarrow$ Chef Solo)
 \end{itemize}
@@ -618,8 +495,15 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 
 \subtitulo{Heterogeneidade}
 
+\vspace{1cm}
+
+Pontos de extensão:
+
 \begin{itemize}
-\item Extensibilidade
+\item Provedores de infraestrutura
+\item Políticas de seleção de nós
+\item Tipos de pacotes
+\item Tipos de serviços
 \end{itemize}
 
 \end{frame}
@@ -649,7 +533,7 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 \subtitulo{Adaptabilidade}
 
 \begin{itemize}
-\item Atualização das coreografias
+\item Atualização das composições
 \item Migração de serviços
 \item Replicação de serviços
 \item Implantação de infraestrutura de monitoramento
@@ -676,9 +560,9 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 
 \begin{block}{EE}
 \begin{itemize}
-\item Desenvolvimento: 45 min.
-\item Execução: 4 min.
-\item Tamanho: 180 LoC Java.
+\item Desenvolvimento: 45 min
+\item Execução: 4 min
+\item Tamanho: 180 LoC Java
 \end{itemize}
 \end{block}
 
@@ -686,9 +570,9 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 
 \begin{block}{\adhoc}
 \begin{itemize}
-\item Desenvolvimento: 9 horas.
-\item Execução: 60 min.
-\item Tamanho: 100 LoC Shell Script, 220 LoC Java, e 85 LoC Ruby.
+\item Desenvolvimento: 9 horas
+\item Execução: 60 min
+\item Tamanho: 100 LoC Shell Script, 220 LoC Java, e 85 LoC Ruby
 \end{itemize}
 \end{block}
 
@@ -701,21 +585,18 @@ Como abordagens de implantação baseadas em middleware auxiliam o implantador e
 \frametitle{Dificuldades da abordagem \adhoc}
 
 \begin{itemize}
-\item Muitas tecnologias.
-\item Replicação de código.
-\item Passos manuais.
-\item Pouca paralelização.
+\item Muitas tecnologias
+\item Replicação de código
+\item Passos manuais
+\item Erros de digitação
+\item Pouca paralelização
 \end{itemize}
 
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Dificuldades da abordagem \adhoc}
+\vspace{0.5cm}
 
 Solução \adhoc até poderia ficar melhor... \\
 mas poderia ficar quase tão complexa quanto o próprio EE!
+
 
 \end{frame}
 
@@ -744,7 +625,7 @@ mas poderia ficar quase tão complexa quanto o próprio EE!
 \begin{frame}
 \frametitle{Análise de desempenho}
 
-\subtitulo{Topografia da coreografia sintética utilizada nos experimentos}
+\subtitulo{Topografia da composição sintética utilizada nos experimentos}
 
 \begin{figure}
 \includegraphics[width=0.35\linewidth, angle=270]{img/eval_composition}
@@ -794,7 +675,7 @@ mas poderia ficar quase tão complexa quanto o próprio EE!
 \includegraphics[width=0.9\linewidth]{img/error_handling}
 \end{figure}
 
-Cada execução: 1 coreografia de 100 serviços.
+Cada execução: 1 composição de 100 serviços
 
 \end{frame}
 
@@ -850,13 +731,13 @@ Leonardo Leite, Gustavo Oliva, Guilherme Nogueira, Marco Aurélio Gerosa, Fabio 
 \frametitle{Trabalhos futuros}
 
 \begin{itemize}
-\item Análise multivariável de fatores que influenciam a escalabilidade.
-\item Experimentos com desenvolvedores.
-\item Algoritmos adaptativos para tratamento de falhas.
-\item Federação de instâncias do EE.
-\item Utilização de um balanceador de carga.
-\item Utilização de um barramento de serviços.
-\item Atualização dinâmica de composições de serviços.
+\item Análise multivariável de fatores que influenciam a escalabilidade
+\item Experimentos com desenvolvedores
+\item Algoritmos adaptativos para tratamento de falhas
+\item Federação de instâncias do EE
+\item Utilização de um balanceador de carga
+\item Utilização de um barramento de serviços
+\item Atualização dinâmica de composições de serviços
 \end{itemize}
 
 \end{frame}
