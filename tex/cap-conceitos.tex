@@ -308,7 +308,7 @@ Com as vantagens aqui apresentadas, é cada vez mais comum o uso dos recursos de
 
 Na visão proposta pelo Instituto de Engenharia de Software da Universidade Carnegie Mellon, sistemas de ultra grande escala são ultra grandes em relação a todas as dimensões possíveis: linhas de código, pessoas, dados, dispositivos, etc.~\cite{CarnegieMellon2006ULS}. O número estimado de linhas de código desses sistemas é de bilhões. Para efeito de comparação, o núcleo do sistema operacional GNU/Linux possui cerca de 15 milhões de linhas de código em sua versão 3.2, a mais recente no momento da escrita deste texto~\cite{Leemhuis2012Statistics}. Com isso, talvez o único sistema da atualidade que se assemelha aos sistemas de escala ultra grande previstos é a Internet. 
 
-Por outro lado, a característica mais importante de um sistema de grande escala não é seu tamanho, mas o fato de ser caracterizado como um ``ecossistema sociotécnico''~\cite{CarnegieMellon2006ULS}, em que pessoas são parte integrante do sistema, interagindo com diferentes objetivos, de modo decentralizado e independente, porém seguindo restrições impostas. A analogia proposta é de que o desenvolvimento dos atuais sistemas de grande escala equipara-se a construção de prédios, enquanto que o desenvolvimento de sistemas de escala ultra grande equivaleriam a construção de cidades, o que é naturalmente um processo contínuo e decentralizado.
+Por outro lado, a característica mais importante de um sistema de ultra grande escala não é seu tamanho, mas o fato de ser caracterizado como um ``ecossistema sociotécnico''~\cite{CarnegieMellon2006ULS}, em que pessoas são parte integrante do sistema, interagindo com diferentes objetivos, de modo decentralizado e independente, porém seguindo restrições impostas. A analogia proposta é de que o desenvolvimento dos atuais sistemas de grande escala equipara-se a construção de prédios, enquanto que o desenvolvimento de sistemas de escala ultra grande equivaleriam a construção de cidades, o que é naturalmente um processo contínuo e decentralizado.
 
 %Recentemente, há ainda a consolidação da computação em nuvem, que traz um conjunto de tecnologias e práticas que se relacionam com as três características de sistemas de escala ultra grande anteriormente mencionadas. Sistemas distribuídos estão migrando para ambientes de nuvem, onde são compostos e mantidos decentralizadamente por várias organizações~\cite{Steen2011VeryLarge}. A virtualização, um dos aspectos centrais da computação em nuvem, é de grande auxílio no provisionamento de novos ambientes~\cite{Humble2011Continuous}, o que é importante para o processo de implantação de sistemas. A virtualização também facilita a criação de ambientes replicados, arquitetura importante para tratar falhas individuais de componentes.
 
@@ -355,7 +355,7 @@ A Figura~\ref{fig:ec2_boxplot} mostra a distribuição por nós observada
 empiricamente do tempo de criação de VMs no Amazon EC2. 
 Cada um dos dez \emph{boxplots} corresponde ao resultado
 observado para 100 requisições concorrentes ao EC2,
-cada uma requisitando a criação uma nova VM.
+cada uma requisitando a criação de uma nova VM.
 Nós contamos o tempo que vai da requisição de criação do nó
 até o momento em que a VM se encontra apta a receber conexões SSH,
 que é quando ela se torna pronta para uso na prática.
