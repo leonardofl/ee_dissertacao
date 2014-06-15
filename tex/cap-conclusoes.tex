@@ -133,6 +133,18 @@ Nesse sentido, começamos a realizar esse experimento utilizando a análise fato
 com replicação~\cite{Jain20002kr}, mas dificuldades com a distribuição dos dados e o alto custo
 para se obter novas amostras dificultaram a conclusão desse experimento.
 
+\item[Identificação e eliminação de gargalos internos do EE.]
+Casado com a proposta de trabalho anterior,
+estaria a identificação de pontos no fluxo de execução de \emph{threads} do EE
+que estejam gerando gargalos à escalabilidade.
+Para aumentar a escalabilidade do EE, poderíamos então retrabalhar 
+esses pontos identificados. Exemplo: hoje o enlace dos serviços
+só é efetuado após a implantação de todos os serviços.
+Mas se a implantação de apenas um serviço falhar, isso será motivo para atrasar o 
+enlace entre todos os outros serviços. Ou seja, o funcionamento parcial
+de uma coreografia poderia ser antecipado com um retrabalho nos fluxos
+de execução de \emph{threads}.
+
 \item[Experimentos com desenvolvedores.] 
 Na Seção~\ref{sec:avaliacao_eng_sw} realizamos uma avaliação qualitativa para
 ajudar a expandir nosso entendimento sobre o valor que o EE agrega ao processo de implantação.
@@ -142,6 +154,14 @@ e administradores de sistemas assumindo o papel de implantadores de uma composi�
 Nesse caso, a ideia seria utilizar uma abordagem mais rigorosa,
 dentro das possibilidades de experimentos de engenharia de software.
 Comparações com outros arcabouços de implantação também poderiam ser realizadas.
+
+\item[Desenvolvimento incremental com middleware.]
+Considerando a utilização de prática ágeis, que pregam pela simplicidade
+(``a coisa mais simples que funcione''), seria razoável considerar que 
+desenvolvedores de uma coreografia não utilizassem um middleware como o \ee
+em um primeiro momento. Seria interessante estudar como as características
+de um middleware como EE poderiam auxiliar os desenvolvedores no momento
+da transição, quando decidem adotar o uso do middleware.
 
 \item[Algoritmos adaptativos para tratamento de falhas.] 
 Acreditamos que os algoritmos do EE que tratam falhas de terceiros podem ser melhorados.
@@ -154,6 +174,16 @@ esperas desnecessárias ou desistindo de tarefas que logo estariam prontas.
 Um desafio interessante para a adaptação dinâmica do \emph{invoker} é
 considerar a alteração dinâmica de suas três propriedades:
 \emph{timeout}, quantidade de tentativas e tempo de pausa entre as tentativas.
+
+\item[Outras estratégias para a reserva de nós ociosos.]
+Outros algoritmos adaptativos para reger o aumento e diminuição do \emph{reservoir}
+também podem ser experimentados e avaliados.
+Até mesmo a estratégia geral do \emph{reservoir} poderia ser revista:
+em vez de apenas conter nós a serem usados em caso de falha de provisionamento de um nó,
+o \emph{reservoir} poderia já conter uma quantidade de nós o suficiente
+para ser utilizado por todos os serviços implantados, de forma
+que o processo de implantação de cada serviço já encontrasse um nó
+pronto para uso.
 
 \item[Federação de instâncias do EE.] Uma instância do EE realiza a implantação
 de serviços pertencentes a uma dada organização. Se algum dos serviços implantados
@@ -190,6 +220,15 @@ de um barramento de serviços para interligar serviços de protocolos diferentes
 No entanto, para essa tarefa é necessário a utilização de um barramento de serviços
 que considere a natureza dinâmica de ambientes de computação em nuvem,
 onde serviços são replicados e passam a possuir múltiplas URIs.
+
+\item[Aprimorar a atualização de coreografias.] Embora 
+tenhamos implementado a operação de atualização de uma coreografia,
+ao longo deste trabalho houve um foco muito grande na primeira implantação
+de uma coreografia. Como exemplo, todos os experimentos consideraram apenas 
+o cenário de primeira implantação.
+Seria então importante investir no aprimoramento do processo de atualização,
+principalmente utilizando novos e diferentes casos de teste que talvez exponham
+cenários ainda não considerados. 
 
 \item[Atualização dinâmica de composições de serviços.] Na atual implementação do EE,
 a atualização de coreografias pode ocasionar falhas em transações correntes,
