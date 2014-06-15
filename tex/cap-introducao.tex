@@ -43,11 +43,25 @@ composições de serviços envolvam um grande número de participantes,
 conforme já sugerido por 
 pesquisadores~\cite{Valerie2011FutureInternet,Papadimitriou2009FutureInternet}.
 
+O cenário do aeroporto mencionado acima envolve um grande número de
+serviços participantes em uma única composição.
+Por outro lado, há também cenários que envolvem a implantação
+de uma grande quantidade de pequenas composições.
+Um exemplo dessa segunda situação é a execução de uma suíte de testes
+de aceitação automatizados de uma composição de serviços.
+Cada caso de teste corresponde à implantação de uma instância da composição.
+Nesse caso é desejável que 1) cada caso de teste seja executado em um
+ambiente isolado, evitando interferência entre os testes; 
+e 2) a preparação do ambiente para cada caso de teste deve ser facilmente
+reprodutível, facilitando a execução de vários casos de testes simultâneos
+e facilitando também a execução da suíte inteira várias vezes seguidas,
+possibilitando as práticas de integração contínua e entrega contínua~\cite{Humble2011Continuous}.
+
 No entanto, o desenvolvimento de colaborações entre serviços 
 trazem desafios para a formulação de mecanismos que funcionem, 
 escalem e que sejam eficientemente implementados 
-em um ambiente distribuído de \emph{grande escala}~\cite{Steen2011VeryLarge}.
-Nesse cenário de grande escala,
+em ambientes distribuídos de \emph{grande escala}~\cite{Steen2011VeryLarge}.
+Em cenários de grande escala,
 o processo de implantação enfrenta diversas dificuldades, 
 tais como falhas corriqueiras na infraestrutura, 
 heterogeneidade tecnológica, 
@@ -124,8 +138,6 @@ pode ser observada na Figura~\ref{fig:modelos_nuvem}.
 
 Esta pesquisa foi feita no contexto e com financiamento dos projetos CHOReOS\footnote{\url{http://www.choreos.eu}} e Baile\footnote{\url{http://ccsl.ime.usp.br/baile}}, que estudaram a aplicação de composições de serviços distribuídas, chamadas \emph{coreografias}, em ambientes de grande escala. O projeto CHOReOS, financiado pela Comissão Europeia e composto por diversas instituições acadêmicas e industriais da Europa conjuntamente com o IME-USP, objetivou desenvolver um processo dinâmico e centrado no usuário para o desenvolvimento e execução de coreografias em um ambiente de escala ultra grande, no qual milhares de serviços são compostos e coordenados por um middleware distribuído. O projeto Baile, uma parceria entre IME-USP e HP Brasil, estudou a solução de problemas para o desenvolvimento de coreografias, como a adoção de Desenvolvimento Guiado por Testes (TDD) no contexto de coreografias e o suporte da Computação em Nuvem à implantação de coreografias. 
 
-\newpage
-
 As contribuições deste trabalho são: 
 
 \begin{itemize}
@@ -145,13 +157,13 @@ Durante o desenvolvimento do software Enactment Engine, o autor desta dissertaç
 Leonardo Leite. Fábrica dinâmica de dublês: testando classes que possuem dependências não injetáveis. Em \emph{Miniconferência Latino-Americana de Linguagens de Padrões para Programação (MiniPlop Brasil)}, 2013.
 \end{shadowblock}
 
+\newpage
+
 Ainda no contexto deste mestrado, foi realizado um estudo sobre adaptação dinâmica de coreografias, o que resultou na publicação do seguinte artigo: \\ 
 
 \begin{shadowblock}{15cm}
 Leonardo Leite, Gustavo Oliva, Guilherme Nogueira, Marco Aurélio Gerosa, Fabio Kon e Dejan Milojicic. A systematic literature review of service choreography adaptation. \emph{Service Oriented Computing and Applications}, 3(7):201--218, 2013.
 \end{shadowblock}
-
-\newpage
 
 Esta dissertação foi organizada da seguinte forma: as fundamentações teóricas sobre composição de serviços, o processo de implantação e a computação em nuvem são apresentadas no Capítulo~\ref{cap:conceitos}. No Capítulo~\ref{cap:relacionados}, apresentamos os trabalhos relacionados. No Capítulo~\ref{cap:solucao}, apresentamos o CHOReOS \ee, discutindo como suas características arquiteturais e de implementação auxiliam na implantação de composições de grande escala. A comparação do EE com soluções \emph{ad-hoc}, bem como sua avaliação de desempenho e escalabilidade, são apresentadas no Capítulo~\ref{cap:avaliacao}. Por fim, no Capítulo~\ref{cap:conclusoes}, apresentamos nossas conclusões.
 
