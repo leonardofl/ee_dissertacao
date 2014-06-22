@@ -1,0 +1,247 @@
+R - vm experiment
+
+# Importando dados
+d100 = read.table("100vms_0exec.txt", col.names="100")
+
+# Criando o boxplot
+boxplot(d100)
+
+# Criando vários boxplots lado a lado
+boxplot(c(d25, d50, d100))
+
+# Pegando o upper whisker
+boxplot.stats(d100)$stats[5]
+
+# Explicação sobre o retorno de boxplot.stats(d100)$stats:
+a vector of length 5, containing the extreme of the lower whisker, the lower ‘hinge’, the median, the upper ‘hinge’ and the extreme of the upper whisker.
+
+# Pegando os "outliers"
+outliers = d100[d100 >= upper]
+
+# Iterando uma lista
+for (data_set in data_sets) {
+    print(data_set)
+}
+
+# Gráfico com barras para o desvio padrão:
+http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_%28ggplot2%29/
+
+# transformando coluna de dataset em vetor
+v = as.vector(data_set[['V1']]) # V1 is the default column name
+
+# plotando o KDE
+v = as.vector(data_set[['V1']])
+plot(density(v))
+
+# plotando vários gráficos no mesmo plano
+plot(density(v1))
+lines(density(v2))
+lines(density(v3))
+
+# descubrindo o tipo do objeto
+is(d100)
+
+# funções funcionais do R:
+which
+apply
+tapply
+with
+
+tapply
+The tapply function is useful when we need to break up a vector into groups defined by some classifying factor, compute a function on the subsets, and return the results in a convenient form.
+tapply(medical$age, medical$treatment, mean)
+mostra a média de idade para cada tipo de tratamento
+
+# encontrar valores únicos de um conjunto de dados
+unique(dados$rollcall)
+
+# imprimir todos os partidos
+unique(dados$party)
+
+# imprimir os 2 primeiros registros com partido = PSC
+head(subset(dados, party == "PSC"), 2)
+
+################
+# Script: mostra gráfico com a média de VMs demoradas em função da quantidade de VMs requisitadas
+NUMBER_OF_VMS = c(25, 50, 100)
+NUMBER_OF_EXECUTIONS = list('k25'=40, 'k50'=20, 'k100'=10)
+outliers_means = c()
+for (vms in NUMBER_OF_VMS) {
+  cat('\nVMs demoradas com ', vms, ' VMs: ')
+  n = NUMBER_OF_EXECUTIONS[[paste('k',vms, sep='')]]
+  outliers_per_execution = c()
+  sum_outliers = 0
+  for (exec in 0:(n-1)) {
+    file_name = paste(vms, 'vms_', exec, 'exec.txt', sep='')
+    data_set = read.table(file_name)
+    upper_whisker = boxplot.stats(data_set)$stats[5]
+    outliers = data_set[data_set >= upper_whisker]
+    outliers_len = length(outliers)
+    outliers_per_execution = append(outliers_per_execution, outliers_len) 
+    cat(outliers_len, ' ')
+    sum_outliers = sum_outliers + outliers_len
+  }
+  cat('\nSum: ', sum_outliers)
+  mean_outliers_per_execution = mean(outliers_per_execution)  
+  sd_outliers_per_execution = sd(outliers_per_execution)
+  outliers_means = append(outliers_means, mean_outliers_per_execution)
+}
+title='VMs demoradas' 
+xlabel='Quantidade de VMs requisitadas'
+ylabel='Quantidade média de VMs demoradas'
+subtitle='(VM demorada = demora mais que o upper whisker do boxplot)'
+plot(NUMBER_OF_VMS, outliers_means, main=title, sub=subtitle, xlab=xlabel, ylab=ylabel)
+
+# Output:
+VMs demoradas com  25  VMs: 
+2  2  2  2  2  2  2  3  3  2  
+1  1  1  1  2  1  3  2  3  2  
+3  1  2  1  1  3  3  2  1  2  
+1  2  2  3  1  4  1  1  2  2  
+Sum:  77
+VMs demoradas com  50  VMs: 
+2  1  1  3  1  5  4  3  3  5  
+4  3  2  3  5  4  3  2  3  1  
+Sum:  58
+VMs demoradas com  100  VMs: 
+10  2  6  5  1  6  4  7  3  7
+Sum:  51
+
+################
+# Script: mostra gráfico com a média de VMs que não ficam prontas em função da quantidade de VMs requisitadas
+NUMBER_OF_EXECUTIONS = list('k25'=40, 'k50'=20, 'k100'=10)
+NUMBER_OF_VMS = c(25, 50, 100)
+failed_means = c() # quantas VMs falham em média para cada quantidade de VMs requisitada
+for (vms in NUMBER_OF_VMS) {
+  n = NUMBER_OF_EXECUTIONS[[paste('k',vms, sep='')]]
+  failures = c() # quantas VMs falharam em cada execução
+  cat('\nFails with ', vms, ' VMs: ')
+  sum_failed = 0
+  for (exec in 0:(n-1)) {
+    file_name = paste(vms, 'vms_', exec, 'exec.txt', sep='')
+    data_set = read.table(file_name)
+    len = nrow(data_set)
+    failed = vms - len
+    failures = append(failures, failed)
+    cat(failed, ' ')
+    sum_failed = sum_failed + failed
+  }
+  cat('\nSum: ', sum_failed)
+  mean_failures = mean(failures) # quantas VMs falham em média para esta quantidade de VMs requisitada
+  sd_failures = sd(failures)
+  failed_means = append(failed_means, mean_failures) 
+}
+title='VMs falhas' 
+xlabel='Quantidade de VMs requisitadas'
+ylabel='Quantidade média de VMs falhas'
+subtitle='(Utilizando timeout de 4 minutos)'
+plot(NUMBER_OF_VMS, failed_means, main=title, sub=subtitle, xlab=xlabel, ylab=ylabel)
+
+# Output:
+Fails with  25  VMs: 
+0  0  0  1  0  0  1  1  0  0  
+0  0  0  0  0  0  0  0  0  0  
+0  1  0  0  0  0  0  0  0  0  
+0  0  0  0  0  0  0  0  0  0  
+Sum:  4
+Fails with  50  VMs: 
+0  0  0  1  0  0  0  0  0  0  
+0  0  1  0  0  0  0  0  0  0  
+Sum:  2
+Fails with  100  VMs: 
+0  0  0  1  0  1  1  1  1  1  
+Sum:  6
+
+################
+Continha: total de problemas
+
+VMs demoradas com  25  VMs: 
+Sum:  77
+VMs demoradas com  50  VMs: 
+Sum:  58
+VMs demoradas com  100  VMs: 
+Sum:  51
+
+Fails with  25  VMs: 
+Sum:  4
+Fails with  50  VMs: 
+Sum:  2
+Fails with  100  VMs: 
+Sum:  6
+
+% Total de problemas
+ 25 => (77 + 4) / 1000 = 8.1%
+ 50 => (58 + 2) / 1000 = 6.0%
+100 => (51 + 6) / 1000 = 5.7%
+
+################
+# Script: plota os 10 KDEs em um só gráfico para cada NUMBER_OF_VMS
+# Parâmetro: horizontal = TRUE ou FALSE
+horizontal = FALSE
+NUMBER_OF_EXECUTIONS = 10
+NUMBER_OF_VMS = c(25, 50, 100)
+if (horizontal) {
+    par(mfrow=c(1,3))
+} else {
+    par(mfrow=c(3,1))
+}
+for (vms in NUMBER_OF_VMS) {
+    first = TRUE
+    for (exec in 0:(NUMBER_OF_EXECUTIONS-1)) {
+        file_name = paste(vms, 'vms_', exec, 'exec.txt', sep='')
+        data_set = read.table(file_name)
+        v = as.vector(data_set[['V1']])
+        if (first) {
+            first = FALSE
+            title = 'Função de densidade de tempo de criação de VMs'
+            subtitle = paste(vms, ' VMs requisitadas')
+            xlabel= 'Tempo de criação por VM'
+            plot(density(v), main=title, sub=subtitle, xlab=xlabel, xlim=c(40,150))
+        } else {
+            lines(density(v))
+        }
+    }
+}
+
+################
+# Script: plota os 3*10 boxplots em um só gráfico 
+NUMBER_OF_EXECUTIONS = 10
+NUMBER_OF_VMS = c(25, 50, 100)
+par(mfrow=c(3,1))
+for (vms in NUMBER_OF_VMS) {
+    vs = c()
+    for (exec in 0:(NUMBER_OF_EXECUTIONS-1)) {
+        file_name = paste(vms, 'vms_', exec, 'exec.txt', sep='')
+        data_set = read.table(file_name)
+        vs = append(vs, data_set)
+    }
+    title = paste(vms, ' VMs')
+    boxplot(vs, main=title)
+}
+
+################
+# Script: mostra quantos valores acima de 100ms temos nas 10 execuções usando 25, 50 e 100 VMs
+NUMBER_OF_VMS = c(25, 50, 100)
+NUMBER_OF_EXECUTIONS = list('k25'=40, 'k50'=20, 'k100'=10)
+THRESHOLD = 100
+cat('Machines that take more than ', THRESHOLD, 's')
+for (vms in NUMBER_OF_VMS) {
+    aboves = c()
+    n = NUMBER_OF_EXECUTIONS[[paste('k',vms, sep='')]]
+    for (exec in 0:(n-1)) {
+        file_name = paste(vms, 'vms_', exec, 'exec.txt', sep='')
+        data_set = read.table(file_name)
+        above = length(which(data_set>THRESHOLD))
+        aboves = append(aboves, above)
+    }
+    cat('For ', vms, ': ', aboves, '\n')
+}
+
+Machines that take more than  100 s
+For  25 :  0 0 0 0 1 0 1 1 2 1 0 0 0 0 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 1 0 0 0 1 
+For  50 :  0 0 0 1 0 1 0 1 0 1 0 1 0 2 0 1 0 0 0 0 
+For  100 :  3 0 0 0 0 0 2 1 0 1 
+
+
+
+

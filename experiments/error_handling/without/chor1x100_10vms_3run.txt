@@ -1,0 +1,17 @@
+########Report:########## 
+ // tuples are (mean, std dev)
+ // times in seconds
+ 3/6 with 1 chors of size 100; Sun Apr 13 10:40:32 BRT 2014
+ VM_LIMIT = 10
+ How many choreographies to enact = 1
+ How many choreographies enacted = 0
+ Time to enact choreographies = []
+ Mean time to enact a choreography = (NaN, -0.0)
+ Total time to enact choreographies = 344.794579808
+ Time to check choreographies = [2.289591568]
+ Mean time to check a choreography = (2.289591568, NaN)
+ Total time to check choreographies = 0.744707678
+ How many choreographies working = 0 / 1
+ How many services working = 90 / 100
+ Total time = 347.087032259
+
