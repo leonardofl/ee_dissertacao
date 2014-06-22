@@ -308,7 +308,12 @@ A implementação dessa operação deve possuir duas importantes propriedades:
 2) a operação deve ser \emph{idempotente}, ou seja, uma nova requisição para a implantação da mesma 
 coreografia não deve reimplantar os serviços já implantados, 
 mas somente aqueles cujas implantações falharam na última execução. 
-Para que serviços sejam atualizados, é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço.
+
+Para que um serviço seja reimplantado utilizando uma nova versão de seu pacote,
+é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço. 
+O novo valor de versão do serviço (atributo de \textsf{DeployableServiceSpec})
+indica que alterações foram feitas no código ou na configuração do serviço,
+sendo isso motivo para sua reimplantação.
 
 \item [Atualizar coreografia:] registra uma nova versão de uma coreografia no EE. 
 Os serviços atualizados na nova versão da coreografia devem possuir 
