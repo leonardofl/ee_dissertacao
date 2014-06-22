@@ -1,0 +1,23 @@
+EEImpl.deployChoreography
+ChoreographyEnacter.enact
+ChoreographyEnacter.deploy
+ServicesDeployer.deployServices
+ServicesDeployer.prepare
+NewDeploymentPreparing.prepare
+    CreateServiceTask
+    ServiceDeploymentPreparer.prepareDeployment
+    ServiceDeploymentPreparer.selectNodes
+    NodeSelector.select()
+        CreatorTask     
+    ServiceDeploymentPreparer.prepareInstances
+    InstanceDeploymentPreparer.prepareDeployment  // (poderia abrir nova thread pra cada instância)
+    NodePreparer // single executor pra cada nó
+ServicesDeployer.updateNodes
+NodesUpdater.updateNodes
+    UpdateNodeTask  // single thread pra cada nó
+ChoreographyEnacter.createLegacyServices
+ChoreographyEnacter.castContext
+    ServiceContextCasterTask  // para cada consumer
+    ContextSenderTask // para cada URI de cada dependência do consumer (poderia abrir nova thread pra cada dependência)
+
+
