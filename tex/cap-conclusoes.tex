@@ -135,10 +135,13 @@ para se obter novas amostras dificultaram a conclusão desse experimento.
 
 \item[Identificação e eliminação de gargalos internos do EE.]
 Casado com a proposta de trabalho anterior,
-estaria a identificação de pontos no fluxo de execução de \emph{threads} do EE
-que estejam gerando gargalos à escalabilidade.
-Para aumentar a escalabilidade do EE, poderíamos então retrabalhar 
-esses pontos identificados. Exemplo: hoje o enlace dos serviços
+estaria a melhoria no fluxo de execução de \emph{threads} do EE 
+(Seção~\ref{sec:implementacao}),
+evitando gargalos na escalabilidade do processo de implantação.
+Uma estratégia seria a eliminação das barreiras existentes (visíveis na Figura~\ref{fig:threads})
+para que falhas em uma determinada \emph{thread} não atrasem a implantação de serviços
+não relacionados com essa \emph{thread}.
+Exemplo: hoje o enlace dos serviços
 só é efetuado após a implantação de todos os serviços.
 Mas se a implantação de apenas um serviço falhar, isso será motivo para atrasar o 
 enlace entre todos os outros serviços. Ou seja, o funcionamento parcial

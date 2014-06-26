@@ -731,6 +731,26 @@ as invocações à operação \texttt{setInvocationAddress} são refeitas.
 Nesse passo, a idempotência é garantida pela assinatura idempotente
 da própria operação \texttt{setInvocationAddress}.
 
+\item [Fluxo de threads:] A Figura~\ref{fig:threads} ilustra a estratégia de concorrência
+que o EE implementa durante a implantação de coreografias.
+A execução é dividida em três fases: 1) preparação do nó, que consiste na seleção do nó para uma instância, incluindo a transferência dos \scripts de implantação para o nó selecionado;
+2) a atualização do nó, que é quando os \scripts são executados;
+e 3) o enlace entre serviços.
+Cada fase de execução é executada por várias \emph{threads}.
+Nas fases de preparação e de enlace o EE dispara uma \emph{thread} diferente para
+cada serviço a ser implantado. Já na fase de atualização dos nós, há uma \emph{thread}
+para nó a ser atualizado. Durante a preparação, novas \emph{threads} são abertas, 
+uma para cada nó a ser criado a fim de hospedar as instâncias de um serviço.
+Os \emph{scripts} de implantação de um serviço são transferidos para os nós alvos
+somente depois que todos os nós alvos do serviço estão criados.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.4\linewidth]{figuras/threads.png}
+\caption{Fluxo de threads durante a implantação de coreografias pelo EE.}
+\label{fig:threads}
+\end{figure}
+
 \item [Software livre:] por fim, todas as bibliotecas 
 utilizadas pelo \ee são software livre.
 
