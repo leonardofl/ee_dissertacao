@@ -339,10 +339,27 @@ dos tipos de falhas mais importantes a serem tratados,
 justificando o tratamento especial que demos a esse tipo de falha
 ao criar a reserva de nós ociosos.
 
+Para termos uma ideia da sobrecarga causada pela utilização dos mecanismos de 
+tratamento de falhas de terceiros, geramos o gráfico apresentado 
+na Figura~\ref{fig:error_handling_time}.
+Esse gráfico é um detalhamento do gráfico já apresentado na Figura~\ref{fig:error_handling},
+mas apresentando os tempos gastos em cada execução.
+Assim, cada ponto no gráfico fornece o tempo gasto que a execução levou
+para tentar implantar os 100 serviços da coreografia.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.8]{error_handling_time.pdf}
+  \caption{Tempo de implantação de coreografias com e sem a utilização dos mecanismos de tratamento de falhas de terceiros.}
+  \label{fig:error_handling_time}
+\end{figure}
 
-
-
+Pelo gráfico, observamos que o espalhamento vertical dos dois grupos de pontos
+(usando e não usando os mecanismos de tratamento de falhas de terceiros) 
+ocupa aproximadamente o mesmo espaço vertical, desconsiderando apenas uma execução, 
+que levou mais de 700 segundos.
+Isto é, podemos constatar visualmente que não houve uma diferença significativa
+entre os tempos de execução obtidos para os dois grupos de amostras.
 
 
 
