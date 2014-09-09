@@ -144,9 +144,14 @@ não relacionados com essa \emph{thread}.
 Exemplo: hoje o enlace dos serviços
 só é efetuado após a implantação de todos os serviços.
 Mas se a implantação de apenas um serviço falhar, isso será motivo para atrasar o 
-enlace entre todos os outros serviços. Ou seja, o funcionamento parcial
+enlace entre todos os outros serviços. 
+A atualização de um nó também poderia se dar assim que todos os serviços destinados ao nó já estejam preparados.
+Ou seja, o funcionamento parcial
 de uma coreografia poderia ser antecipado com um retrabalho nos fluxos
-de execução de \emph{threads}.
+de execução de \emph{threads}. 
+
+\item[Utilizar mais chamadas assíncronas.]
+Na linha de eliminar gargalos e diminuir a fragilidade do código, outros pontos do código do EE poderiam ser mais assíncronos. Por exemplo, em vez de uma \emph{thread} esperar outra criar uma VM, a \emph{thread} que cria uma VM poderia acionar um \emph{callback} para continuar o fluxo de execução. Além disso, o cliente da API REST de criação de nós fica bloqueado por minutos esperando uma resposta HTTP. Nesse caso deveria se usar os mecanismos REST para criação demorada de recursos (código de estado 202). O mesmo princípio vale para a própria operação de implantação dos serviços, que atualmente possui uma implementação síncrona.
 
 \item[Experimentos com desenvolvedores.] 
 Na Seção~\ref{sec:avaliacao_eng_sw} realizamos uma avaliação qualitativa para

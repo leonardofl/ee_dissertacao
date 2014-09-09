@@ -309,6 +309,11 @@ A implementação dessa operação deve possuir duas importantes propriedades:
 coreografia não deve reimplantar os serviços já implantados, 
 mas somente aqueles cujas implantações falharam na última execução. 
 
+Na atual implementação, a chamada a essa operação é síncrona, de forma que o cliente fica 
+aguardando a implantação da composição. Caso a implantação de alguns serviços falhem,
+o cliente continua aguardando normalmente até que a implantação dos outros serviços se completem
+ou que todas as implantações falhem.
+
 Para que um serviço seja reimplantado utilizando uma nova versão de seu pacote,
 é preciso utilizar um novo valor no atributo ``versão'' da especificação do serviço. 
 O novo valor de versão do serviço (atributo de \textsf{DeployableServiceSpec})
@@ -480,11 +485,15 @@ utilizando adequadamente os símbolos \emph{\$NAME} e \emph{\$PACKAGE\_URL}.
 O símbolo \emph{\$PACKAGE\_URL} será substituído pela URL do pacote do serviço,
 enquanto que o \emph{\$NAME} será substituído por uma identificação única dentro do EE.
 
+Caso preciso, o \emph{cookbook} deve ser também responsável pela implantação do contêiner de execução, 
+(p.ex: Tomcat). Nesses casos, o contêiner já pode conter algumas bibliotecas de uso comum (p.ex: JAX-WS)
+para evitar que essas bibliotecas sejam carregadas em todos os pacotes implantados.
+Já um pacote independente de contêiner (p.ex: JAR) deve conter todas as bibliotecas das quais o serviço depende. 
+
 A complexidade de se criar uma nova receita Chef vai depender do tipo de tecnologia utilizada,
 mas a comunidade Chef já fornece diversas receitas prontas para a implantação dos ambientes
 de execução mais populares. Além disso, pode-se encontrar também na Internet
 exemplos de implantação de serviços utilizando as tecnologias mais populares.
-
 
 \item [Tipos de serviços:] o enlace entre serviços de uma composição depende da passagem de endereços que é feita do \ee para os 
 serviços. Para isso, o EE precisa invocar a operação \texttt{setInvocationAddres} dos serviços. A implementação de tal invocação se dá 
@@ -997,7 +1006,9 @@ não tenha necessidade de saber sobre suas diversas réplicas.
 
 Por fim, o EE fornece opcionalmente a implantação de uma infraestrutura de monitoramento na infraestrutura alvo.
 Utilizamos o Ganglia, que coleta métricas do sistema operacional, como consumo de CPU, por exemplo.
-As métricas coletadas são enviadas a um serviço previamente configurado no EE.
+As métricas coletadas podem ser enviadas a um serviço previamente configurado no EE
+(embora o EE faça a implantação do Ganglia nos nós alvos, o serviço que processará
+os dados coletados deve ser informado ao EE).
 Esse serviço de monitoramento pode então disparar ações de adaptação com base
 nos dados recebidos. Uma ação de adaptação envolve a geração de uma nova especificação
 de composição e a atualização da composição em execução de acordo com a nova especificação.
