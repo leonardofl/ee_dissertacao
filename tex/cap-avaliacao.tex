@@ -2,10 +2,26 @@
 \chapter{Avaliação}
 \label{cap:avaliacao}
 
-Neste capítulo, apresentamos experimentos realizados com o Enactment Engine com objetivo de avaliar
-seu uso, contrastando com soluções \emph{ad-hoc} de implantação automatizada.
-Também avaliamos seu desempenho e escalabilidade para verificar a viabilidade de seu uso
+Neste capítulo, apresentamos um experimento qualitativo realizado 
+com o Enactment Engine com objetivo de avaliar
+seu uso do ponto de vista do implantador, 
+contrastando com soluções \emph{ad-hoc} de implantação automatizada.
+Também avaliamos quantitativamente o desempenho e escalabilidade do EE
+para verificar a viabilidade de seu uso
 no contexto de composições de serviços de grande escala.
+
+O experimento qualitativo foi realizado com uma comparação do ``esforço''
+do implantador ao implantar uma coreografia com e sem o EE.
+Medimos o ``esforço'' com a quantidade de código escrito pelo desenvolvedor,
+o tempo para a escrita desse código e o tempo de execução da implantação.
+
+Já para as avaliações quantitativas, criamos experimentos automatizados
+responsáveis por 1) invocar o EE com diferentes parâmetros, 
+2) limpar o ambiente a cada execução (apagar VMs da nuvem e reiniciar o EE),
+3) medir e registrar os tempos de execução e
+4) enviar notificações por e-mail sobre o andamento do experimento a cada execução.
+
+
 
 \section{Implantando coreografias com e sem o EE}
 \label{sec:avaliacao_eng_sw}
@@ -43,7 +59,7 @@ No restante desta seção, descreveremos o processo de criação e execução
 da solução \emph{ad-hoc}. Destacaremos as dificuldades no processo
 que o implantador encontra sem o uso do EE.
 
-\paragraph{Implementação da solução ad hoc}
+\paragraph{Implementação da solução ad-hoc}
 A implantação de cada serviço é executada por uma receita Chef contida em um \emph{cookbook}.
 Nós escrevemos um \emph{cookbook} modelo, para implantar pacotes JARs,
 e o usamos para gerar \emph{cookbooks} para os 15 serviços participantes.
@@ -145,6 +161,7 @@ com suporte de middleware, como o \ee, uma vez que temos agora uma avaliação p
 do esforço necessário para se implantar composições de serviços.
 
 \section{Análise de desempenho e escalabilidade}
+\label{sec:avaliacao_quantitativa}
 
 Conduzimos experimentos para avaliar o desempenho e escalabilidade do
 Enactment Engine em função de sua capacidade de implantar um número significativo
@@ -361,7 +378,46 @@ que levou mais de 700 segundos.
 Isto é, podemos constatar visualmente que não houve uma diferença significativa
 entre os tempos de execução obtidos para os dois grupos de amostras.
 
+\section{Limitações dos experimentos}
 
+Nesta seção iremos explicitar as limitações que julgamos presentes em nossos experimentos.
 
+No experimento qualitativo (Seção~\ref{sec:avaliacao_eng_sw})
+tentamos avaliar os benefícios de uma implantação baseada em \emph{middleware}
+do ponto de vista do desenvolvedor. Algumas de suas limitações são:
+
+\begin{itemize}
+\item avaliação fortemente dependente da expertise do implantador;
+\item avaliação dependente das tecnologias usadas na solução \emph{ad-hoc};
+\item avaliação dependente do tamanho da coreografia implementada.
+\end{itemize}
+
+Já nas avaliações qualitativas (Seção~\ref{sec:avaliacao_quantitativa}),
+uma primeira limitação é não-reprodutibilidade dos resultados experimentais,
+uma vez que os experimentos foram executados em um ambiente de nuvem.
+Contudo, ao utilizar a mesma plataforma de nuvem com os mesmos tipos de VMs,
+esperamos que resultados similares sejam encontrados em uma eventual replicação
+de nossos experimentos.
+
+Outra característica limitante foi a falta de análise em camadas mais baixas 
+dos protocolos de redes para explicar o porquê de certos comportamentos,
+como por exemplos os resultados exibidos na Figura~\ref{fig:ee_scalability}.
+
+Por fim, mais esclarecimentos poderiam ter sido fornecidos com mais variações
+experimentais. Por exemplo, o experimento de escalabilidade
+(Figura~\ref{fig:ee_scalability}) poderia ter sido feito também
+1) sem a utilização da reserva de nós ociosos, 2) sem a utilização do \emph{invoker} e
+3) sem a utilização tanto da reserva quanto do \emph{invoker}. 
+Assim entenderíamos mais precisamente a contribuição desses mecanismos.
+Poderia haver também mais cenários para a análise de desempenho (Tabela~\ref{tab:cases}),
+de forma a fornecer mais evidências sobre a participação de cada fator experimental
+nos resultados.
+
+O grande impedimento para a execução de mais variações experimentais foi o custo
+dos experimentos. O custo por VM criada em nossos experimentos era de U\$0,06.
+Executando-se apenas um experimento com a criação de 100 VMs em 30 execuções
+chega-se ao valor de U\$180,00. Dado o alto custo dos experimentos, foi preciso
+considerar um compromisso entre a quantidade e a variedade dos experimentos realizados
+e a eventual contribuição que os resultados trariam no contexto desta pesquisa.
 
 
