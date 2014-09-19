@@ -2,23 +2,34 @@
 \chapter{Avaliação}
 \label{cap:avaliacao}
 
-Neste capítulo, apresentamos um experimento qualitativo realizado 
-com o Enactment Engine com objetivo de avaliar
-seu uso do ponto de vista do implantador, 
-contrastando com soluções \emph{ad-hoc} de implantação automatizada.
-Também avaliamos quantitativamente o desempenho e escalabilidade do EE
-para verificar a viabilidade de seu uso
-no contexto de composições de serviços de grande escala.
+Como já mencionado na introdução, 
+nosso objetivo nesta dissertação é projetar e implementar um middleware que forneça 
+suporte à implantação automatizada de composições de serviços web de grande escala.
+Realizamos a implementação desse middleware, o \ee, com o propósito de entender como soluções de
+implantação baseadas em middleware contribuem para a melhoria do processo
+de implantação quando confrontadas com soluções \emph{ad-hoc}.
+Na Seção~\ref{sec:discussao} discutimos os benefícios trazidos por soluções
+de implantação baseadas em middleware com base nos desafios dos cenários de grande escala. 
+Neste capítulo, apresentaremos avaliações a fim de verificar empiricamente
+1) a vantagem do uso do EE sobre soluções \emph{ad-hoc} e
+2) a aplicabilidade do EE em contextos de grande escala.
 
-O experimento qualitativo foi realizado com uma comparação do ``esforço''
+Primeiramente apresentamos um estudo qualitativo apresentando
+uma comparação entre o processo de implantação utilizando o EE
+e um processo de implantação \emph{ad-hoc}.
+Com esse estudo, evidenciamos as vantagens de soluções de implantação
+baseadas em middleware sobre soluções \emph{ad-hoc}.
+O estudo qualitativo foi realizado com uma comparação do ``esforço''
 do implantador ao implantar uma coreografia com e sem o EE.
 Medimos o ``esforço'' com a quantidade de código escrito pelo desenvolvedor,
 o tempo para a escrita desse código e o tempo de execução da implantação.
 
-Já para as avaliações quantitativas, criamos experimentos automatizados
+Para avaliar a aplicabilidade do EE em contextos de grande escala,
+avaliamos quantitativamente o desempenho, escalabilidade e quantidade de falhas do EE.
+Nessas avaliações, criamos experimentos automatizados
 responsáveis por 1) invocar o EE com diferentes parâmetros, 
 2) limpar o ambiente a cada execução (apagar VMs da nuvem e reiniciar o EE),
-3) medir e registrar os tempos de execução e
+3) medir e registrar os tempos de execução e quantidade de falhas ocorridas e
 4) enviar notificações por e-mail sobre o andamento do experimento a cada execução.
 
 
@@ -382,8 +393,8 @@ entre os tempos de execução obtidos para os dois grupos de amostras.
 
 Nesta seção iremos explicitar as limitações que julgamos presentes em nossos experimentos.
 
-No experimento qualitativo (Seção~\ref{sec:avaliacao_eng_sw})
-tentamos avaliar os benefícios de uma implantação baseada em \emph{middleware}
+No estudo qualitativo (Seção~\ref{sec:avaliacao_eng_sw})
+avaliamos os benefícios de uma implantação baseada em middleware
 do ponto de vista do desenvolvedor. Algumas de suas limitações são:
 
 \begin{itemize}
